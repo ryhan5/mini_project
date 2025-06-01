@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { motion, AnimatePresence } from "framer-motion"
-import { Search, Filter, Tractor, Droplets, Shovel, Sprout, Plus, CheckCircle, X, Wheat } from "lucide-react"
+import { Search, Filter, Tractor, Droplets, Sprout, Plus, CheckCircle, X, Wheat, Wrench } from "lucide-react"
 
 // Wrapper component to handle search params with Suspense
 function EquipmentExchangeContent() {
@@ -23,7 +23,7 @@ function EquipmentExchangeContent() {
       // Scroll to top to show the success message
       window.scrollTo({ top: 0, behavior: 'smooth' });
       // Remove the query param without refreshing the page
-      router.replace('/equipment-exchange', undefined, { shallow: true });
+      router.replace('/equipment-exchange');
       
       // Hide success message after 5 seconds
       const timer = setTimeout(() => {
@@ -219,7 +219,7 @@ function EquipmentExchangeContent() {
                   activeTab === 'tools' ? 'bg-white shadow' : 'text-gray-600 hover:bg-gray-50'
                 }`}
               >
-                <Shovel className="h-4 w-4 mr-1" />
+                <Wrench className="h-4 w-4 mr-1" />
                 <span className="hidden sm:inline">Tools</span>
               </button>
               <button
