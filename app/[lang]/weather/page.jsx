@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { languages } from '@/config/languages';
 import { 
   CloudRain, 
   Sun, 
@@ -777,4 +778,26 @@ function WeatherPage() {
     </div>
     );
 }
-export default WeatherPage;
+// This function tells Next.js which paths to pre-render at build time
+export async function generateStaticParams() {
+  return languages.map((lang) => ({
+    lang: lang.code,
+  }));
+}
+
+// This ensures dynamic parameters are filled in at request time
+export const dynamicParams = true;
+
+export default function WeatherPageWrapper({ params: { lang } }) {
+  // Validate language
+  const isValidLanguage = languages.some(language => language.code === lang);
+  
+  if (!isValidLanguage) {
+    // This will be handled by the middleware, but we include it here for safety
+    return null;
+  }
+  
+  return <WeatherPage />;
+}
+
+export { WeatherPage as default };

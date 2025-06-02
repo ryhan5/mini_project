@@ -1,4 +1,5 @@
 'use client';
+import { languages } from '@/config/languages';
 
 import { useState } from 'react';
 import Link from 'next/link';
@@ -51,7 +52,17 @@ const getEquipmentIcon = (type) => {
   }
 };
 
-export default function EquipmentExchangePage() {
+
+// This function tells Next.js which paths to pre-render at build time
+export async function generateStaticParams() {
+  return languages.map((lang) => ({
+    lang: lang.code,
+  }));
+}
+
+// This ensures dynamic parameters are filled in at request time
+export const dynamicParams = true;
+export default function EquipmentExchangePage({ params: { lang } }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState('all');
 

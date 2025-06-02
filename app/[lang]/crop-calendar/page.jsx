@@ -45,7 +45,17 @@ const CROP_INFO = {
   // Add more crop information as needed
 };
 
-export default function CropCalendar() {
+
+// This function tells Next.js which paths to pre-render at build time
+export async function generateStaticParams() {
+  return languages.map((lang) => ({
+    lang: lang.code,
+  }));
+}
+
+// This ensures dynamic parameters are filled in at request time
+export const dynamicParams = true;
+export default function CropCalendar({ params: { lang } }) {
   const [selectedCrop, setSelectedCrop] = useState('Rice');
   const [selectedRegion, setSelectedRegion] = useState('Northern India');
   const cropInfo = CROP_INFO[selectedCrop] || CROP_INFO.Rice;

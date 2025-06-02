@@ -5,7 +5,17 @@ import { Camera, Image as ImageIcon, Loader2, AlertCircle, CheckCircle, X } from
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 
-export default function CropDiseaseDetection() {
+
+// This function tells Next.js which paths to pre-render at build time
+export async function generateStaticParams() {
+  return languages.map((lang) => ({
+    lang: lang.code,
+  }));
+}
+
+// This ensures dynamic parameters are filled in at request time
+export const dynamicParams = true;
+export default function CropDiseaseDetection({ params: { lang } }) {
   const [selectedImage, setSelectedImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);

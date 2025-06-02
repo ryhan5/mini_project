@@ -114,7 +114,17 @@ const QuickActions = () => (
   </div>
 );
 
-export default function CropAssistantPage() {
+
+// This function tells Next.js which paths to pre-render at build time
+export async function generateStaticParams() {
+  return languages.map((lang) => ({
+    lang: lang.code,
+  }));
+}
+
+// This ensures dynamic parameters are filled in at request time
+export const dynamicParams = true;
+export default function CropAssistantPage({ params: { lang } }) {
   const [activeTab, setActiveTab] = useState('ai-assistant');
 
   return (

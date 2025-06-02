@@ -14,7 +14,17 @@ const crops = [
   { name: 'Onion', avgYield: 25.0, avgPrice: 1500 },
 ];
 
-export default function RevenueCalculator() {
+
+// This function tells Next.js which paths to pre-render at build time
+export async function generateStaticParams() {
+  return languages.map((lang) => ({
+    lang: lang.code,
+  }));
+}
+
+// This ensures dynamic parameters are filled in at request time
+export const dynamicParams = true;
+export default function RevenueCalculator({ params: { lang } }) {
   const [area, setArea] = useState('');
   const [crop, setCrop] = useState(crops[0].name);
   const [customPrice, setCustomPrice] = useState('');

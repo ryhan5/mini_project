@@ -63,7 +63,17 @@ const resources = [
   }
 ];
 
-export default function KnowledgeHub() {
+
+// This function tells Next.js which paths to pre-render at build time
+export async function generateStaticParams() {
+  return languages.map((lang) => ({
+    lang: lang.code,
+  }));
+}
+
+// This ensures dynamic parameters are filled in at request time
+export const dynamicParams = true;
+export default function KnowledgeHub({ params: { lang } }) {
   return (
     <div className="w-full">
       {/* Hero Section */}

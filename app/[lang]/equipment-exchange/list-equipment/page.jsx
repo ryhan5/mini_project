@@ -1,4 +1,5 @@
 'use client';
+import { languages } from '@/config/languages';
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -9,7 +10,17 @@ import { Textarea } from '@/components/ui/textarea';
 import { Tractor, Droplets, Shovel, Upload, X } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-export default function ListEquipment() {
+
+// This function tells Next.js which paths to pre-render at build time
+export async function generateStaticParams() {
+  return languages.map((lang) => ({
+    lang: lang.code,
+  }));
+}
+
+// This ensures dynamic parameters are filled in at request time
+export const dynamicParams = true;
+export default function ListEquipment({ params: { lang } }) {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [equipmentType, setEquipmentType] = useState('tractor');
