@@ -26,7 +26,7 @@ export default function TestPageClient({ lang }) {
                 </p>
               ))}
               <p>
-                <a href="/test" className="text-red-600 hover:underline">
+                <a href="/invalid-lang/test" className="text-red-600 hover:underline">
                   Test Invalid Language (should redirect)
                 </a>
               </p>

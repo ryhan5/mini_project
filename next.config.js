@@ -64,7 +64,19 @@ const nextConfig = {
       // Redirect root to default locale
       {
         source: '/',
-        destination: `/${defaultLocale}`,
+        destination: `/${defaultLocale}/home`,
+        permanent: false,
+      },
+      // Handle invalid language test pages
+      {
+        source: '/:lang(test|te|ta|mr)/test',
+        has: [
+          {
+            type: 'host',
+            value: '(?<host>.*)',
+          },
+        ],
+        destination: `/${defaultLocale}/test`,
         permanent: false,
       },
       // Handle other paths
