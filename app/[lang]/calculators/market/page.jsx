@@ -49,17 +49,7 @@ const marketData = [
   },
 ];
 
-
-// This function tells Next.js which paths to pre-render at build time
-export async function generateStaticParams() {
-  return languages.map((lang) => ({
-    lang: lang.code,
-  }));
-}
-
-// This ensures dynamic parameters are filled in at request time
-export const dynamicParams = true;
-export default function MarketPriceAnalysis({ params: { lang } }) {
+export default function MarketPriceClient() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCrop, setSelectedCrop] = useState(marketData[0]);
 
