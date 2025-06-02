@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Filter, Tractor, Droplets, Tool } from "lucide-react";
+import { Search, Filter, Tractor, Droplets, Wrench } from "lucide-react";
 
 // Sample equipment data
 const equipmentList = [
@@ -47,7 +47,7 @@ const getEquipmentIcon = (type) => {
     case 'irrigation':
       return <Droplets className="h-5 w-5 text-blue-500" />;
     default:
-      return <Tool className="h-5 w-5 text-gray-500" />;
+      return <Wrench className="h-5 w-5 text-gray-500" />;
   }
 };
 
