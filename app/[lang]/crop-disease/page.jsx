@@ -1,21 +1,44 @@
 'use client';
 
+import { languages } from '@/config/languages';
+import dynamic from 'next/dynamic';
 import { useState, useRef } from 'react';
 import { Camera, Image as ImageIcon, Loader2, AlertCircle, CheckCircle, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 
+// Dynamically import the client component with SSR disabled
+const CropDiseaseClient = dynamic(
+  () => import('./CropDiseaseClient'),
+  { 
+    ssr: false,
+    loading: () => (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-600"></div>
+      </div>
+    )
+  }
+);
 
 // This function tells Next.js which paths to pre-render at build time
 export async function generateStaticParams() {
-  return languages.map((lang) => ({
+  return languages.map(lang => ({
     lang: lang.code,
   }));
 }
 
 // This ensures dynamic parameters are filled in at request time
 export const dynamicParams = true;
-export default function CropDiseaseDetection({ params: { lang } }) {
+
+export default function CropDiseasePage({ params: { lang } }) {
+  // Validate language
+  const isValidLanguage = languages.some(language => language.code === lang);
+  
+  if (!isValidLanguage) {
+    // This will be handled by the middleware, but we include it here for safety
+    return null;
+  }
+
   const [selectedImage, setSelectedImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
