@@ -1,7 +1,4 @@
-'use client';
-
 import dynamic from 'next/dynamic';
-import { Suspense } from 'react';
 import { languages } from '@/config/languages';
 
 // Dynamically import the client component with SSR disabled

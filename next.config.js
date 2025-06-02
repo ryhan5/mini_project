@@ -15,7 +15,7 @@ const nextConfig = {
   i18n: {
     locales,
     defaultLocale,
-    localeDetection: true,
+    localeDetection: false, // Disable automatic locale detection since we handle it in middleware
   },
   
   // Image optimization
