@@ -33,83 +33,10 @@ export default function DashboardPage({ params: { lang } }) {
     return null;
   }
 
-  DropletOff,
-  DropletFilled2,
-  DropletFilled,
-  DropletHalf2,
-  DropletHalfFilled,
-  DropletHalf,
-  Search,
-  Wrench,
-  XCircle,
-  ChevronRight,
-  Droplet as DropletIcon2,
-  Droplets as DropletsIcon2,
-  DropletFilled as DropletFilledIcon,
-  DropletHalf as DropletHalfIcon,
-  DropletHalf2 as DropletHalf2Icon,
-  DropletHalfFilled as DropletHalfFilledIcon,
-  DropletOff as DropletOffIcon2,
-  DropletFilled2 as DropletFilled2Icon
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Progress, ProgressIndicator } from '@/components/ui/progress';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
+  return <DashboardClient lang={lang} />;
+}
 
-// Weather icon component with more conditions and animations
-const WeatherIcon = ({ condition, className = 'h-6 w-6', size = 'md' }) => {
-  const sizeClasses = {
-    sm: 'h-5 w-5',
-    md: 'h-6 w-6',
-    lg: 'h-8 w-8',
-    xl: 'h-10 w-10'
-  };
-
-  const iconMap = {
-    sunny: <SunIcon className={`${sizeClasses[size]} text-yellow-400`} />,
-    'partly-cloudy': <CloudSun className={`${sizeClasses[size]} text-yellow-300`} />,
-    cloudy: <CloudyIcon className={`${sizeClasses[size]} text-gray-400`} />,
-    rain: <CloudRain className={`${sizeClasses[size]} text-blue-400`} />,
-    drizzle: <CloudDrizzle className={`${sizeClasses[size]} text-blue-300`} />,
-    thunderstorm: <CloudLightningIcon className={`${sizeClasses[size]} text-purple-400`} />,
-    snow: <CloudSnowIcon className={`${sizeClasses[size]} text-blue-100`} />,
-    mist: <CloudFog className={`${sizeClasses[size]} text-gray-300`} />,
-    clear: <SunDim className={`${sizeClasses[size]} text-yellow-300`} />,
-    sunrise: <SunriseIcon className={`${sizeClasses[size]} text-orange-300`} />,
-    sunset: <SunsetIcon className={`${sizeClasses[size]} text-purple-300`} />,
-    wind: <WindIcon className={`${sizeClasses[size]} text-blue-300`} />,
-    humidity: <DropletsIcon className={`${sizeClasses[size]} text-blue-300`} />,
-    pressure: <GaugeIcon className={`${sizeClasses[size]} text-indigo-300`} />,
-    'clear-night': <MoonStar className={`${sizeClasses[size]} text-indigo-300`} />
-  };
-
-  return (
-    <motion.div
-      initial={{ scale: 0.9, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      transition={{ duration: 0.3 }}
-      className={className}
-    >
-      {iconMap[condition] || <Cloud className={`${sizeClasses[size]} text-gray-400`} />}
-    </motion.div>
-  );
-};
-
-// Stat card component with animations and improved layout
-const StatCard = ({ title, value, icon, change, unit, description, loading = false, className = '' }) => {
-  const isPositive = change >= 0;
-  
-  return (
-    <motion.div 
-      whileHover={{ y: -2 }} 
-      className="h-full"
-    >
-      <Card className={`bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl overflow-hidden h-full transition-all duration-300 hover:border-white/20 ${className}`}>
-        <CardContent className="p-5">
-          <div className="flex items-start justify-between">
+// Rest of the code remains the same
             <div className="space-y-2">
               <p className="text-sm font-medium text-white/70 flex items-center">
                 {title}
