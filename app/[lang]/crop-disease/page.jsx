@@ -24,13 +24,20 @@ export async function generateStaticParams() {
 // This ensures dynamic parameters are filled in at request time
 export const dynamicParams = true;
 
-export default function CropDiseasePage({ params: { lang } }) {
+export default function CropDiseasePage({ params }) {
+  // Safely extract lang with a default value
+  const lang = params?.lang || 'en';
+  
   // Validate language
   const isValidLanguage = languages.some(language => language.code === lang);
   
   if (!isValidLanguage) {
     // This will be handled by the middleware, but we include it here for safety
-    return null;
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <p className="text-red-500">Invalid language code: {lang}</p>
+      </div>
+    );
   }
 
   return <CropDiseaseClient />;

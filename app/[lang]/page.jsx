@@ -1,24 +1,33 @@
-import { notFound } from 'next/navigation';
+'use client';
+
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { languages } from '@/config/languages';
 
 export default function LangPage({ params }) {
+  const router = useRouter();
   const { lang } = params;
   
-  // Validate that the requested language exists
+  // Validate language
   const isValidLanguage = languages.some(language => language.code === lang);
   
-  if (!isValidLanguage) {
-    notFound();
-  }
+  useEffect(() => {
+    if (!isValidLanguage) {
+      router.replace('/404');
+      return;
+    }
+    
+    // Redirect to the home page for this language
+    router.replace(`/${lang}/home`);
+  }, [lang, isValidLanguage, router]);
   
-  // This will be caught by the middleware which will handle the redirection to /{lang}/home
-  return null;
+  // Show loading state
+  return (
+    <div className="flex items-center justify-center min-h-screen">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-600"></div>
+    </div>
+  );
 }
 
-export function generateStaticParams() {
-  return languages.map(language => ({
-    lang: language.code
-  }));
-}
-
-export const dynamicParams = false;
+// Disable static generation for this page
+export const dynamic = 'force-dynamic';

@@ -1,13 +1,28 @@
+'use client';
+
+import { usePathname, useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 import { notFound } from 'next/navigation';
 import { languages } from '@/config/languages';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 
 export default function LanguageLayout({ children, params }) {
-  // Validate that the requested language exists
+  const pathname = usePathname();
+  const router = useRouter();
   const { lang } = params;
+  
+  // Validate that the requested language exists
   const isValidLanguage = languages.some(language => language.code === lang);
   
+  // Handle redirection for language root paths
+  useEffect(() => {
+    // If the URL is just /en or /fr, redirect to /en/home or /fr/home
+    if (pathname === `/${lang}`) {
+      router.replace(`/${lang}/home`);
+    }
+  }, [pathname, lang, router]);
+
   if (!isValidLanguage) {
     notFound();
   }
@@ -23,10 +38,5 @@ export default function LanguageLayout({ children, params }) {
   );
 }
 
-export function generateStaticParams() {
-  return languages.map((language) => ({
-    lang: language.code,
-  }));
-}
-
-export const dynamicParams = false;
+// Disable static generation for this route
+export const dynamic = 'force-dynamic';

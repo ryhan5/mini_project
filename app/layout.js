@@ -29,9 +29,6 @@ export default function RootLayout({ children, params }) {
   );
 }
 
-export async function generateStaticParams() {
-  const { languages } = require('@/config/languages');
-  return languages.map(lang => ({
-    lang: lang.code
-  }));
-}
+// Disable static generation for the root layout
+export const dynamic = 'force-dynamic';
+export const dynamicParams = true;

@@ -1,14 +1,23 @@
-import { redirect } from 'next/navigation';
-import { defaultLocale } from '@/config/languages';
+'use client';
+
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function RootPage() {
-  // Redirect to the default locale's home page
-  // This will be caught by the middleware which will handle the redirection
-  // to the preferred language or default language with /home
-  redirect(`/${defaultLocale}/home`);
+  const router = useRouter();
   
-  // This will never be reached, but Next.js requires a return statement
-  return null;
+  useEffect(() => {
+    // Redirect to the default language home page
+    router.replace('/en/home');
+  }, [router]);
+  
+  // Show loading state
+  return (
+    <div className="flex items-center justify-center min-h-screen">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-600"></div>
+    </div>
+  );
 }
 
-export const dynamic = 'force-dynamic'; // Ensure this page is always dynamic
+// Disable static generation for this page
+export const dynamic = 'force-dynamic';

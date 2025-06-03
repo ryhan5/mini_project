@@ -1,5 +1,16 @@
+// Server Component
 import { languages } from '@/config/languages';
 import dynamic from 'next/dynamic';
+
+// This function tells Next.js which paths to pre-render at build time
+export async function generateStaticParams() {
+  return languages.map(lang => ({
+    lang: lang.code,
+  }));
+}
+
+// This ensures dynamic parameters are filled in at request time
+export const dynamicParams = true;
 
 // Dynamically import the client component with SSR disabled
 const HomeClient = dynamic(
@@ -13,16 +24,6 @@ const HomeClient = dynamic(
     )
   }
 );
-
-// This function tells Next.js which paths to pre-render at build time
-export async function generateStaticParams() {
-  return languages.map(lang => ({
-    lang: lang.code,
-  }));
-}
-
-// This ensures dynamic parameters are filled in at request time
-export const dynamicParams = true;
 
 export default function HomePage({ params: { lang } }) {
   // Validate language

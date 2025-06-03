@@ -1,5 +1,5 @@
 /** @type {import('next').NextConfig} */
-const { locales, defaultLocale } = require('./config/languages');
+const { languages, defaultLocale } = require('./config/languages.js');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -10,13 +10,6 @@ const nextConfig = {
   
   // Enable static exports for Vercel
   output: 'standalone',
-  
-  // Configure i18n
-  i18n: {
-    locales,
-    defaultLocale,
-    localeDetection: false, // Disable automatic locale detection since we handle it in middleware
-  },
   
   // Image optimization
   images: {
@@ -58,41 +51,8 @@ const nextConfig = {
     ];
   },
   
-  // Redirects configuration
-  async redirects() {
-    return [
-      // Redirect root to default locale
-      {
-        source: '/',
-        destination: `/${defaultLocale}/home`,
-        permanent: false,
-      },
-      // Handle invalid language test pages
-      {
-        source: '/:lang(test|te|ta|mr)/test',
-        has: [
-          {
-            type: 'host',
-            value: '(?<host>.*)',
-          },
-        ],
-        destination: `/${defaultLocale}/test`,
-        permanent: false,
-      },
-      // Handle other paths
-      {
-        source: '/:path*',
-        has: [
-          {
-            type: 'host',
-            value: '(?<host>.*)',
-          },
-        ],
-        destination: '/:path*',
-        permanent: false,
-      },
-    ];
-  },
+  // Removed redirects as they're now handled in middleware
+  // This prevents conflicts with our custom routing logic
 };
 
 module.exports = nextConfig;

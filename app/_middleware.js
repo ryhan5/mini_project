@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { languages } from './config/languages';
+import { languages } from '../config/languages';
 
 // Debug flag
 const DEBUG = true;
@@ -7,6 +7,8 @@ const DEBUG = true;
 const log = (...args) => {
   if (DEBUG) console.log('[Middleware]', ...args);
 };
+
+const PUBLIC_FILE = /^\.(?!.*\.[a-z0-9]+$).*/i;
 
 // Default language
 const DEFAULT_LANG = 'en';
@@ -18,8 +20,10 @@ const EXCLUDED_PATHS = [
   '/favicon.ico',
   '/images',
   '/fonts',
+  '/favicon',
   '/sitemap',
   '/robots.txt',
+  '/sitemap.xml',
   '/manifest.json',
   '/sw.js',
   '/workbox-*.js',
@@ -38,8 +42,8 @@ export function middleware(request) {
   
   log(`Processing request for: ${pathname}`);
   
-  // Skip excluded paths
-  if (EXCLUDED_PATHS.some(path => pathname.startsWith(path))) {
+  // Skip public files and excluded paths
+  if (PUBLIC_FILE.test(pathname) || EXCLUDED_PATHS.some(path => pathname.startsWith(path))) {
     log(`Skipping: ${pathname} (matches excluded paths)`);
     return NextResponse.next();
   }
