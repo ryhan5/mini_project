@@ -2,12 +2,12 @@ import { languages } from '@/config/languages';
 import dynamic from 'next/dynamic';
 
 // Dynamically import the client component with SSR disabled
-const KnowledgeHubClient = dynamic(
-  () => import('./KnowledgeHubClient'),
+const DashboardClient = dynamic(
+  () => import('./DashboardClient'),
   { 
     ssr: false,
     loading: () => (
-      <div className="flex items-center justify-center min-h-[60vh]">
+      <div className="flex items-center justify-center min-h-screen">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-600"></div>
       </div>
     )
@@ -24,7 +24,7 @@ export async function generateStaticParams() {
 // This ensures dynamic parameters are filled in at request time
 export const dynamicParams = true;
 
-export default function KnowledgeHubPage({ params: { lang } }) {
+export default function DashboardPage({ params: { lang } }) {
   // Validate language
   const isValidLanguage = languages.some(language => language.code === lang);
   
@@ -33,5 +33,5 @@ export default function KnowledgeHubPage({ params: { lang } }) {
     return null;
   }
 
-  return <KnowledgeHubClient />;
+  return <DashboardClient lang={lang} />;
 }

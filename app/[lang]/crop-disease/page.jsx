@@ -35,4 +35,3 @@ export default function CropDiseasePage({ params: { lang } }) {
 
   return <CropDiseaseClient />;
 }
-}

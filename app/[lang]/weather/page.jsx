@@ -1,246 +1,37 @@
-'use client';
-
-import { useState, useEffect } from 'react';
 import { languages } from '@/config/languages';
-import { 
-  CloudRain, 
-  Sun, 
-  Cloud, 
-  CloudLightning, 
-  CloudSnow, 
-  Droplets, 
-  Wind, 
-  Thermometer, 
-  Sunrise, 
-  Sunset, 
-  Droplet, 
-  Wind as WindIcon,
-  CloudSun,
-  DropletOff
-} from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Progress } from '@/components/ui/progress';
+import dynamic from 'next/dynamic';
 
-const WeatherIcon = ({ condition, className = '' }) => {
-  const iconMap = {
-    'clear': <Sun className={className} />,
-    'sunny': <Sun className={className} />,
-    'partly-cloudy': <CloudSun className={className} />,
-    'cloudy': <Cloud className={className} />,
-    'overcast': <Cloud className={className} />, // Using Cloud as fallback for overcast
-    'fog': <Cloud className={className} />, // Using Cloud as fallback for fog
-    'haze': <Cloud className={className} />, // Using Cloud as fallback for haze
-    'rain': <CloudRain className={className} />,
-    'drizzle': <CloudRain className={className} />, // Using CloudRain as fallback for drizzle
-    'thunderstorm': <CloudLightning className={className} />,
-    'snow': <CloudSnow className={className} />,
-    'sleet': <CloudSnow className={className} />, // Using CloudSnow as fallback for sleet
-    'hail': <CloudSnow className={className} /> // Using CloudSnow as fallback for hail
-  };
-
-  return iconMap[condition] || <Sun className={className} />;
-};
-
-const getIrrigationRecommendation = (weather, soilMoisture) => {
-  if (weather.precipitation > 70) return 'No irrigation needed - Sufficient rainfall expected';
-  if (weather.temp > 30 && weather.humidity < 50) return 'Irrigation recommended - High temperature and low humidity';
-  if (soilMoisture < 30) return 'Irrigation needed - Low soil moisture';
-  if (soilMoisture < 60) return 'Light irrigation recommended - Moderate soil moisture';
-  return 'No irrigation needed - Adequate soil moisture';
-};
-
-const getSoilMoistureLevel = (moisture) => {
-  if (moisture < 25) return { level: 'Very Dry', color: 'bg-amber-800' };
-  if (moisture < 50) return { level: 'Dry', color: 'bg-amber-500' };
-  if (moisture < 75) return { level: 'Ideal', color: 'bg-green-500' };
-  return { level: 'Wet', color: 'bg-blue-500' };
-};
-
-const getEvapotranspirationRate = (temp, humidity, wind) => {
-  // Simplified calculation - in a real app, use the FAO Penman-Monteith equation
-  return ((temp * 0.1) + (wind * 0.2) + ((100 - humidity) * 0.05)).toFixed(1);
-};
-
-const WeatherCard = ({ day, temp, condition, precipitation, wind, humidity, sunrise, sunset }) => {
-  return (
-    <Card className="h-full">
-      <CardHeader className="pb-2">
-        <CardTitle className="text-lg">{day}</CardTitle>
-        <div className="flex items-center justify-between">
-          <div className="text-4xl font-bold">{temp}°C</div>
-          <div className="text-4xl">
-            <WeatherIcon condition={condition} className="h-12 w-12 text-yellow-500" />
-          </div>
-        </div>
-        <p className="capitalize">{condition.replace('-', ' ')}</p>
-      </CardHeader>
-      <CardContent className="space-y-3">
-        <div className="flex items-center text-sm">
-          <Droplet className="h-4 w-4 mr-2 text-blue-500" />
-          <span>Precipitation: {precipitation}%</span>
-        </div>
-        <div className="flex items-center text-sm">
-          <WindIcon className="h-4 w-4 mr-2 text-blue-400" />
-          <span>Wind: {wind} km/h</span>
-        </div>
-        <div className="flex items-center text-sm">
-          <Droplets className="h-4 w-4 mr-2 text-blue-300" />
-          <span>Humidity: {humidity}%</span>
-        </div>
-        <div className="flex items-center justify-between pt-2 text-xs text-gray-500 border-t">
-          <div className="flex items-center">
-            <Sunrise className="h-4 w-4 mr-1" />
-            <span>{sunrise}</span>
-          </div>
-          <div className="flex items-center">
-            <Sunset className="h-4 w-4 mr-1" />
-            <span>{sunset}</span>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  );
-};
-
-const HourlyForecast = ({ hours }) => {
-  return (
-    <div className="flex space-x-4 overflow-x-auto pb-4 -mx-4 px-4">
-      {hours.map((hour, index) => (
-        <div key={index} className="flex flex-col items-center min-w-[60px] text-center">
-          <div className="text-sm font-medium">{hour.time}</div>
-          <div className="my-2">
-            <WeatherIcon condition={hour.condition} className="h-8 w-8 text-yellow-500" />
-          </div>
-          <div className="text-lg font-semibold">{hour.temp}°</div>
-          <div className="text-xs text-gray-500 mt-1">{hour.precipitation}%</div>
-        </div>
-      ))}
-    </div>
-  );
-};
-
-function WeatherPage() {
-  const [forecast, setForecast] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [location, setLocation] = useState('Farm Field');
-  const [soilMoisture, setSoilMoisture] = useState(45);
-  const [cropType, setCropType] = useState('wheat');
-  const [activeTab, setActiveTab] = useState('overview');
-  const [irrigationSchedule, setIrrigationSchedule] = useState([]);
-  
-  // Crop types with their specific water requirements
-  const cropData = {
-    wheat: { name: 'Wheat', waterRequirement: 'Medium', idealMoisture: { min: 40, max: 60 } },
-    rice: { name: 'Rice', waterRequirement: 'High', idealMoisture: { min: 60, max: 80 } },
-    corn: { name: 'Corn', waterRequirement: 'Medium-High', idealMoisture: { min: 45, max: 65 } },
-    cotton: { name: 'Cotton', waterRequirement: 'Medium', idealMoisture: { min: 35, max: 55 } },
-    sugarcane: { name: 'Sugarcane', waterRequirement: 'High', idealMoisture: { min: 50, max: 70 } },
-    vegetables: { name: 'Vegetables', waterRequirement: 'Medium-High', idealMoisture: { min: 45, max: 65 } }
-  };
-  
-  // Generate mock forecast data
-  const generateMockForecast = () => {
-    const now = new Date();
-    return {
-      current: {
-        temp: 28,
-        condition: 'partly-cloudy',
-        feelsLike: 30,
-        humidity: 65,
-        wind: 12,
-        precipitation: 20,
-        sunrise: '05:45 AM',
-        sunset: '07:15 PM',
-        uvIndex: 'Moderate',
-        visibility: '10 km'
-      },
-      hourly: Array.from({ length: 12 }, (_, i) => ({
-        time: `${(now.getHours() + i) % 24}:00`,
-        temp: Math.round(25 + Math.sin(i / 2) * 3),
-        condition: ['clear', 'partly-cloudy', 'rain'][Math.floor(Math.random() * 3)],
-        precipitation: Math.floor(Math.random() * 30)
-      })),
-      daily: [
-        { day: 'Today', temp: 28, condition: 'partly-cloudy', precipitation: 20, wind: 12, humidity: 65, sunrise: '05:45 AM', sunset: '07:15 PM' },
-        { day: 'Mon', temp: 30, condition: 'clear', precipitation: 10, wind: 10, humidity: 55, sunrise: '05:45 AM', sunset: '07:15 PM' },
-        { day: 'Tue', temp: 29, condition: 'rain', precipitation: 80, wind: 15, humidity: 85, sunrise: '05:45 AM', sunset: '07:15 PM' },
-        { day: 'Wed', temp: 27, condition: 'rain', precipitation: 70, wind: 18, humidity: 90, sunrise: '05:45 AM', sunset: '07:15 PM' },
-        { day: 'Thu', temp: 26, condition: 'cloudy', precipitation: 40, wind: 12, humidity: 75, sunrise: '05:45 AM', sunset: '07:15 PM' },
-        { day: 'Fri', temp: 28, condition: 'partly-cloudy', precipitation: 20, wind: 10, humidity: 65, sunrise: '05:45 AM', sunset: '07:15 PM' },
-        { day: 'Sat', temp: 29, condition: 'clear', precipitation: 10, wind: 8, humidity: 60, sunrise: '05:45 AM', sunset: '07:15 PM' },
-      ]
-    };
-  };
-
-  const generateIrrigationSchedule = (forecastData) => {
-    return forecastData.daily.map(day => ({
-      ...day,
-      needsIrrigation: day.precipitation < 30 && day.temp > 25,
-      recommendedAmount: Math.max(0, 10 - (day.precipitation / 10)).toFixed(1) + ' mm',
-      bestTime: '05:00 - 09:00 AM'
-    }));
-  };
-
-  // Initialize with mock data
-  useEffect(() => {
-    const loadData = async () => {
-      setLoading(true);
-      try {
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        const mockForecast = generateMockForecast();
-        setForecast(mockForecast);
-        
-        // Generate irrigation schedule after forecast is set
-        const schedule = generateIrrigationSchedule(mockForecast);
-        setIrrigationSchedule(schedule);
-      } catch (error) {
-        console.error('Error loading weather data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    loadData();
-  }, []); // Empty dependency array means this effect runs once on mount
-  
-  // Update irrigation schedule when weather data changes
-  useEffect(() => {
-    if (forecast) {
-      const schedule = generateIrrigationSchedule(forecast);
-      setIrrigationSchedule(schedule);
-    }
-  }, [forecast, soilMoisture]);
-
-  if (loading) {
-    return (
-      <div className="container mx-auto px-4 py-8 flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>
+// Dynamically import the client component with SSR disabled
+const WeatherClient = dynamic(
+  () => import('./WeatherClient'),
+  { 
+    ssr: false,
+    loading: () => (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-600"></div>
       </div>
-    );
+    )
   }
+);
 
-  if (!forecast) {
-    return (
-      <div className="container mx-auto px-4 py-8 text-center">
-        <p>Unable to load weather data. Please try again later.</p>
-        <Button onClick={() => window.location.reload()} className="mt-4">
-          Retry
-        </Button>
-      </div>
-    );
-  }
+// This function tells Next.js which paths to pre-render at build time
+export async function generateStaticParams() {
+  return languages.map(lang => ({
+    lang: lang.code,
+  }));
+}
 
-  // Calculate derived data
-  const soilMoistureData = getSoilMoistureLevel(soilMoisture);
-  const evapotranspiration = getEvapotranspirationRate(
-    forecast.current.temp, 
-    forecast.current.humidity, 
-    forecast.current.wind
-  );
+// This ensures dynamic parameters are filled in at request time
+export const dynamicParams = true;
+
+export default function WeatherPage({ params: { lang } }) {
+  // Validate language
+  const isValidLanguage = languages.some(language => language.code === lang);
   
-  const irrigationRecommendation = getIrrigationRecommendation(forecast.current, soilMoisture);
+  if (!isValidLanguage) {
+    // This will be handled by the middleware, but we include it here for safety
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-white">
@@ -257,37 +48,37 @@ function WeatherPage() {
           </div>
         </div>
       </div>
-      
+
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8 -mt-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-8">
           <TabsList className="grid w-full grid-cols-4 max-w-md mb-6 bg-green-50 p-1.5 rounded-xl border border-green-100 shadow-sm">
-            <TabsTrigger 
-              value="overview" 
+            <TabsTrigger
+              value="overview"
               className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${activeTab === 'overview' ? 'bg-white text-green-700 shadow-sm' : 'text-green-600 hover:bg-white/50'}`}
             >
               Overview
             </TabsTrigger>
-            <TabsTrigger 
-              value="forecast" 
+            <TabsTrigger
+              value="forecast"
               className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${activeTab === 'forecast' ? 'bg-white text-green-700 shadow-sm' : 'text-green-600 hover:bg-white/50'}`}
             >
               Forecast
             </TabsTrigger>
-            <TabsTrigger 
-              value="irrigation" 
+            <TabsTrigger
+              value="irrigation"
               className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${activeTab === 'irrigation' ? 'bg-white text-green-700 shadow-sm' : 'text-green-600 hover:bg-white/50'}`}
             >
               Irrigation
             </TabsTrigger>
-            <TabsTrigger 
-              value="soil" 
+            <TabsTrigger
+              value="soil"
               className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${activeTab === 'soil' ? 'bg-white text-green-700 shadow-sm' : 'text-green-600 hover:bg-white/50'}`}
             >
               Soil Health
             </TabsTrigger>
           </TabsList>
-          
+
           {/* Overview Tab */}
           <TabsContent value="overview" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -352,7 +143,7 @@ function WeatherPage() {
                       </p>
                     </div>
                   </div>
-                  
+
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm text-green-100">
                       <span>Soil Moisture</span>
@@ -362,7 +153,7 @@ function WeatherPage() {
                       <Progress value={soilMoisture} className="h-full bg-green-400" />
                     </div>
                   </div>
-                  
+
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm text-green-100">
                       <span>Evapotranspiration</span>
@@ -372,15 +163,15 @@ function WeatherPage() {
                       <Progress value={Math.min(100, evapotranspiration * 10)} className="h-full bg-blue-200" />
                     </div>
                   </div>
-                  
+
                   <p className="text-sm text-green-100 bg-white/10 p-3 rounded-lg">
                     {irrigationRecommendation}
                   </p>
                 </CardContent>
                 <CardFooter className="border-t border-white/10 pt-4">
-                  <Button 
-                    variant="outline" 
-                    className="w-full bg-white/10 hover:bg-white/20 text-white border-white/20 hover:border-white/40" 
+                  <Button
+                    variant="outline"
+                    className="w-full bg-white/10 hover:bg-white/20 text-white border-white/20 hover:border-white/40"
                     onClick={() => setActiveTab('irrigation')}
                   >
                     View Irrigation Schedule
@@ -388,7 +179,7 @@ function WeatherPage() {
                 </CardFooter>
               </Card>
             </div>
-            
+
             {/* Hourly Forecast */}
             <Card className="border-0 shadow-lg bg-white">
               <CardHeader>
@@ -413,7 +204,7 @@ function WeatherPage() {
                 </div>
               </CardContent>
             </Card>
-            
+
             {/* 7-Day Forecast */}
             <Card className="border-0 shadow-lg bg-white">
               <CardHeader>
@@ -439,7 +230,7 @@ function WeatherPage() {
               </CardContent>
             </Card>
           </TabsContent>
-          
+
           {/* Forecast Tab */}
           <TabsContent value="forecast" className="space-y-6">
             <Card className="border-0 shadow-lg bg-white">
@@ -450,7 +241,7 @@ function WeatherPage() {
               <CardContent>
                 <div className="space-y-6">
                   {forecast.daily.map((day, index) => (
-                    <WeatherCard 
+                    <WeatherCard
                       key={index}
                       day={day.day}
                       temp={day.temp}
@@ -466,7 +257,7 @@ function WeatherPage() {
               </CardContent>
             </Card>
           </TabsContent>
-          
+
           {/* Irrigation Tab */}
           <TabsContent value="irrigation" className="space-y-6">
             <Card className="border-0 shadow-lg bg-white">
@@ -520,7 +311,7 @@ function WeatherPage() {
                 </div>
               </CardContent>
             </Card>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Card className="border-0 shadow-lg bg-white">
                 <CardHeader>
@@ -534,7 +325,7 @@ function WeatherPage() {
                       Water your crops early in the morning (5-9 AM) to minimize evaporation and ensure optimal water absorption.
                     </p>
                   </div>
-                  
+
                   <div className="grid grid-cols-1 gap-4">
                     <div className="p-4 bg-green-50 rounded-lg">
                       <h4 className="font-medium text-green-800 mb-2">Water Conservation</h4>
@@ -544,7 +335,7 @@ function WeatherPage() {
                         <li>Water deeply but less frequently</li>
                       </ul>
                     </div>
-                    
+
                     <div className="p-4 bg-amber-50 rounded-lg">
                       <h4 className="font-medium text-amber-800 mb-2">Signs of Overwatering</h4>
                       <ul className="text-sm text-amber-700 space-y-1 list-disc pl-5">
@@ -556,7 +347,7 @@ function WeatherPage() {
                   </div>
                 </CardContent>
               </Card>
-              
+
               <Card className="border-0 shadow-lg bg-white">
                 <CardHeader>
                   <CardTitle>Water Usage</CardTitle>
@@ -570,7 +361,7 @@ function WeatherPage() {
               </Card>
             </div>
           </TabsContent>
-          
+
           {/* Soil Health Tab */}
           <TabsContent value="soil" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -598,13 +389,13 @@ function WeatherPage() {
                             <span>Wet</span>
                           </div>
                         </div>
-                        
+
                         <div className="space-y-2">
                           <h4 className="text-sm font-medium">Adjust Soil Moisture</h4>
                           <div className="flex items-center space-x-4">
-                            <Button 
-                              variant="outline" 
-                              size="sm" 
+                            <Button
+                              variant="outline"
+                              size="sm"
                               className="w-10 h-10 p-0 flex items-center justify-center rounded-full"
                               onClick={() => setSoilMoisture(Math.max(0, soilMoisture - 5))}
                               disabled={soilMoisture <= 0}
@@ -621,8 +412,8 @@ function WeatherPage() {
                                 className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-green-600"
                               />
                             </div>
-                            <Button 
-                              variant="outline" 
+                            <Button
+                              variant="outline"
                               size="sm"
                               className="w-10 h-10 p-0 flex items-center justify-center rounded-full"
                               onClick={() => setSoilMoisture(Math.min(100, soilMoisture + 5))}
@@ -634,7 +425,7 @@ function WeatherPage() {
                         </div>
                       </div>
                     </div>
-                    
+
                     <div>
                       <h3 className="text-lg font-medium mb-4">Soil Temperature</h3>
                       <div className="bg-blue-50 p-4 rounded-lg">
@@ -643,13 +434,13 @@ function WeatherPage() {
                           <span className="text-2xl font-bold text-gray-800">{forecast.current.temp}°C</span>
                         </div>
                         <div className="text-sm text-gray-600 mb-4">
-                          {forecast.current.temp < 10 
+                          {forecast.current.temp < 10
                             ? 'Soil is too cold for most crops'
                             : forecast.current.temp > 35
                             ? 'High soil temperature may stress plants'
                             : 'Ideal soil temperature for most crops'}
                         </div>
-                        
+
                         <div className="space-y-2">
                           <div className="flex justify-between text-sm">
                             <span className="text-gray-500">Min: {Math.max(0, forecast.current.temp - 5)}°C</span>
@@ -663,10 +454,10 @@ function WeatherPage() {
                           </div>
                         </div>
                       </div>
-                      
+
                       <div className="mt-6">
                         <h4 className="text-sm font-medium mb-2">Crop Selection</h4>
-                        <select 
+                        <select
                           className="w-full p-2 border rounded-md text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
                           value={cropType}
                           onChange={(e) => setCropType(e.target.value)}
@@ -692,7 +483,7 @@ function WeatherPage() {
                   </div>
                 </div>
               </Card>
-              
+
               <div className="space-y-6">
                 <Card className="border-0 shadow-lg bg-white">
                   <CardHeader>
@@ -706,21 +497,21 @@ function WeatherPage() {
                         Add compost or well-rotted manure to improve soil structure and water retention.
                       </p>
                     </div>
-                    
+
                     <div className="p-4 bg-green-50 rounded-lg">
                       <h4 className="font-medium text-green-800 mb-2">Cover Crops</h4>
                       <p className="text-sm text-green-700">
                         Plant cover crops like clover or vetch to prevent soil erosion and add nutrients.
                       </p>
                     </div>
-                    
+
                     <div className="p-4 bg-amber-50 rounded-lg">
                       <h4 className="font-medium text-amber-800 mb-2">Crop Rotation</h4>
                       <p className="text-sm text-amber-700">
                         Rotate crops to prevent nutrient depletion and reduce pest and disease buildup.
                       </p>
                     </div>
-                    
+
                     <div className="p-4 bg-purple-50 rounded-lg">
                       <h4 className="font-medium text-purple-800 mb-2">Soil Testing</h4>
                       <p className="text-sm text-purple-700">
@@ -729,7 +520,7 @@ function WeatherPage() {
                     </div>
                   </CardContent>
                 </Card>
-                
+
                 <Card className="border-0 shadow-lg bg-white">
                   <CardHeader>
                     <CardTitle>Recent Activity</CardTitle>
@@ -746,7 +537,7 @@ function WeatherPage() {
                         <p className="text-xs text-gray-400 mt-1">2 hours ago</p>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-start">
                       <div className="flex-shrink-0 h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center mr-3">
                         <Thermometer className="h-5 w-5 text-blue-600" />
@@ -757,7 +548,7 @@ function WeatherPage() {
                         <p className="text-xs text-gray-400 mt-1">5 hours ago</p>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-start">
                       <div className="flex-shrink-0 h-10 w-10 rounded-full bg-purple-100 flex items-center justify-center mr-3">
                         <CloudRain className="h-5 w-5 text-purple-600" />
@@ -776,28 +567,19 @@ function WeatherPage() {
         </Tabs>
       </div>
     </div>
-    );
+  );
 }
-// This function tells Next.js which paths to pre-render at build time
-export async function generateStaticParams() {
-  return languages.map((lang) => ({
-    lang: lang.code,
-  }));
-}
-
-// This ensures dynamic parameters are filled in at request time
-export const dynamicParams = true;
 
 export default function WeatherPageWrapper({ params: { lang } }) {
   // Validate language
-  const isValidLanguage = languages.some(language => language.code === lang);
-  
+  const isValidLanguage = languages.some((language) => language.code === lang);
+
   if (!isValidLanguage) {
     // This will be handled by the middleware, but we include it here for safety
     return null;
   }
-  
-  return <WeatherPage />;
+
+  return <WeatherClient />;
 }
 
 export { WeatherPage as default };

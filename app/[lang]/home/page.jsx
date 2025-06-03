@@ -1,36 +1,37 @@
-import Hero from '@/components/home/Hero';
-import QuickStats from '@/components/home/QuickStats';
-import DashboardOverview from '@/components/home/DashboardOverview';
-import SmartFarmingAssistant from '@/components/home/SmartFarmingAssistant';
-import DiseasePredictionCard from '@/components/home/DiseasePredictionCard';
-import FeaturedTools from '@/components/home/FeaturedTools';
+import { languages } from '@/config/languages';
+import dynamic from 'next/dynamic';
 
-export default function HomePage({ params }) {
-  const { lang } = params;
-  
-  return (
-    <div className="w-full">
-      <Hero lang={lang} />
-      <QuickStats lang={lang} />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-8">
-        <DashboardOverview lang={lang} />
-        
-        {/* Disease Prediction Section */}
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Quick Actions</h2>
-          <div className="grid md:grid-cols-2 gap-8 mb-12">
-            <DiseasePredictionCard lang={lang} />
-            <SmartFarmingAssistant lang={lang} />
-          </div>
-        </div>
-        
-        <FeaturedTools lang={lang} />
+// Dynamically import the client component with SSR disabled
+const HomeClient = dynamic(
+  () => import('./HomeClient'),
+  { 
+    ssr: false,
+    loading: () => (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-600"></div>
       </div>
-    </div>
-  );
+    )
+  }
+);
+
+// This function tells Next.js which paths to pre-render at build time
+export async function generateStaticParams() {
+  return languages.map(lang => ({
+    lang: lang.code,
+  }));
 }
 
-export function generateStaticParams() {
-  const { languages } = require('@/config/languages');
-  return languages.map(lang => ({ lang: lang.code }));
+// This ensures dynamic parameters are filled in at request time
+export const dynamicParams = true;
+
+export default function HomePage({ params: { lang } }) {
+  // Validate language
+  const isValidLanguage = languages.some(language => language.code === lang);
+  
+  if (!isValidLanguage) {
+    // This will be handled by the middleware, but we include it here for safety
+    return null;
+  }
+
+  return <HomeClient lang={lang} />;
 }

@@ -1,67 +1,38 @@
-'use client';
+import { languages } from '@/config/languages';
+import dynamic from 'next/dynamic';
 
-import { useState, useEffect } from 'react';
-import { useLanguage } from '@/context/LanguageContext';
-import { 
-  Activity, 
-  Droplet, 
-  Thermometer, 
-  Sun,
-  CloudSun,
-  CloudRain,
-  Bug, 
-  Wind, 
-  Calendar, 
-  AlertTriangle,
-  TrendingUp,
-  TrendingDown,
-  Leaf,
-  Cloud,
-  CloudDrizzle,
-  CloudLightning,
-  CloudSnow,
-  Cloudy,
-  SunDim,
-  Sunrise,
-  Sunset,
-  Wind as WindIcon,
-  Droplets,
-  Gauge,
-  BarChart2,
-  RefreshCw,
-  Plus,
-  Clock,
-  Calendar as CalendarIcon,
-  ArrowRight,
-  Droplets as WaterIcon,
-  Zap,
-  CheckCircle2,
-  AlertCircle,
-  Clock as ClockIcon,
-  CalendarDays,
-  ArrowRightCircle,
-  Droplet as RainIcon,
-  ThermometerSun,
-  Wind as WindSpeedIcon,
-  Droplet as HumidityIcon,
-  Sun as SunIcon,
-  Moon,
-  Cloudy as CloudyIcon,
-  CloudRainWind,
-  CloudLightning as CloudLightningIcon,
-  CloudSnow as CloudSnowIcon,
-  CloudFog,
-  CloudHail,
-  CloudSunRain,
-  CloudMoonRain,
-  CloudMoon,
-  MoonStar,
-  Sunrise as SunriseIcon,
-  Sunset as SunsetIcon,
-  Gauge as GaugeIcon,
-  Eye as VisibilityIcon,
-  Droplet as DropletIcon,
-  Droplets as DropletsIcon,
+// Dynamically import the client component with SSR disabled
+const DashboardClient = dynamic(
+  () => import('./DashboardClient'),
+  { 
+    ssr: false,
+    loading: () => (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-600"></div>
+      </div>
+    )
+  }
+);
+
+// This function tells Next.js which paths to pre-render at build time
+export async function generateStaticParams() {
+  return languages.map(lang => ({
+    lang: lang.code,
+  }));
+}
+
+// This ensures dynamic parameters are filled in at request time
+export const dynamicParams = true;
+
+export default function DashboardPage({ params: { lang } }) {
+  // Validate language
+  const isValidLanguage = languages.some(language => language.code === lang);
+  
+  if (!isValidLanguage) {
+    // This will be handled by the middleware, but we include it here for safety
+    return null;
+  }
+
   DropletOff,
   DropletFilled2,
   DropletFilled,
