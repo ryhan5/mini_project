@@ -37,33 +37,42 @@ export default function CropDiseaseClient() {
     setResult(null);
     
     try {
-      // Simulate API call (replace with actual API call)
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      const formData = new FormData();
+      formData.append('image', selectedImage);
       
-      // Mock response (replace with actual API response)
-      const mockResult = {
-        disease: 'Tomato Blight',
-        confidence: '85%',
-        description: 'A common fungal disease affecting tomato plants, causing dark spots on leaves and fruits.',
-        treatment: [
-          'Remove and destroy infected plant parts',
-          'Apply copper-based fungicides',
-          'Improve air circulation around plants',
-          'Water at the base to keep foliage dry'
+      // Replace this URL with your actual API endpoint
+      const response = await fetch('https://api.agrosarthi.com/analyze-crop', {
+        method: 'POST',
+        body: formData,
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to analyze image');
+      }
+      
+      const result = await response.json();
+      
+      // Format the API response to match our expected format
+      const formattedResult = {
+        disease: result.disease_name || 'Unknown Disease',
+        confidence: result.confidence ? `${Math.round(result.confidence * 100)}%` : 'Unknown',
+        description: result.description || 'No description available',
+        treatment: result.treatment_plan || [
+          'No specific treatment information available',
+          'Consult with an agricultural expert for advice'
         ],
-        prevention: [
-          'Use disease-resistant varieties',
-          'Rotate crops annually',
-          'Avoid overhead watering',
-          'Space plants properly for good air flow'
+        prevention: result.prevention_tips || [
+          'Practice crop rotation',
+          'Maintain proper plant spacing',
+          'Monitor plants regularly for early signs of disease'
         ]
       };
       
-      setResult(mockResult);
+      setResult(formattedResult);
     } catch (error) {
       console.error('Error analyzing image:', error);
       setResult({
-        error: 'Failed to analyze the image. Please try again.'
+        error: 'Failed to analyze the image. Please ensure the image is clear and try again.'
       });
     } finally {
       setIsAnalyzing(false);
