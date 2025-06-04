@@ -23,14 +23,14 @@ import {
 import LanguageSelector from '@/components/LanguageSelector';
 
 const navigation = [
-  { name: 'home', href: '/', icon: Home },
-  { name: 'weather', href: '/weather', icon: CloudSun },
-  { name: 'cropCalendar', href: '/crop-calendar', icon: Calendar },
-  { name: 'cropAssistant', href: '/crop-assistant', icon: Bot },
-  { name: 'calculators', href: '/calculators', icon: Calculator },
-  { name: 'equipmentExchange', href: '/equipment-exchange', icon: Tractor },
-  { name: 'knowledgeHub', href: '/knowledge-hub', icon: Book },
-  { name: 'dashboard', href: '/dashboard', icon: LayoutDashboard, protected: true }
+  { name: 'Home', href: '/', icon: Home },
+  { name: 'Weather', href: '/weather', icon: CloudSun },
+  { name: 'CropCalendar', href: '/crop-calendar', icon: Calendar },
+  { name: 'Crop AI', href: '/crop-assistant', icon: Bot },
+  { name: 'FarmingCalculators', href: '/calculators', icon: Calculator },
+  { name: 'Equipments', href: '/equipment-exchange', icon: Tractor },
+  { name: 'AgriculturalGuides', href: '/knowledge-hub', icon: Book },
+  { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard, protected: true }
 ];
 
 export default function Header() {
