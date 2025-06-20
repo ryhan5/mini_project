@@ -1,6 +1,7 @@
 'use client';
 
 import { Suspense, useState } from 'react';
+import { t } from '@/translations';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, Check, Leaf, Sun, Droplet, Calendar, BarChart2, Users, Zap, Shield, TrendingUp } from 'lucide-react';
 import Hero from '@/components/home/Hero';
@@ -49,7 +50,8 @@ const testimonials = [
   },
 ];
 
-const HomeClient = ({ lang }) => {
+const HomeClient = ({ lang = 'en' }) => {
+  // Using the t function from translations
   const [email, setEmail] = useState('');
   const [isSubscribed, setIsSubscribed] = useState(false);
 
@@ -72,9 +74,9 @@ const HomeClient = ({ lang }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-20">
         {/* Features Grid */}
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-gray-900 sm:text-4xl mb-4">Everything You Need for Smart Farming</h2>
+          <h2 className="text-3xl font-bold text-gray-900 sm:text-4xl mb-4">{t('home.everythingYouNeed', lang)}</h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-12">
-            Our comprehensive suite of tools helps you make data-driven decisions for better farm management.
+            {t('home.comprehensiveTools', lang)}
           </p>
           
           <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
@@ -104,9 +106,9 @@ const HomeClient = ({ lang }) => {
         {/* Quick Actions */}
         <div>
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 sm:text-4xl mb-4">Quick Actions</h2>
+            <h2 className="text-3xl font-bold text-gray-900 sm:text-4xl mb-4">{t('home.quickActions', lang)}</h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Get instant insights and take action right from your dashboard.
+              {t('home.getInstantInsights', lang)}
             </p>
           </div>
           
@@ -123,7 +125,7 @@ const HomeClient = ({ lang }) => {
         {/* Testimonials */}
         <div className="bg-gray-50 rounded-2xl p-12">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl font-bold text-gray-900 sm:text-4xl mb-12">Trusted by Farmers Across India</h2>
+            <h2 className="text-3xl font-bold text-gray-900 sm:text-4xl mb-12">{t('home.trustedByFarmers', lang)}</h2>
             <div className="grid md:grid-cols-2 gap-8">
               {testimonials.map((testimonial, index) => (
                 <motion.div

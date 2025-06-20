@@ -124,9 +124,33 @@ const QuickActions = () => {
   );
 };
 
+// Language-specific suggested questions
+const suggestedQuestions = {
+  en: [
+    'How to prepare soil for rice cultivation?',
+    'Best organic fertilizers for tomato plants',
+    'How to control common wheat diseases?',
+    'When to harvest potatoes?'
+  ],
+  hi: [
+    'चावल की खेती के लिए मिट्टी कैसे तैयार करें?',
+    'टमाटर के पौधों के लिए सबसे अच्छे जैविक उर्वरक',
+    'गेहूं में आम बीमारियों को कैसे नियंत्रित करें?',
+    'आलू की कटाई कब करें?'
+  ],
+  bn: [
+    'ধান চাষের জন্য মাটি কীভাবে প্রস্তুত করবেন?',
+    'টমেটো গাছের জন্য সেরা জৈব সারের নাম',
+    'গমের সাধারণ রোগ কীভাবে নিয়ন্ত্রণ করবেন?',
+    'আলু কখন তুলবেন?'
+  ]
+};
+
 export default function CropAssistantClient() {
   const [activeTab, setActiveTab] = useState('assistant');
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState('en');
+  const [selectedQuestion, setSelectedQuestion] = useState('');
 
   const features = [
     {
@@ -145,6 +169,8 @@ export default function CropAssistantClient() {
       description: 'Receive personalized farming advice based on your location and crop type.'
     }
   ];
+  
+  const currentQuestions = suggestedQuestions[selectedLanguage] || suggestedQuestions.en;
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -164,12 +190,40 @@ export default function CropAssistantClient() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
           <Tabs defaultValue="assistant" onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-2 mb-6">
-              <TabsTrigger value="assistant">AI Assistant</TabsTrigger>
-              <TabsTrigger value="disease">Crop Disease Detection</TabsTrigger>
-            </TabsList>
+            <div className="flex justify-between items-center mb-6">
+              <TabsList className="grid w-full max-w-xs grid-cols-2">
+                <TabsTrigger value="assistant">AI Assistant</TabsTrigger>
+                <TabsTrigger value="disease">Crop Disease Detection</TabsTrigger>
+              </TabsList>
+              <div className="flex items-center space-x-2">
+                <span className="text-sm text-gray-500">Language:</span>
+                <select 
+                  value={selectedLanguage}
+                  onChange={(e) => setSelectedLanguage(e.target.value)}
+                  className="text-sm border rounded-md px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-500"
+                >
+                  <option value="en">English</option>
+                  <option value="hi">हिंदी</option>
+                  <option value="bn">বাংলা</option>
+                </select>
+              </div>
+            </div>
+            
             <TabsContent value="assistant">
-              <ChatInterface />
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6">
+                  {currentQuestions.map((question, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setSelectedQuestion(question)}
+                      className="text-left p-4 border rounded-lg hover:bg-gray-50 transition-colors text-sm hover:border-green-300 hover:text-green-700"
+                    >
+                      {question}
+                    </button>
+                  ))}
+                </div>
+                <ChatInterface initialMessage={selectedQuestion} />
+              </div>
             </TabsContent>
             <TabsContent value="disease">
               <CropDiseaseDetection />

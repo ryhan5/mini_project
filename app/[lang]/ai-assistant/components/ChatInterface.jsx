@@ -54,8 +54,8 @@ const suggestedQuestions = {
   ]
 };
 
-export default function ChatInterface() {
-  const [message, setMessage] = useState('');
+export default function ChatInterface({ initialMessage }) {
+  const [message, setMessage] = useState(initialMessage || '');
   const [selectedLanguage, setSelectedLanguage] = useState('en');
   const [selectedAnalysis, setSelectedAnalysis] = useState('soil');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -74,10 +74,8 @@ export default function ChatInterface() {
   const fileInputRef = useRef(null);
   const messagesEndRef = useRef(null);
 
-  // Scroll to bottom of messages
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+  // Removed auto-scrolling behavior
+  // Manual scroll is now handled by the user
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
@@ -187,6 +185,17 @@ export default function ChatInterface() {
       setIsAnalyzing(false);
     }
   };
+
+  // Update message when initialMessage changes
+  useEffect(() => {
+    if (initialMessage !== undefined) {
+      setMessage(initialMessage);
+      // Auto-focus the input after setting the question
+      setTimeout(() => {
+        document.querySelector('textarea')?.focus();
+      }, 0);
+    }
+  }, [initialMessage]);
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
@@ -455,7 +464,7 @@ export default function ChatInterface() {
                 type="submit"
                 size="icon"
                 className="h-12 w-12 rounded-xl bg-green-600 hover:bg-green-700 flex-shrink-0"
-                disabled={!message.trim() && !selectedImage}
+                disabled={!message?.trim() && !selectedImage}
               >
                 <Send className="h-5 w-5" />
               </Button>

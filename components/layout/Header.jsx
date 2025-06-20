@@ -1,12 +1,12 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useLanguage } from '@/context/LanguageContext';
-import { t } from '@/translations';
+import { t } from '@/translations/index'; // Make sure to include /index
 import { 
   Menu, 
   X, 
@@ -18,19 +18,22 @@ import {
   LayoutDashboard, 
   Calendar,
   Tractor,
-  Leaf
+  Leaf,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
 import LanguageSelector from '@/components/LanguageSelector';
 
+// Navigation items with translation keys
 const navigation = [
-  { name: 'Home', href: '/', icon: Home },
-  { name: 'Weather', href: '/weather', icon: CloudSun },
-  { name: 'CropCalendar', href: '/crop-calendar', icon: Calendar },
-  { name: 'Crop AI', href: '/crop-assistant', icon: Bot },
-  { name: 'FarmingCalculators', href: '/calculators', icon: Calculator },
-  { name: 'Equipments', href: '/equipment-exchange', icon: Tractor },
-  { name: 'AgriculturalGuides', href: '/knowledge-hub', icon: Book },
-  { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard, protected: true }
+  { name: 'nav.home', href: '/home', icon: Home },
+  { name: 'nav.weather', href: '/weather', icon: CloudSun },
+  { name: 'nav.cropCalendar', href: '/crop-calendar', icon: Calendar },
+  { name: 'nav.cropAI', href: '/crop-assistant', icon: Bot },
+  { name: 'nav.calculators', href: '/calculators', icon: Calculator },
+  { name: 'nav.equipment', href: '/equipment-exchange', icon: Tractor },
+  { name: 'nav.guides', href: '/knowledge-hub', icon: Book },
+  { name: 'nav.dashboard', href: '/dashboard', icon: LayoutDashboard, protected: true }
 ];
 
 export default function Header() {
@@ -39,20 +42,37 @@ export default function Header() {
   const router = useRouter();
   const pathname = usePathname();
   
-  // Get the current path without the language prefix
-  const getLocalizedPath = (path) => {
+  // Memoize the current language to prevent unnecessary re-renders
+  const memoizedCurrentLanguage = useMemo(() => currentLanguage, [currentLanguage]);
+  
+  // Get the current path with the correct language prefix
+  const getLocalizedPath = useMemo(() => (path) => {
+    if (!path) return `/${memoizedCurrentLanguage}/home`;
+    
     // Remove any existing language prefix
     const pathWithoutLang = path.replace(/^\/(en|hi|bn|te|ta|mr)/, '');
+    // Ensure path starts with a slash and doesn't have double slashes
+    const cleanPath = pathWithoutLang.startsWith('/') ? pathWithoutLang : `/${pathWithoutLang}`;
     // Add current language prefix
-    return `/${currentLanguage}${pathWithoutLang}`;
-  };
+    return `/${memoizedCurrentLanguage}${cleanPath}`;
+  }, [memoizedCurrentLanguage]);
   
-  // Check if a navigation item is active
-  const isActive = (href) => {
+  // Memoize the active path check
+  const isActive = useMemo(() => (href) => {
+    if (!pathname) return false;
     const path = pathname.replace(/^\/(en|hi|bn|te|ta|mr)/, '');
     const hrefPath = href === '/' ? '/home' : href;
     return path === hrefPath || path.startsWith(`${hrefPath}/`);
-  };
+  }, [pathname]);
+  
+  // Memoize the navigation items with translated labels
+  const translatedNavigation = useMemo(() => 
+    navigation.map(item => ({
+      ...item,
+      label: t(item.name, memoizedCurrentLanguage) || item.name.replace('nav.', '')
+    })),
+    [memoizedCurrentLanguage]
+  );
 
   return (
     <header className="bg-white shadow-sm sticky top-0 z-50 border-b border-gray-100 w-full">
@@ -60,33 +80,41 @@ export default function Header() {
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <Link href="/" className="flex items-center group">
+              <Link href={getLocalizedPath('/home')} className="flex items-center group">
                 <div className="h-10 w-10 rounded-full bg-gradient-to-r from-green-600 to-emerald-500 flex items-center justify-center text-white font-bold text-lg group-hover:scale-105 transition-transform">
                   <Leaf className="h-5 w-5" />
                 </div>
-                <span className="ml-2 text-xl font-bold bg-gradient-to-r from-green-700 to-emerald-600 bg-clip-text text-transparent">Agrosarthi</span>
+                <span className="ml-2 text-xl font-bold bg-gradient-to-r from-green-700 to-emerald-600 bg-clip-text text-transparent">
+                  {t('app.name', currentLanguage) || 'Agrosarthi'}
+                </span>
               </Link>
             </div>
             <nav className="hidden lg:ml-8 lg:flex lg:space-x-1 overflow-x-auto">
               <div className="flex space-x-1">
-                {navigation.map((item) => (
-                  <Link
-                    key={item.name}
-                    href={getLocalizedPath(item.href)}
-                    className={cn(
-                      'inline-flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-green-700 hover:bg-green-50 transition-colors whitespace-nowrap',
-                      isActive(item.href) && 'bg-green-50 text-green-700 font-semibold',
-                      item.protected && 'text-purple-600 hover:text-purple-700'
-                    )}
-                  >
-                    {React.createElement(item.icon, { 
-                      className: cn("mr-1.5 h-4 w-4 flex-shrink-0", 
-                        isActive(item.href) ? 'opacity-100' : 'opacity-70'
-                      ) 
-                    })}
-                    {t(item.name, currentLanguage)}
-                  </Link>
-                ))}
+                {translatedNavigation.map((item) => {
+                  const active = isActive(item.href);
+                  return (
+                    <Link
+                      key={item.name}
+                      href={getLocalizedPath(item.href)}
+                      className={cn(
+                        'inline-flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap',
+                        active 
+                          ? 'bg-green-50 text-green-700 font-semibold' 
+                          : 'text-gray-600 hover:text-green-700 hover:bg-green-50',
+                        item.protected && 'text-purple-600 hover:text-purple-700'
+                      )}
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      {React.createElement(item.icon, { 
+                        className: cn("mr-1.5 h-4 w-4 flex-shrink-0", 
+                          active ? 'opacity-100' : 'opacity-70'
+                        ) 
+                      })}
+                      {item.label}
+                    </Link>
+                  );
+                })}
               </div>
             </nav>
           </div>
@@ -95,54 +123,69 @@ export default function Header() {
           </div>
           <div className="flex items-center space-x-2 lg:hidden">
             <LanguageSelector />
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-gray-600 hover:bg-green-50 hover:text-green-700"
+            <button
+              type="button"
+              className="inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none transition-colors"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-expanded={mobileMenuOpen}
+              aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
             >
-              <span className="sr-only">Open main menu</span>
+              <span className="sr-only">{mobileMenuOpen ? 'Close menu' : 'Open menu'}</span>
               {mobileMenuOpen ? (
-                <X className="h-5 w-5" aria-hidden="true" />
+                <X className="block h-6 w-6" aria-hidden="true" />
               ) : (
-                <Menu className="h-5 w-5" aria-hidden="true" />
+                <Menu className="block h-6 w-6" aria-hidden="true" />
               )}
-            </Button>
+            </button>
           </div>
         </div>
       </div>
 
       {/* Mobile menu */}
-      <div className={cn('lg:hidden bg-white shadow-lg', mobileMenuOpen ? 'block' : 'hidden')}>
-        <div className="pt-2 pb-3 space-y-1 max-h-[calc(100vh-4rem)] overflow-y-auto">
-          {navigation.map((item) => (
-            <Link
-              key={item.name}
-              href={getLocalizedPath(item.href)}
-              className={cn(
-                'block px-4 py-3 text-base font-medium hover:bg-gray-50 transition-colors',
-                isActive(item.href) 
-                  ? 'bg-green-50 text-green-700 border-l-4 border-green-600'
-                  : 'text-gray-700',
-                item.protected && 'text-purple-600 hover:bg-purple-50'
-              )}
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              <div className="flex items-center">
-                {React.createElement(item.icon, { 
-                  className: cn("mr-3 h-5 w-5 flex-shrink-0",
-                    isActive(item.href) ? 'opacity-100' : 'opacity-70'
-                  ) 
-                })}
-                <span>{t(item.name, currentLanguage)}</span>
-                {item.protected && (
-                  <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-                    Pro
+      <div 
+        className={cn(
+          'lg:hidden transition-all duration-300 ease-in-out overflow-hidden',
+          mobileMenuOpen ? 'max-h-screen' : 'max-h-0'
+        )}
+        aria-hidden={!mobileMenuOpen}
+      >
+        <div className="pt-2 pb-4 space-y-1 px-2">
+          {translatedNavigation.map((item) => {
+            const active = isActive(item.href);
+            return (
+              <Link
+                key={item.name}
+                href={getLocalizedPath(item.href)}
+                className={cn(
+                  'group flex items-center px-3 py-3 rounded-md text-base font-medium transition-colors',
+                  active
+                    ? 'bg-green-50 text-green-700 font-semibold'
+                    : 'text-gray-600 hover:text-green-700 hover:bg-green-50',
+                  item.protected && 'text-purple-600 hover:text-purple-700'
+                )}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <span className={cn(
+                  'mr-3 rounded-md p-1.5',
+                  active 
+                    ? 'bg-green-100 text-green-600' 
+                    : 'bg-gray-100 text-gray-500 group-hover:bg-green-50 group-hover:text-green-600'
+                )}>
+                  {React.createElement(item.icon, { 
+                    className: cn("h-5 w-5"),
+                    'aria-hidden': 'true'
+                  })}
+                </span>
+                <span>{item.label}</span>
+                
+                {active && (
+                  <span className="ml-auto inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                    {t('common.current', memoizedCurrentLanguage) || 'Current'}
                   </span>
                 )}
-              </div>
-            </Link>
-          ))}
+              </Link>
+            );
+          })}
         </div>
       </div>
     </header>

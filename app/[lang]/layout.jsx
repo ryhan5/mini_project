@@ -4,6 +4,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { notFound } from 'next/navigation';
 import Head from 'next/head';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import { languages } from '@/config/languages';
 import { getPageMetadata } from '@/config/metadata';
 import { useLanguage } from '@/context/LanguageContext';
@@ -48,13 +49,15 @@ export default function LanguageLayout({ children, params }) {
         <meta property="og:title" content={metadata.openGraph.title} />
         <meta property="og:description" content={metadata.openGraph.description} />
         <meta property="og:image" content="/images/og-image.jpg" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
         
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:url" content={`https://agrosarthi.com${pathname}`} />
-        <meta name="twitter:title" content={metadata.twitter.title} />
-        <meta name="twitter:description" content={metadata.twitter.description} />
-        <meta name="twitter:image" content="/images/twitter-card.jpg" />
+        <meta name="twitter:title" content={metadata.openGraph.title} />
+        <meta name="twitter:description" content={metadata.openGraph.description} />
+        <meta name="twitter:image" content="/images/og-image.jpg" />
         
         {/* Favicon */}
         <link rel="icon" href="/favicon.ico" />
@@ -64,15 +67,17 @@ export default function LanguageLayout({ children, params }) {
         <link rel="manifest" href="/site.webmanifest" />
       </Head>
       
-      <div className="flex flex-col min-h-screen bg-gray-50">
-        <Header />
-        <main className="flex-1">
-          {/* Page title for screen readers */}
-          <h1 className="sr-only">{metadata.title}</h1>
-          {children}
-        </main>
-        <Footer />
-      </div>
+      <TooltipProvider>
+        <div className="flex flex-col min-h-screen bg-gray-50">
+          <Header />
+          <main className="flex-1">
+            {/* Page title for screen readers */}
+            <h1 className="sr-only">{metadata.title}</h1>
+            {children}
+          </main>
+          <Footer />
+        </div>
+      </TooltipProvider>
     </>
   );
 }

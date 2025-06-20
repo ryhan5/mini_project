@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import { ThemeProvider } from '@/components/providers/ThemeProvider';
 import { Toaster } from '@/components/ui/toaster';
 import { LanguageProvider } from '@/context/LanguageContext';
+import { languages, defaultLocale } from '@/config/languages';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -11,9 +12,23 @@ export const metadata = {
   description: 'Make data-driven decisions for your farm with our comprehensive suite of tools',
 };
 
+// Generate static params for all supported languages
+export function generateStaticParams() {
+  return languages.map((lang) => ({
+    lang: lang.code,
+  }));
+}
+
 export default function RootLayout({ children, params }) {
-  // Default to English if no language is specified
-  const lang = params?.lang || 'en';
+  // Get language from params or default to 'en'
+  const lang = params?.lang || defaultLocale;
+  
+  // Validate the language
+  const isValidLanguage = languages.some(l => l.code === lang);
+  if (!isValidLanguage) {
+    // If invalid language, default to English
+    params.lang = defaultLocale;
+  }
   
   return (
     <html lang={lang} suppressHydrationWarning>
@@ -32,3 +47,5 @@ export default function RootLayout({ children, params }) {
 // Disable static generation for the root layout
 export const dynamic = 'force-dynamic';
 export const dynamicParams = true;
+
+export const runtime = 'nodejs';

@@ -38,28 +38,23 @@ export function LanguageProvider({ children }) {
   const changeLanguage = (langCode) => {
     if (langCode === currentLanguage) return;
     
+    // Update the state and local storage
     setCurrentLanguage(langCode);
     localStorage.setItem('preferredLanguage', langCode);
     
-    // Update the URL with the new language
-    const pathParts = pathname.split('/').filter(Boolean);
-    const currentLang = pathParts[0];
-    const isLangInPath = languages.some(lang => lang.code === currentLang);
+    // Get current path without language prefix
+    const pathWithoutLang = pathname.split('/').filter((part, i) => {
+      // Remove the language part from the path
+      if (i === 0 && languages.some(lang => lang.code === part)) {
+        return false;
+      }
+      return Boolean(part);
+    }).join('/');
     
-    let newPath;
-    if (isLangInPath) {
-      // Replace the language code in the URL
-      newPath = `/${langCode}${pathname.substring(currentLang.length + 1)}`;
-    } else {
-      // Add the language code to the URL
-      newPath = `/${langCode}${pathname}`;
-    }
+    // Construct new path with the new language
+    const newPath = `/${langCode}${pathWithoutLang ? `/${pathWithoutLang}` : '/home'}`;
     
-    // Ensure we have a valid path
-    if (!newPath.endsWith('/')) {
-      newPath += '/';
-    }
-    
+    // Use replace to avoid adding to browser history
     router.replace(newPath);
   };
 

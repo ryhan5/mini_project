@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { languages } from './config/languages';
+import { languages, defaultLocale } from './config/languages';
 
 // Debug flag
 const DEBUG = true;
@@ -7,9 +7,6 @@ const DEBUG = true;
 const log = (...args) => {
   if (DEBUG) console.log('[Middleware]', ...args);
 };
-
-// Default language
-const DEFAULT_LANG = 'en';
 
 // List of paths that should be handled by Next.js directly
 const EXCLUDED_PATHS = [
@@ -44,40 +41,32 @@ export function middleware(request) {
     return NextResponse.next();
   }
   
-  // Handle root path - redirect to /en/home
-  if (pathname === '/' || pathname === '') {
-    const newUrl = new URL(`/${DEFAULT_LANG}/home`, origin);
-    log(`Redirecting root path to: ${newUrl.toString()}`);
-    return NextResponse.redirect(newUrl, 307);
-  }
-
-  // Remove trailing slashes
-  const cleanPath = pathname.endsWith('/') ? pathname.slice(0, -1) : pathname;
+  // Split pathname into parts
+  const pathParts = pathname.split('/').filter(Boolean);
+  const maybeLang = pathParts[0];
   
-  // Check if the first segment is a valid language code
-  const segments = cleanPath.split('/').filter(Boolean);
-  const firstSegment = segments[0];
+  // Check if the first part is a valid language code
+  const isValidLang = languages.some(lang => lang.code === maybeLang);
   
-  // Handle language root paths (e.g., /en -> /en/home)
-  if (segments.length === 1 && languages.some(lang => lang.code === firstSegment)) {
-    const newUrl = new URL(`/${firstSegment}/home`, origin);
-    log(`Redirecting language root to: ${newUrl.toString()}`);
-    return NextResponse.redirect(newUrl, 307);
-  }
-  
-  // Handle language-less paths (e.g., /home -> /en/home)
-  if (firstSegment && !languages.some(lang => lang.code === firstSegment)) {
-    // Check if the path is a valid path that should have a language prefix
-    if (VALID_PATHS.some(validPath => cleanPath.startsWith(validPath))) {
-      const newUrl = new URL(`/${DEFAULT_LANG}${cleanPath}`, origin);
-      log(`Adding default locale to path: ${newUrl.toString()}`);
+  // If it's a valid language, continue with the request
+  if (isValidLang) {
+    log(`Valid language detected: ${maybeLang}`);
+    
+    // If this is just the language code (e.g., /en), redirect to /en/home
+    if (pathParts.length === 1) {
+      const newUrl = new URL(`/${maybeLang}/home`, origin);
+      log(`Redirecting to home: ${newUrl.toString()}`);
       return NextResponse.redirect(newUrl, 307);
     }
+    
+    return NextResponse.next();
   }
   
-  // Continue with the request if no redirection is needed
-  log(`Passing through: ${pathname}`);
-  return NextResponse.next();
+  // If no language prefix, redirect to default language with the same path
+  const newPath = `/${defaultLocale}${pathname === '/' ? '/home' : pathname}`;
+  const newUrl = new URL(newPath, origin);
+  log(`Adding default language prefix: ${newUrl.toString()}`);
+  return NextResponse.redirect(newUrl, 307);
 }
 
 export const config = {
