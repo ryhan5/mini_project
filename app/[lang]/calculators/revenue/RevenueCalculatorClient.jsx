@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion'; // Changed from '@/lib/motion'
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -13,6 +14,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { 
   Calculator, 
   ArrowRight, 
+  ArrowLeft,
   Info, 
   Save, 
   Loader2, 
@@ -20,7 +22,7 @@ import {
   TrendingUp,
   DollarSign,
   Package,
-  AlertCircle,
+  AlertCircle, 
   HelpCircle
 } from 'lucide-react';
 
@@ -129,7 +131,7 @@ const defaultFormData = {
   notes: ''
 };
 
-function RevenueCalculatorClient() {
+function RevenueCalculatorClient({ lang = 'en' }) {
   const [formData, setFormData] = useState({
     ...defaultFormData,
     crop: crops[0].name,
@@ -351,6 +353,19 @@ function RevenueCalculatorClient() {
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      <div className="container mx-auto px-4 py-8">
+        <div className="mb-6">
+          <Link href="/[lang]/calculators" as={`/${lang}/calculators`} className="inline-flex items-center text-sm text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-200 transition-colors mb-4">
+            <ArrowLeft className="w-4 h-4 mr-1" />
+            Back to Calculators
+          </Link>
+        </div>
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-green-800 dark:text-green-200 mb-2">Revenue Calculator</h1>
+          <p className="text-gray-600 dark:text-gray-300">Estimate your farm's potential revenue based on crop selection and market conditions</p>
         </div>
       </div>
 

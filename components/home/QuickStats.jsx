@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import { TrendingUp, CloudSun, CalendarDays, ArrowUpRight, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
+import { t } from '@/translations';
 
 const stats = [
   {
@@ -54,12 +55,24 @@ const stats = [
   },
 ];
 
-export default function QuickStats() {
+const QuickStats = ({ lang = 'en' }) => {
+  const getTranslatedStats = () => {
+    return stats.map(stat => ({
+      ...stat,
+      title: t(`home.quickStats.${stat.id}.title`, lang) || stat.title,
+      description: t(`home.quickStats.${stat.id}.description`, lang) || stat.description,
+      viewDetails: t('common.viewDetails', lang) || 'View Details',
+      trendingText: t('home.quickStats.trending', lang) || 'Trending'
+    }));
+  };
+  
+  const translatedStats = getTranslatedStats();
+
   return (
     <div className="bg-white/80 backdrop-blur-sm border-b border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {stats.map((stat, index) => (
+          {translatedStats.map((stat, index) => (
             <Link href={stat.href} key={stat.id} className="group block">
               <motion.div
                 className={cn(
@@ -83,13 +96,13 @@ export default function QuickStats() {
                       </p>
                       {stat.trending && (
                         <span className="text-xs px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700">
-                          Trending
+                          {stat.trendingText}
                         </span>
                       )}
                     </div>
                     <p className="mt-1 text-sm text-gray-500">{stat.description}</p>
                     <div className="mt-3 flex items-center text-sm font-medium text-blue-600 group-hover:text-blue-700 transition-colors">
-                      View details
+                      {stat.viewDetails}
                       <ArrowRight className="ml-1 h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
                     </div>
                   </div>
@@ -109,4 +122,6 @@ export default function QuickStats() {
       </div>
     </div>
   );
-}
+};
+
+export default QuickStats;

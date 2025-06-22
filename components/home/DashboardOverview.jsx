@@ -5,14 +5,15 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { ChevronRight, MapPin, TrendingUp, Calendar, Droplet, CloudSun } from 'lucide-react';
 import Link from 'next/link';
+import { t } from '@/translations';
 import WeatherTile from '@/components/widgets/WeatherTile';
 import CropPriceTile from '@/components/widgets/CropPriceTile';
 
-const tasks = [
+const getTasks = (lang) => [
   {
     id: 1,
-    title: 'Apply fertilizer',
-    due: 'Due in 2 days',
+    title: t('home.dashboard.tasks.fertilizer.title', lang),
+    due: t('home.dashboard.tasks.fertilizer.due', lang),
     icon: '🌱',
     bgColor: 'bg-amber-50',
     iconBg: 'bg-amber-100',
@@ -21,8 +22,8 @@ const tasks = [
   },
   {
     id: 2,
-    title: 'Irrigation check',
-    due: 'Due in 5 days',
+    title: t('home.dashboard.tasks.irrigation.title', lang),
+    due: t('home.dashboard.tasks.irrigation.due', lang),
     icon: '💧',
     bgColor: 'bg-blue-50',
     iconBg: 'bg-blue-100',
@@ -31,8 +32,8 @@ const tasks = [
   },
   {
     id: 3,
-    title: 'Pest monitoring',
-    due: 'Due in 7 days',
+    title: t('home.dashboard.tasks.pest.title', lang),
+    due: t('home.dashboard.tasks.pest.due', lang),
     icon: '🐛',
     bgColor: 'bg-green-50',
     iconBg: 'bg-green-100',
@@ -41,7 +42,8 @@ const tasks = [
   }
 ];
 
-export default function DashboardOverview() {
+export default function DashboardOverview({ lang = 'en' }) {
+  const tasks = getTasks(lang);
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
@@ -51,8 +53,8 @@ export default function DashboardOverview() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <h2 className="text-3xl font-bold text-gray-900">Dashboard Overview</h2>
-          <p className="text-gray-500">Your personalized farming insights at a glance</p>
+          <h2 className="text-3xl font-bold text-gray-900">{t('home.dashboard.title', lang)}</h2>
+          <p className="text-gray-500">{t('home.dashboard.subtitle', lang)}</p>
         </motion.div>
         
         <motion.div
@@ -66,7 +68,7 @@ export default function DashboardOverview() {
               variant="outline" 
               className="group flex items-center text-green-700 border-green-200 bg-white hover:bg-green-50 hover:border-green-300 transition-colors"
             >
-              <span>View Full Dashboard</span>
+              <span>{t('home.dashboard.viewFull', lang)}</span>
               <ChevronRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Button>
           </Link>
@@ -83,10 +85,10 @@ export default function DashboardOverview() {
             title={
               <div className="flex items-center space-x-2">
                 <CloudSun className="h-5 w-5 text-blue-500" />
-                <span>Weather for Delhi, India</span>
+                <span>{t('home.dashboard.weatherFor', lang)}</span>
               </div>
             }
-            actionText="Change Location"
+            actionText={t('common.changeLocation', lang)}
             actionHref="/weather"
             className="h-full"
           >
@@ -103,10 +105,10 @@ export default function DashboardOverview() {
             title={
               <div className="flex items-center space-x-2">
                 <TrendingUp className="h-5 w-5 text-amber-500" />
-                <span>Market Prices</span>
+                <span>{t('home.dashboard.marketPrices', lang)}</span>
               </div>
             }
-            actionText="View All"
+            actionText={t('home.dashboard.viewAll', lang)}
             actionHref="/market-prices"
             className="h-full"
           >
@@ -123,10 +125,10 @@ export default function DashboardOverview() {
             title={
               <div className="flex items-center space-x-2">
                 <Calendar className="h-5 w-5 text-green-500" />
-                <span>Upcoming Tasks</span>
+                <span>{t('home.dashboard.upcomingTasks', lang)}</span>
               </div>
             }
-            actionText="View Calendar"
+            actionText={t('home.dashboard.viewCalendar', lang)}
             actionHref="/crop-calendar"
             className="h-full"
           >

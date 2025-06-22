@@ -7,35 +7,47 @@ import { Button } from '@/components/ui/button';
 import { MessageSquare, Send, Bot, Sparkles, Leaf, Zap, ChevronRight } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import Link from 'next/link';
+import { t } from '@/translations';
 
-const features = [
-  {
-    title: 'Crop Planning',
-    description: 'Get personalized crop recommendations based on your soil type and climate',
-    icon: <Leaf className="h-5 w-5 text-green-600" />,
-    color: 'bg-green-50',
-    href: '/crop-planner'
-  },
-  {
-    title: 'Pest & Disease',
-    description: 'Identify and treat common crop diseases and pests',
-    icon: <Zap className="h-5 w-5 text-amber-600" />,
-    color: 'bg-amber-50',
-    href: '/crop-disease'
-  },
-  {
-    title: 'Smart Tips',
-    description: 'Daily farming tips and best practices',
-    icon: <Sparkles className="h-5 w-5 text-blue-600" />,
-    color: 'bg-blue-50',
-    href: '/farming-tips'
-  }
-];
-
-export default function SmartFarmingAssistant() {
+const SmartFarmingAssistant = ({ lang = 'en' }) => {
   const router = useRouter();
   const [message, setMessage] = useState('');
   
+  // Get translation with fallback
+  const getTranslation = (key, defaultValue = '') => {
+    try {
+      return t(`smartAssistant.${key}`, lang) || defaultValue;
+    } catch (e) {
+      console.warn(`Translation error for key: ${key}`, e);
+      return defaultValue;
+    }
+  };
+
+  const features = [
+    {
+      title: getTranslation('features.cropPlanning.title', 'Crop Planning'),
+      description: getTranslation('features.cropPlanning.description', 'Get personalized crop recommendations based on your soil type and climate'),
+      icon: <Leaf className="h-5 w-5 text-green-600" />,
+      color: 'bg-green-50',
+      href: `/${lang}/crop-planner`
+    },
+    {
+      title: getTranslation('features.pestDisease.title', 'Pest & Disease'),
+      description: getTranslation('features.pestDisease.description', 'Identify and treat common crop diseases and pests'),
+      icon: <Zap className="h-5 w-5 text-amber-600" />,
+      color: 'bg-amber-50',
+      href: `/${lang}/crop-disease`
+    },
+    {
+      title: getTranslation('features.smartTips.title', 'Smart Tips'),
+      description: getTranslation('features.smartTips.description', 'Daily farming tips and best practices'),
+      icon: <Sparkles className="h-5 w-5 text-blue-600" />,
+      color: 'bg-blue-50',
+      href: `/${lang}/farming-tips`
+    }
+  ];
+
+
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
       <div className="bg-gradient-to-r from-green-600 to-emerald-600 px-6 py-4">
@@ -45,15 +57,19 @@ export default function SmartFarmingAssistant() {
               <Bot className="h-5 w-5 text-white" />
             </div>
             <div>
-              <h3 className="text-white font-semibold text-lg">Smart Farming Assistant</h3>
-              <p className="text-green-100 text-sm">AI-powered guidance for your farm</p>
+              <h3 className="text-white font-semibold text-lg">
+                {getTranslation('title', 'Smart Farming Assistant')}
+              </h3>
+              <p className="text-green-100 text-sm">
+                {getTranslation('subtitle', 'AI-powered guidance for your farm')}
+              </p>
             </div>
           </div>
           <Link 
             href="/crop-assistant" 
             className="text-xs font-medium text-white/90 hover:text-white flex items-center"
           >
-            Open Full Assistant
+            {getTranslation('openFull', 'Open Full Assistant')}
             <ChevronRight className="ml-1 h-3.5 w-3.5" />
           </Link>
         </div>
@@ -98,7 +114,7 @@ export default function SmartFarmingAssistant() {
             </div>
             <div className="bg-gray-50 rounded-xl p-3 max-w-[85%]">
               <p className="text-sm text-gray-800">
-                Ask me anything about farming practices, crop diseases, market conditions, or get personalized recommendations for your farm.
+                {getTranslation('disclaimer', 'Ask me anything about farming practices, crop care, or get personalized advice for your farm.')}
               </p>
             </div>
           </div>
@@ -106,7 +122,7 @@ export default function SmartFarmingAssistant() {
           <div className="flex items-start justify-end">
             <div className="bg-green-100 rounded-xl p-3 max-w-[85%] mr-10">
               <p className="text-sm text-gray-800">
-                When should I plant rice in Delhi region?
+                {getTranslation('exampleQuestion', 'When should I plant rice in Delhi region?')}
               </p>
             </div>
           </div>
@@ -117,7 +133,7 @@ export default function SmartFarmingAssistant() {
             </div>
             <div className="bg-gray-50 rounded-xl p-3 max-w-[85%]">
               <p className="text-sm text-gray-800">
-                In the Delhi region, the ideal time to plant rice is during the Kharif season, typically from June to mid-July after the first monsoon rains. This timing ensures optimal growth conditions.
+                {getTranslation('exampleAnswer', 'In the Delhi region, the ideal time to plant rice is during the Kharif season, typically from June to mid-July after the first monsoon rains. This timing ensures optimal growth conditions.')}
               </p>
             </div>
           </div>
@@ -135,7 +151,7 @@ export default function SmartFarmingAssistant() {
           >
             <Input
               className="flex-1 bg-gray-50 border-gray-200 focus:border-green-400 focus:ring-green-300"
-              placeholder="Ask about farming practices, crop diseases, etc."
+              placeholder={getTranslation('placeholder', 'Ask about farming practices, crop diseases, etc.')}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
             />
@@ -146,14 +162,18 @@ export default function SmartFarmingAssistant() {
               disabled={!message.trim()}
             >
               <Send className="h-4 w-4" />
-              <span className="sr-only">Send message</span>
+              <span className="sr-only">
+                {getTranslation('sendButton', 'Send message')}
+              </span>
             </Button>
           </form>
           <p className="text-xs text-gray-400 mt-2 text-center">
-            Try asking: "Best crops for black soil?" or "How to prevent rice blast?"
+            {getTranslation('tryAsking', 'Try asking:')} {getTranslation('exampleQueries', '\"Best crops for black soil?\" or \"How to prevent rice blast?\"')}
           </p>
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default SmartFarmingAssistant;

@@ -24,8 +24,50 @@ const KnowledgeHubClient = () => {
         await new Promise(resolve => setTimeout(resolve, 500));
         
         const mockArticles = [
+          // Government Schemes
           {
             id: 1,
+            title: 'PM KISAN Scheme',
+            description: 'Income support of ₹6,000 per year to all farmer families across the country in three equal installments.',
+            category: 'government',
+            readTime: '4 min read',
+            saved: false,
+            completed: false,
+            details: 'The Pradhan Mantri Kisan Samman Nidhi (PM-KISAN) provides income support of ₹6,000 per year to all farmer families across the country in three equal installments of ₹2,000 every four months. The scheme defines family as husband, wife, and minor children. The amount is transferred directly to the bank accounts of the beneficiaries through DBT mode.'
+          },
+          {
+            id: 2,
+            title: 'Pradhan Mantri Fasal Bima Yojana',
+            description: 'Crop insurance scheme providing comprehensive coverage against crop failure, helping farmers cope with agricultural risks.',
+            category: 'government',
+            readTime: '5 min read',
+            saved: false,
+            completed: false,
+            details: 'PMFBY provides comprehensive insurance coverage against crop failure, helping farmers cope with agricultural risks. The premium rates are 2% of the sum insured for Kharif crops, 1.5% for Rabi crops, and 5% for commercial/horticultural crops. The scheme covers yield losses due to non-preventable risks like natural fire and lightning, storm, flood, cyclone, etc.'
+          },
+          {
+            id: 3,
+            title: 'Kisan Credit Card (KCC) Scheme',
+            description: 'Provides farmers with timely access to credit for agricultural and allied activities at subsidized interest rates.',
+            category: 'government',
+            readTime: '6 min read',
+            saved: false,
+            completed: false,
+            details: 'The Kisan Credit Card scheme provides farmers with timely access to credit for agricultural and allied activities at subsidized interest rates. Farmers can get loans up to ₹3 lakh at 4% interest rate per annum. The scheme covers post-harvest expenses, consumption needs, and investment credit requirements.'
+          },
+          {
+            id: 4,
+            title: 'Soil Health Card Scheme',
+            description: 'Provides soil testing reports and recommendations on appropriate dosage of nutrients to improve soil health.',
+            category: 'government',
+            readTime: '4 min read',
+            saved: false,
+            completed: false,
+            details: 'The Soil Health Card Scheme provides farmers with soil testing reports and recommendations on appropriate dosage of nutrients to improve soil health. The card contains crop-wise recommendations of nutrients and fertilizers required for individual farms.'
+          },
+          // Existing articles
+          {
+            id: 5,
             title: 'Sustainable Farming Practices',
             description: 'Learn about eco-friendly farming methods that increase yield while preserving the environment.',
             category: 'sustainable',
@@ -34,7 +76,7 @@ const KnowledgeHubClient = () => {
             completed: false
           },
           {
-            id: 2,
+            id: 6,
             title: 'Crop Rotation Guide',
             description: 'Understand the benefits of crop rotation and how to implement it effectively on your farm.',
             category: 'techniques',
@@ -43,7 +85,7 @@ const KnowledgeHubClient = () => {
             completed: true
           },
           {
-            id: 3,
+            id: 7,
             title: 'Organic Pest Control',
             description: 'Natural methods to control pests without using harmful chemicals.',
             category: 'pest-control',
@@ -52,7 +94,7 @@ const KnowledgeHubClient = () => {
             completed: false
           },
           {
-            id: 4,
+            id: 8,
             title: 'Soil Health Management',
             description: 'Improve your soil quality with these proven techniques for better crop production.',
             category: 'soil',
@@ -61,7 +103,7 @@ const KnowledgeHubClient = () => {
             completed: false
           },
           {
-            id: 5,
+            id: 9,
             title: 'Water Conservation Methods',
             description: 'Effective irrigation techniques to conserve water while maintaining healthy crops.',
             category: 'irrigation',
@@ -70,7 +112,7 @@ const KnowledgeHubClient = () => {
             completed: true
           },
           {
-            id: 6,
+            id: 10,
             title: 'Climate-Smart Agriculture',
             description: 'Adapting farming practices to changing climate conditions for sustainable production.',
             category: 'sustainable',
@@ -118,6 +160,7 @@ const KnowledgeHubClient = () => {
     const matchesSearch = article.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
                          article.description.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesTab = activeTab === 'all' || 
+                      (activeTab === 'government' && article.category === 'government') ||
                       (activeTab === 'saved' && article.saved) ||
                       (activeTab === 'completed' && article.completed) ||
                       (activeTab === 'unread' && !article.completed);
@@ -131,7 +174,8 @@ const KnowledgeHubClient = () => {
       techniques: 'bg-blue-100 text-blue-800',
       'pest-control': 'bg-yellow-100 text-yellow-800',
       soil: 'bg-amber-100 text-amber-800',
-      irrigation: 'bg-cyan-100 text-cyan-800'
+      irrigation: 'bg-cyan-100 text-cyan-800',
+      government: 'bg-purple-100 text-purple-800'
     };
     return colors[category] || 'bg-gray-100 text-gray-800';
   };
@@ -191,6 +235,7 @@ const KnowledgeHubClient = () => {
                 onChange={(e) => setActiveTab(e.target.value)}
               >
                 <option value="all">All Articles</option>
+                <option value="government">Government Schemes</option>
                 <option value="saved">Saved</option>
                 <option value="completed">Completed</option>
                 <option value="unread">Unread</option>
@@ -270,18 +315,23 @@ const KnowledgeHubClient = () => {
                 {expandedArticle === article.id && (
                   <div className="px-6 pb-4 pt-0">
                     <div className="border-t border-gray-100 pt-4">
-                      <h4 className="text-sm font-medium mb-2">Article Details</h4>
-                      <p className="text-sm text-gray-600">
-                        This is additional content that would be loaded or expanded when the user clicks "Show more". 
-                        In a real application, this would contain the full article content, related resources, 
-                        or more detailed information about the topic.
+                      <h4 className="text-sm font-medium mb-2">
+                        {article.category === 'government' ? 'Scheme Details' : 'Article Details'}
+                      </h4>
+                      <p className="text-sm text-gray-600 mb-3">
+                        {article.details || 'This is additional content that would be loaded or expanded when the user clicks "Show more". In a real application, this would contain the full article content, related resources, or more detailed information about the topic.'}
                       </p>
-                      <div className="mt-3 flex space-x-2">
+                      <div className="flex flex-wrap gap-2 mt-3">
                         <Button variant="outline" size="sm" className="text-xs">
-                          View Full Article
+                          {article.category === 'government' ? 'Apply Now' : 'View Full Article'}
                         </Button>
+                        {article.category === 'government' && (
+                          <Button variant="outline" size="sm" className="text-xs">
+                            Eligibility Criteria
+                          </Button>
+                        )}
                         <Button variant="outline" size="sm" className="text-xs">
-                          Download PDF
+                          {article.category === 'government' ? 'Official Website' : 'Download PDF'}
                         </Button>
                       </div>
                     </div>

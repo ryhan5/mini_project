@@ -76,7 +76,24 @@ const tools = [
   },
 ];
 
-export default function FeaturedTools() {
+export default function FeaturedTools({ lang = 'en' }) {
+  // Get translations with fallback
+  const getTranslation = (key, defaultValue = '') => {
+    try {
+      return t(`home.featuredTools.${key}`, lang) || defaultValue;
+    } catch (e) {
+      console.warn(`Translation error for key: home.featuredTools.${key}`, e);
+      return defaultValue;
+    }
+  };
+
+  // Add translations to tools
+  const localizedTools = tools.map(tool => ({
+    ...tool,
+    name: getTranslation(`${tool.id}.name`, tool.name),
+    description: getTranslation(`${tool.id}.description`, tool.description)
+  }));
+
   return (
     <motion.div 
       className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden"
@@ -85,13 +102,15 @@ export default function FeaturedTools() {
       transition={{ duration: 0.5 }}
     >
       <div className="px-4 py-3 border-b border-gray-100">
-        <h3 className="font-medium text-gray-900">Featured Tools</h3>
+        <h3 className="font-medium text-gray-900">
+          {getTranslation('title', 'Featured Tools')}
+        </h3>
       </div>
       
       <div className="p-4">
         <div className="grid grid-cols-2 gap-3">
-          {tools.map((tool, index) => (
-            <ToolCard key={tool.id} tool={tool} index={index} />
+          {localizedTools.map((tool, index) => (
+            <ToolCard key={tool.id} tool={tool} index={index} lang={lang} />
           ))}
         </div>
       </div>
@@ -100,25 +119,24 @@ export default function FeaturedTools() {
 }
 
 function ToolCard({ tool, index }) {
+  const Icon = tool.icon;
+  
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      className={`p-3 rounded-lg border ${tool.borderColor} ${tool.color} hover:shadow-sm transition-shadow`}
+      initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
+      transition={{ delay: index * 0.05 }}
     >
-      <Link 
-        href={tool.href}
-        className={`block p-3 rounded-lg border ${tool.borderColor} ${tool.color} hover:shadow-sm transition-shadow`}
-      >
+      <Link href={tool.href} className="block">
         <div className="flex items-start">
-          <div className="h-8 w-8 rounded-full bg-white flex items-center justify-center mr-3 shadow-sm">
-            <tool.icon className={`h-4 w-4 ${tool.iconColor}`} />
+          <div className={`p-2 rounded-md ${tool.iconColor} mr-3`}>
+            <Icon className="h-4 w-4" />
           </div>
-          <div className="flex-1">
-            <h4 className="font-medium text-gray-900 text-sm">{tool.name}</h4>
-            <p className="text-xs text-gray-500 mt-0.5">{tool.description}</p>
+          <div>
+            <h4 className="text-sm font-medium text-gray-900">{tool.name}</h4>
+            <p className="text-xs text-gray-500 mt-1">{tool.description}</p>
           </div>
-          <ArrowRight className="h-4 w-4 text-gray-400" />
         </div>
       </Link>
     </motion.div>

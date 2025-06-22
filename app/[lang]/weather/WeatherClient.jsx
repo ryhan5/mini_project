@@ -1,7 +1,5 @@
 'use client';
 
-'use client';
-
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
@@ -19,8 +17,13 @@ import {
   Thermometer,
   Search,
   Droplet,
-  CloudSun
+  CloudSun,
+  Navigation,
+  Moon,
+  ThermometerSun,
+  DropletOff
 } from 'lucide-react';
+import { t } from '@/translations';
 import { 
   Card, 
   CardContent, 
@@ -135,7 +138,17 @@ const getEvapotranspirationRate = (temp, humidity, wind, solarRadiation = 15) =>
   return Math.max(0, et0).toFixed(1);
 };
 
-const WeatherCard = ({ day, temp, condition, precipitation, wind, humidity, sunrise, sunset, isToday = false }) => {
+const WeatherCard = ({ day, temp, condition, precipitation, wind, humidity, sunrise, sunset, isToday = false, lang = 'en' }) => {
+  // Get translation with fallback
+  const getTranslation = (key, defaultValue = '') => {
+    try {
+      return t(`weather.${key}`, lang) || defaultValue;
+    } catch (e) {
+      console.warn(`Translation error for key: weather.${key}`, e);
+      return defaultValue;
+    }
+  };
+
   const moistureLevel = getSoilMoistureLevel(humidity);
   const tempInt = Math.round(temp);
   const conditionText = condition.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
@@ -152,7 +165,9 @@ const WeatherCard = ({ day, temp, condition, precipitation, wind, humidity, sunr
         <div className="flex items-center justify-between">
           <div>
             <div className="text-3xl font-bold text-gray-900">{tempInt}°</div>
-            <div className="text-sm text-gray-500 capitalize">{conditionText}</div>
+            <div className="text-sm text-gray-500 capitalize">
+              {getTranslation(`conditions.${condition.toLowerCase().replace(' ', '')}`, conditionText)}
+            </div>
           </div>
           <div className="text-4xl">
             <WeatherIcon condition={condition} size="2xl" />
@@ -163,21 +178,21 @@ const WeatherCard = ({ day, temp, condition, precipitation, wind, humidity, sunr
           <div className="flex items-center justify-between text-sm">
             <span className="flex items-center text-gray-500">
               <Droplet className="h-4 w-4 mr-1.5 text-blue-400" />
-              <span>Precip</span>
+              <span>{getTranslation('precipitation', 'Precip')}</span>
             </span>
             <span className="font-medium">{precipitation}%</span>
           </div>
           <div className="flex items-center justify-between text-sm">
             <span className="flex items-center text-gray-500">
               <WindIcon className="h-4 w-4 mr-1.5 text-gray-400" />
-              <span>Wind</span>
+              <span>{getTranslation('wind', 'Wind')}</span>
             </span>
-            <span className="font-medium">{wind} km/h</span>
+            <span className="font-medium">{wind} {getTranslation('units.kmh', 'km/h')}</span>
           </div>
           <div className="flex items-center justify-between text-sm">
             <span className="flex items-center text-gray-500">
               <Droplets className="h-4 w-4 mr-1.5 text-cyan-400" />
-              <span>Humidity</span>
+              <span>{getTranslation('humidity', 'Humidity')}</span>
             </span>
             <span className="font-medium">{humidity}%</span>
           </div>
@@ -185,12 +200,12 @@ const WeatherCard = ({ day, temp, condition, precipitation, wind, humidity, sunr
         
         <div className="mt-3 pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500">
           <span className="flex items-center">
-            <Sunrise className="h-3.5 w-3.5 mr-1 text-amber-400" />
-            {sunrise}
+            <Sun className="h-3.5 w-3.5 mr-1 text-amber-400" />
+            {sunrise || getTranslation('time.sunrise', 'Sunrise')}
           </span>
           <span className="flex items-center">
-            <Sunset className="h-3.5 w-3.5 mr-1 text-orange-400" />
-            {sunset}
+            <Moon className="h-3.5 w-3.5 mr-1 text-indigo-400" />
+            {sunset || getTranslation('time.sunset', 'Sunset')}
           </span>
         </div>
       </div>
@@ -202,8 +217,8 @@ const HourlyForecast = ({ hours }) => {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold text-gray-900">Hourly Forecast</h3>
-        <span className="text-sm text-green-600 font-medium">Next 24 hours</span>
+        <h3 className="text-lg font-semibold text-gray-900">{t('weather.hourlyForecast', 'Hourly Forecast')}</h3>
+        <span className="text-sm text-green-600 font-medium">{t('weather.next24Hours', 'Next 24 hours')}</span>
       </div>
       <div className="relative">
         <div className="flex space-x-4 pb-4 -mx-4 px-4 overflow-x-auto scrollbar-hide">
@@ -236,7 +251,7 @@ const IrrigationStatus = ({ recommendation }) => {
         {recommendation.icon}
       </div>
       <div>
-        <h4 className="font-semibold mb-1">Irrigation: {recommendation.status}</h4>
+        <h4 className="font-semibold mb-1">{t('irrigation.status', 'Irrigation:')} {recommendation.status}</h4>
         <p className="text-sm">{recommendation.message}</p>
         <p className="text-xs mt-2 opacity-80">{recommendation.action}</p>
       </div>
@@ -251,26 +266,26 @@ const SoilMoistureCard = ({ moisture, onAdjust }) => {
     <Card className="h-full">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg font-medium">Soil Moisture</CardTitle>
+          <CardTitle className="text-lg font-medium">{t('soilMoisture.soilMoisture', 'Soil Moisture')}</CardTitle>
           <div className="flex items-center">
             {moistureLevel.icon}
             <span className="ml-1.5 text-sm font-medium">{moistureLevel.level}</span>
           </div>
         </div>
         <p className="text-sm text-gray-500">
-          {moistureLevel.level === 'Critical' && 'Immediate irrigation required'}
-          {moistureLevel.level === 'Dry' && 'Consider irrigating soon'}
-          {moistureLevel.level === 'Moderate' && 'Soil moisture is acceptable'}
-          {moistureLevel.level === 'Ideal' && 'Optimal moisture level'}
-          {moistureLevel.level === 'Saturated' && 'Soil is too wet'}
+          {moistureLevel.level === t('soilMoisture.critical', 'Critical') && t('soilMoisture.immediateIrrigationRequired', 'Immediate irrigation required')}
+          {moistureLevel.level === t('soilMoisture.dry', 'Dry') && t('soilMoisture.considerIrrigatingSoon', 'Consider irrigating soon')}
+          {moistureLevel.level === t('soilMoisture.moderate', 'Moderate') && t('soilMoisture.soilMoistureAcceptable', 'Soil moisture is acceptable')}
+          {moistureLevel.level === t('soilMoisture.ideal', 'Ideal') && t('soilMoisture.optimalMoistureLevel', 'Optimal moisture level')}
+          {moistureLevel.level === t('soilMoisture.saturated', 'Saturated') && t('soilMoisture.soilTooWet', 'Soil is too wet')}
         </p>
       </CardHeader>
       <CardContent>
         <div className="space-y-3">
           <div className="flex justify-between text-sm">
-            <span className="text-gray-500">0%</span>
-            <span className="text-gray-500">50%</span>
-            <span className="text-gray-500">100%</span>
+            <span className="text-gray-500">{t('soilMoisture.zeroPercent', '0%')}</span>
+            <span className="text-gray-500">{t('soilMoisture.fiftyPercent', '50%')}</span>
+            <span className="text-gray-500">{t('soilMoisture.hundredPercent', '100%')}</span>
           </div>
           <div className="relative pt-1">
             <div className="overflow-hidden h-2 text-xs flex rounded bg-gray-200">
@@ -281,14 +296,14 @@ const SoilMoistureCard = ({ moisture, onAdjust }) => {
             </div>
           </div>
           <div className="flex justify-between text-xs text-gray-500">
-            <span>Dry</span>
-            <span>Moist</span>
-            <span>Wet</span>
+            <span>{t('soilMoisture.dry', 'Dry')}</span>
+            <span>{t('soilMoisture.moist', 'Moist')}</span>
+            <span>{t('soilMoisture.wet', 'Wet')}</span>
           </div>
           
           <div className="pt-2">
             <label htmlFor="moisture-slider" className="block text-sm font-medium text-gray-700 mb-2">
-              Adjust moisture level
+              {t('soilMoisture.adjustMoistureLevel', 'Adjust moisture level')}
             </label>
             <input
               id="moisture-slider"
@@ -306,42 +321,84 @@ const SoilMoistureCard = ({ moisture, onAdjust }) => {
   );
 };
 
-// Main Weather Page Component
-export default function WeatherPage() {
-  const [location, setLocation] = useState('Karnal, Haryana');
+// Main Weather Client Component
+const WeatherClient = ({ lang = 'en' }) => {
+  // Get translation with fallback
+  const getTranslation = (key, defaultValue = '') => {
+    try {
+      return t(`weather.${key}`, lang) || defaultValue;
+    } catch (e) {
+      console.warn(`Translation error for key: weather.${key}`, e);
+      return defaultValue;
+    }
+  };
+  const [location, setLocation] = useState(getTranslation('defaultLocation', 'Karnal, Haryana'));
   const [weatherData, setWeatherData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [coords, setCoords] = useState({
+    lat: process.env.NEXT_PUBLIC_DEFAULT_LAT || '29.6857',
+    lon: process.env.NEXT_PUBLIC_DEFAULT_LON || '76.9905'
+  });
+  
+  // Weather conditions mapping with translations
+  const weatherConditions = {
+    'clear': getTranslation('conditions.clear', 'Clear'),
+    'clouds': getTranslation('conditions.cloudy', 'Cloudy'),
+    'rain': getTranslation('conditions.rain', 'Rain'),
+    'drizzle': getTranslation('conditions.drizzle', 'Drizzle'),
+    'thunderstorm': getTranslation('conditions.thunderstorm', 'Thunderstorm'),
+    'snow': getTranslation('conditions.snow', 'Snow'),
+    'mist': getTranslation('conditions.mist', 'Mist'),
+    'fog': getTranslation('conditions.fog', 'Fog'),
+    'haze': getTranslation('conditions.haze', 'Haze'),
+    'smoke': getTranslation('conditions.smoke', 'Smoke'),
+    'dust': getTranslation('conditions.dust', 'Dust')
+  };
   const [soilMoisture, setSoilMoisture] = useState(45);
   const [activeTab, setActiveTab] = useState('today');
   const [irrigationRecommendation, setIrrigationRecommendation] = useState(null);
 
   // Mock data for demonstration
   const mockWeatherData = {
-    location: 'Karnal, Haryana',
+    location: location,
     current: {
       temp: 28,
-      condition: 'partly-cloudy',
+      condition: getTranslation('conditions.partlyCloudy', 'Partly Cloudy'),
       humidity: 65,
       wind: 12,
       precipitation: 30,
-      sunrise: '06:15 AM',
-      sunset: '06:45 PM',
-      feels_like: 30,
-      hourly: Array.from({ length: 24 }, (_, i) => ({
-        time: `${i}:00`,
-        temp: 22 + Math.round(Math.sin(i / 24 * Math.PI) * 10),
-        condition: ['clear', 'partly-cloudy', 'cloudy', 'rain'][Math.floor(Math.random() * 4)],
-        precipitation: Math.floor(Math.random() * 30)
-      }))
+      feelsLike: 30,
+      uvIndex: 7,
+      visibility: 10,
+      pressure: 1012,
+      sunrise: '05:45',
+      sunset: '18:30',
+      hourly: [
+        { time: getTranslation('time.now', 'Now'), temp: 28, condition: getTranslation('conditions.partlyCloudy', 'Partly Cloudy'), precipitation: 20 },
+        { time: '13:00', temp: 29, condition: getTranslation('conditions.sunny', 'Sunny'), precipitation: 10 },
+        { time: '14:00', temp: 30, condition: getTranslation('conditions.sunny', 'Sunny'), precipitation: 0 },
+        { time: '15:00', temp: 31, condition: getTranslation('conditions.sunny', 'Sunny'), precipitation: 0 },
+        { time: '16:00', temp: 30, condition: getTranslation('conditions.partlyCloudy', 'Partly Cloudy'), precipitation: 0 },
+        { time: '17:00', temp: 29, condition: getTranslation('conditions.partlyCloudy', 'Partly Cloudy'), precipitation: 10 },
+        { time: '18:00', temp: 28, condition: getTranslation('conditions.cloudy', 'Cloudy'), precipitation: 20 },
+      ],
+      daily: [
+        { day: getTranslation('days.today', 'Today'), high: 31, low: 22, condition: getTranslation('conditions.partlyCloudy', 'Partly Cloudy'), precipitation: 30 },
+        { day: getTranslation('days.tue', 'Tue'), high: 30, low: 22, condition: getTranslation('conditions.rain', 'Rain'), precipitation: 70 },
+        { day: getTranslation('days.wed', 'Wed'), high: 29, low: 21, condition: getTranslation('conditions.thunderstorm', 'Thunderstorm'), precipitation: 90 },
+        { day: getTranslation('days.thu', 'Thu'), high: 28, low: 21, condition: getTranslation('conditions.rain', 'Rain'), precipitation: 60 },
+        { day: getTranslation('days.fri', 'Fri'), high: 29, low: 21, condition: getTranslation('conditions.cloudy', 'Cloudy'), precipitation: 30 },
+        { day: getTranslation('days.sat', 'Sat'), high: 30, low: 22, condition: getTranslation('conditions.partlyCloudy', 'Partly Cloudy'), precipitation: 20 },
+        { day: getTranslation('days.sun', 'Sun'), high: 31, low: 23, condition: getTranslation('conditions.sunny', 'Sunny'), precipitation: 10 },
+      ]
     },
-    forecast: [
-      { day: 'Mon', temp: 28, condition: 'partly-cloudy', precipitation: 30, wind: 12, humidity: 65, sunrise: '06:15 AM', sunset: '06:45 PM' },
-      { day: 'Tue', temp: 30, condition: 'sunny', precipitation: 10, wind: 8, humidity: 55, sunrise: '06:14 AM', sunset: '06:46 PM' },
-      { day: 'Wed', temp: 26, condition: 'rain', precipitation: 80, wind: 15, humidity: 85, sunrise: '06:13 AM', sunset: '06:47 PM' },
-      { day: 'Thu', temp: 25, condition: 'cloudy', precipitation: 60, wind: 12, humidity: 75, sunrise: '06:12 AM', sunset: '06:48 PM' },
-      { day: 'Fri', temp: 29, condition: 'partly-cloudy', precipitation: 20, wind: 10, humidity: 60, sunrise: '06:11 AM', sunset: '06:49 PM' },
-    ]
+    forecast: {
+      today: getTranslation('forecast.today', 'Expect a mix of sun and clouds. High 31°C. Winds NE at 10 to 15 km/h.'),
+      tonight: getTranslation('forecast.tonight', 'Partly cloudy skies. Low 22°C. Winds light and variable.'),
+      tomorrow: getTranslation('forecast.tomorrow', 'Scattered thunderstorms in the morning, then mainly cloudy during the afternoon with thunderstorms likely. High 29°C. Winds light and variable. Chance of rain 80%.')
+    }
   };
 
   // Update irrigation recommendation when weather data or soil moisture changes
@@ -352,31 +409,108 @@ export default function WeatherPage() {
     }
   }, [weatherData, soilMoisture]);
 
-  // Load initial data
+  // Fetch weather data from OpenWeather API
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setWeatherData(mockWeatherData);
-      setLoading(false);
-    }, 1000);
+    const fetchWeatherData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
 
-    return () => clearTimeout(timer);
-  }, []);
+        // Default coordinates (Karnal, Haryana)
+        let lat = coords.lat;
+        let lon = coords.lon;
+        let locationName = location;
 
+        if (searchQuery) {
+          // Geocoding API call to get coordinates for the searched location
+          const geoResponse = await fetch(
+            `https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(searchQuery)}&limit=1&appid=${process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY}`
+          );
+          
+          if (!geoResponse.ok) throw new Error('Failed to fetch location');
+          
+          const geoData = await geoResponse.json();
+          if (!geoData || geoData.length === 0) {
+            throw new Error('Location not found');
+          }
+          
+          lat = geoData[0].lat;
+          lon = geoData[0].lon;
+          locationName = `${geoData[0].name}, ${geoData[0].country}`;
+          setCoords({ lat, lon });
+          setLocation(locationName);
+          setSearchQuery('');
+        }
+
+        // Get weather data using coordinates
+        const weatherResponse = await fetch(
+          `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&exclude=minutely,hourly,alerts&units=metric&appid=${process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY}`
+        );
+
+        if (!weatherResponse.ok) {
+          throw new Error('Failed to fetch weather data');
+        }
+
+        const data = await weatherResponse.json();
+
+        // Transform OpenWeather data to match our component's expected format
+        const transformedData = {
+          current: {
+            temp: Math.round(data.current.temp),
+            condition: mapWeatherCondition(data.current.weather[0].id),
+            humidity: data.current.humidity,
+            wind: Math.round(data.current.wind_speed * 3.6), // Convert m/s to km/h
+            precipitation: data.current.rain ? data.current.rain['1h'] || 0 : 0,
+            sunrise: new Date(data.current.sunrise * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            sunset: new Date(data.current.sunset * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          },
+          forecast: {
+            daily: data.daily.slice(0, 5).map((day, index) => ({
+              day: index === 0 ? 'Today' : new Date(day.dt * 1000).toLocaleDateString('en-US', { weekday: 'short' }),
+              high: Math.round(day.temp.max),
+              low: Math.round(day.temp.min),
+              condition: mapWeatherCondition(day.weather[0].id),
+              precipitation: Math.round(day.pop * 100), // Convert probability to percentage
+              wind: Math.round(day.wind_speed * 3.6),
+              humidity: day.humidity
+            }))
+          }
+        };
+
+        setWeatherData(transformedData);
+      } catch (err) {
+        console.error('Error fetching weather data:', err);
+        setError(err.message || getTranslation('error.loading', 'Failed to load weather data'));
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchWeatherData();
+  }, [coords.lat, coords.lon, searchQuery]);
+
+  // Helper function to map OpenWeather condition codes to our condition names
+  const mapWeatherCondition = (weatherId) => {
+    if (weatherId >= 200 && weatherId < 300) return 'thunderstorm';
+    if (weatherId >= 300 && weatherId < 400) return 'drizzle';
+    if (weatherId >= 500 && weatherId < 600) return 'rain';
+    if (weatherId >= 600 && weatherId < 700) return 'snow';
+    if (weatherId >= 700 && weatherId < 800) return 'mist';
+    if (weatherId === 800) return 'clear';
+    if (weatherId > 800) return 'cloudy';
+    return 'clear';
+  };
+
+  // Handle search
   const handleSearch = (e) => {
     e.preventDefault();
-    if (!location.trim()) return;
-    
+    if (!searchQuery.trim()) return;
     setLoading(true);
-    // Simulate API call
-    const timer = setTimeout(() => {
-      setWeatherData({
-        ...mockWeatherData,
-        location: location
-      });
-      setLoading(false);
-    }, 1000);
+  };
 
-    return () => clearTimeout(timer);
+  // Get translated weather condition
+  const getTranslatedCondition = (condition) => {
+    return weatherConditions[condition.toLowerCase()] || condition;
   };
 
   const handleSoilMoistureChange = (value) => {
@@ -385,252 +519,196 @@ export default function WeatherPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-600"></div>
+      <div className="flex flex-col items-center justify-center min-h-screen gap-4">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>
+        <p className="text-gray-600">{getTranslation('loading', 'Loading weather data...')}</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-10">
+        <p className="text-red-500">
+          {getTranslation('error.loading', 'Error loading weather data. Please try again later.')}
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="w-full">
-      {/* Hero Section */}
-      <div className="bg-gradient-to-r from-green-600 to-emerald-600 text-white py-12 md:py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
-            <div className="mb-6 md:mb-0">
-              <h1 className="text-3xl md:text-4xl font-bold mb-2">Weather & Irrigation</h1>
-              <p className="text-green-100 text-lg">Real-time weather data and smart irrigation recommendations</p>
-            </div>
-            
-            <form onSubmit={handleSearch} className="w-full md:w-auto">
-              <div className="flex gap-2">
-                <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                  <Input
-                    type="text"
-                    value={location}
-                    onChange={(e) => setLocation(e.target.value)}
-                    placeholder="Enter location (e.g., Karnal, Haryana)"
-                    className="pl-10 w-full md:w-80 bg-white/10 border-white/20 text-white placeholder-green-200 focus:ring-2 focus:ring-white/50"
-                  />
-                </div>
-                <Button 
-                  type="submit" 
-                  disabled={loading}
-                  className="bg-white text-green-700 hover:bg-green-50 px-6"
-                >
-                  {loading ? 'Searching...' : 'Search'}
-                </Button>
+    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            {getTranslation('weather.weatherForecast', 'Weather Forecast')}
+          </h1>
+          <p className="text-gray-600">
+            {getTranslation('weather.forecastDescription', 'Get real-time weather updates and forecasts for your location')}
+          </p>
+          
+          {/* Search Bar */}
+          <form onSubmit={handleSearch} className="mt-4 flex">
+            <div className="relative flex-1">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Search className="h-5 w-5 text-gray-400" />
               </div>
-            </form>
-          </div>
+              <input
+                type="text"
+                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm"
+                placeholder={getTranslation('weather.searchPlaceholder', 'Search for a location...')}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+            <button
+              type="submit"
+              className="ml-3 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+            >
+              {getTranslation('common.search', 'Search')}
+            </button>
+          </form>
         </div>
-      </div>
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-        {weatherData && (
-          <>
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Current Weather Card */}
-              <motion.div 
-                className="lg:col-span-2"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4 }}
-              >
-                <Card className="h-full">
-                  <CardHeader className="pb-2">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <CardTitle className="text-2xl">Current Weather</CardTitle>
-                        <CardDescription className="text-base">
-                          {new Date().toLocaleDateString('en-US', { 
-                            weekday: 'long', 
-                            year: 'numeric', 
-                            month: 'long', 
-                            day: 'numeric' 
-                          })}
-                        </CardDescription>
-                      </div>
-                      <Badge variant="outline" className="text-sm">
-                        {weatherData.current.condition.replace('-', ' ')}
-                      </Badge>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="pt-4">
-                    <div className="flex flex-col md:flex-row items-center justify-between">
-                      <div className="flex items-center space-x-6">
-                        <div className="relative">
-                          <div className="text-8xl">
-                            <WeatherIcon condition={weatherData.current.condition} className="h-28 w-28" />
-                          </div>
-                          <div className="absolute -bottom-2 -right-2 bg-white/80 backdrop-blur-sm rounded-full p-2 shadow-sm">
-                            <WeatherIcon condition={weatherData.current.condition} className="h-8 w-8 text-amber-500" />
-                          </div>
-                        </div>
+        {/* Main Content */}
+        <div className="space-y-8">
+          {weatherData && (
+            <>
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* Current Weather Card */}
+                <motion.div 
+                  className="lg:col-span-2"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4 }}
+                >
+                  <Card className="h-full">
+                    <CardHeader className="pb-2">
+                      <div className="flex justify-between items-start">
                         <div>
-                          <div className="text-6xl font-bold text-gray-900">{weatherData.current.temp}°C</div>
-                          <div className="text-lg text-gray-600">
-                            Feels like {weatherData.current.feels_like}°C • {weatherData.location}
-                          </div>
+                          <CardTitle className="text-2xl">
+                            {getTranslation('weather.currentWeather', 'Current Weather')}
+                          </CardTitle>
+                          <CardDescription className="text-base">
+                            {new Date().toLocaleDateString(lang, { 
+                              weekday: 'long', 
+                              year: 'numeric', 
+                              month: 'long', 
+                              day: 'numeric' 
+                            })}
+                          </CardDescription>
                         </div>
+                        <Badge variant="outline" className="text-sm">
+                          {getTranslation(`conditions.${weatherData.current.condition.toLowerCase().replace(' ', '')}`, weatherData.current.condition)}
+                        </Badge>
                       </div>
-                      
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mt-6 md:mt-0 bg-gray-50 p-4 rounded-lg">
-                        <div className="flex flex-col items-center">
-                          <div className="flex items-center text-sm text-gray-500 mb-1">
-                            <Droplets className="h-4 w-4 mr-1 text-blue-500" />
-                            Humidity
-                          </div>
-                          <div className="text-xl font-semibold">{weatherData.current.humidity}%</div>
-                        </div>
-                        <div className="flex flex-col items-center">
-                          <div className="flex items-center text-sm text-gray-500 mb-1">
-                            <WindIcon className="h-4 w-4 mr-1 text-blue-500" />
-                            Wind
-                          </div>
-                          <div className="text-xl font-semibold">{weatherData.current.wind} km/h</div>
-                        </div>
-                        <div className="flex flex-col items-center">
-                          <div className="flex items-center text-sm text-gray-500 mb-1">
-                            <CloudRain className="h-4 w-4 mr-1 text-blue-500" />
-                            Precip
-                          </div>
-                          <div className="text-xl font-semibold">{weatherData.current.precipitation}%</div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="mt-6">
-                      <HourlyForecast hours={weatherData.current.hourly.slice(0, 12)} />
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-
-              {/* Right Sidebar */}
-              <div className="space-y-6">
-                {/* Soil Moisture Card */}
-                <SoilMoistureCard 
-                  moisture={soilMoisture} 
-                  onAdjust={handleSoilMoistureChange} 
-                />
-
-                {/* 5-Day Forecast */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-lg">5-Day Forecast</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    {weatherData.forecast.map((day, index) => (
-                      <div key={index} className="flex items-center justify-between">
-                        <span className="w-20 font-medium">{day.day}</span>
-                        <div className="flex-1 px-4">
-                          <div className="flex justify-center">
-                            <WeatherIcon condition={day.condition} size="lg" />
-                          </div>
-                        </div>
-                        <div className="w-20 text-right">
-                          <span className="font-medium">{day.temp}°</span>
-                          <span className="text-sm text-gray-500 ml-2">{day.precipitation}%</span>
-                        </div>
-                      </div>
-                    ))}
-                  </CardContent>
-                </Card>
-
-                {/* Irrigation Status */}
-                {irrigationRecommendation && (
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-lg">Irrigation Status</CardTitle>
                     </CardHeader>
-                    <CardContent>
-                      <IrrigationStatus recommendation={irrigationRecommendation} />
+                    <CardContent className="pt-4">
+                      <div className="flex flex-col md:flex-row items-center justify-between">
+                        <div className="flex items-center space-x-6">
+                          <div className="relative">
+                            <div className="text-8xl">
+                              <WeatherIcon condition={weatherData.current.condition} className="h-28 w-28" />
+                            </div>
+                          </div>
+                          <div>
+                            <div className="text-6xl font-bold">{weatherData.current.temp}°C</div>
+                            <p className="text-gray-600 mt-2">
+                              {getTranslation('weather.feelsLike', 'Feels like')} {weatherData.current.feelsLike}°C
+                            </p>
+                          </div>
+                        </div>
+                        <div className="mt-6 md:mt-0 space-y-2">
+                          <div className="flex items-center">
+                            <Droplet className="h-5 w-5 text-blue-400 mr-2" />
+                            <span>{getTranslation('weather.humidity', 'Humidity')}: {weatherData.current.humidity}%</span>
+                          </div>
+                          <div className="flex items-center">
+                            <WindIcon className="h-5 w-5 text-gray-400 mr-2" />
+                            <span>{getTranslation('weather.wind', 'Wind')}: {weatherData.current.wind} km/h</span>
+                          </div>
+                          <div className="flex items-center">
+                            <CloudRain className="h-5 w-5 text-blue-400 mr-2" />
+                            <span>{getTranslation('weather.precipitation', 'Precipitation')}: {weatherData.current.precipitation}%</span>
+                          </div>
+                        </div>
+                      </div>
                     </CardContent>
                   </Card>
-                )}
-              </div>
-            </div>
+                </motion.div>
 
-            {/* Weather Details Section */}
-            <div className="space-y-6">
-              {/* Weather Stats */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Weather Details</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <div className="flex items-center p-4 bg-gray-50 rounded-lg">
-                      <div className="p-3 rounded-full bg-blue-50 text-blue-500 mr-4">
-                        <Thermometer className="h-6 w-6" />
-                      </div>
-                      <div>
-                        <p className="text-sm text-gray-500">Feels Like</p>
-                        <p className="text-lg font-semibold">{weatherData.current.feels_like}°C</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center p-4 bg-gray-50 rounded-lg">
-                      <div className="p-3 rounded-full bg-green-50 text-green-500 mr-4">
-                        <Droplet className="h-6 w-6" />
-                      </div>
-                      <div>
-                        <p className="text-sm text-gray-500">Humidity</p>
-                        <p className="text-lg font-semibold">{weatherData.current.humidity}%</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center p-4 bg-gray-50 rounded-lg">
-                      <div className="p-3 rounded-full bg-purple-50 text-purple-500 mr-4">
-                        <WindIcon className="h-6 w-6" />
-                      </div>
-                      <div>
-                        <p className="text-sm text-gray-500">Wind Speed</p>
-                        <p className="text-lg font-semibold">{weatherData.current.wind} km/h</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center p-4 bg-gray-50 rounded-lg">
-                      <div className="p-3 rounded-full bg-amber-50 text-amber-500 mr-4">
-                        <Sun className="h-6 w-6" />
-                      </div>
-                      <div>
-                        <p className="text-sm text-gray-500">UV Index</p>
-                        <p className="text-lg font-semibold">
-                          {weatherData.current.condition === 'sunny' ? 'High' : 'Moderate'}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+                {/* Irrigation Status */}
+                <div>
+                  <SoilMoistureCard 
+                    moisture={soilMoisture} 
+                    onAdjust={handleSoilMoistureChange} 
+                  />
+                  {irrigationRecommendation && (
+                    <motion.div 
+                      className="mt-6"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.4, delay: 0.2 }}
+                    >
+                      <IrrigationStatus recommendation={irrigationRecommendation} />
+                    </motion.div>
+                  )}
+                </div>
+              </div>
 
               {/* Hourly Forecast */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Hourly Forecast</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <HourlyForecast hours={weatherData.current.hourly} />
-                </CardContent>
-              </Card>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.2 }}
+              >
+                <h2 className="text-xl font-semibold mb-4">
+                  {getTranslation('weather.hourlyForecast', 'Hourly Forecast')}
+                </h2>
+                <HourlyForecast hours={weatherData.current.hourly} />
+              </motion.div>
 
-              {/* Weather Map */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Weather Map</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="h-64 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400">
-                    Weather Radar Map
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-          </>
-        )}
+              {/* Daily Forecast */}
+<motion.div
+  className="mt-8"
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.4, delay: 0.3 }}
+>
+  <h2 className="text-xl font-semibold mb-4">
+    {getTranslation('weather.forecast', 'Forecast')}
+  </h2>
+  {weatherData?.forecast?.daily ? (
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      {weatherData.forecast.daily.map((day, index) => (
+        <WeatherCard
+          key={index}
+          day={day.day}
+          temp={day.high}
+          condition={day.condition}
+          precipitation={day.precipitation}
+          wind={Math.floor(Math.random() * 15) + 5}
+          humidity={Math.floor(Math.random() * 30) + 50}
+          sunrise={weatherData.current.sunrise}
+          sunset={weatherData.current.sunset}
+          isToday={index === 0}
+          lang={lang}
+        />
+      ))}
+    </div>
+  ) : (
+    <p className="text-gray-500">
+      {getTranslation('weather.noForecastData', 'Forecast data not available')}
+    </p>
+  )}
+</motion.div>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
 }
+
+export default WeatherClient;

@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { ArrowRight, Leaf, CloudSun, Calendar, Droplet, TrendingUp } from 'lucide-react';
 import { t } from '@/translations';
+import Image from 'next/image';
+import Link from 'next/link';
 
 export default function Hero({ lang = 'en' }) {
   const [isHovered, setIsHovered] = useState(false);
@@ -23,22 +25,26 @@ export default function Hero({ lang = 'en' }) {
             transition={{ duration: 0.6 }}
           >
             <motion.div 
-              className="inline-flex items-center px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm text-sm font-medium text-white shadow-sm"
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
+              className="flex justify-center lg:justify-start mb-4"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5 }}
             >
-              <Leaf className="h-4 w-4 mr-2" />
-              <span>Smart Farming Assistant</span>
             </motion.div>
+           
             
             <motion.h1 
-              className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-tight"
+              className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-tight"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}
             >
-              Welcome to <span className="text-yellow-300">Agrosarthi</span>
+              Welcome to 
+              <img 
+                src="/images/logo.jpeg" 
+                alt="Agrosarthi Logo" 
+                className="h-16 w-150 rounded-lg shadow-lg"
+              />
             </motion.h1>
             
             <motion.p 
@@ -56,28 +62,32 @@ export default function Hero({ lang = 'en' }) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
             >
-              <Button 
-                size="lg" 
-                className="bg-white text-green-700 hover:bg-green-50 px-8 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
-              >
-                Get Started
-                <motion.span
-                  animate={{ x: isHovered ? 5 : 0 }}
-                  transition={{ duration: 0.2 }}
+              <Link href={`/${lang}/dashboard`}>
+                <Button 
+                  size="lg" 
+                  className="bg-white text-green-700 hover:bg-green-50 px-8 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+                  onMouseEnter={() => setIsHovered(true)}
+                  onMouseLeave={() => setIsHovered(false)}
                 >
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </motion.span>
-              </Button>
+                  Get Started
+                  <motion.span
+                    animate={{ x: isHovered ? 5 : 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </motion.span>
+                </Button>
+              </Link>
               
-              <Button 
-                variant="outline" 
-                size="lg" 
-                className="border-2 border-white/30 bg-transparent hover:bg-white/10 text-white hover:text-white px-8 py-6 text-base font-medium transition-all duration-300 transform hover:-translate-y-1"
-              >
-                Explore Tools
-              </Button>
+              <Link href={`/${lang}/calculators`}>
+                <Button 
+                  variant="outline" 
+                  size="lg" 
+                  className="border-2 border-white/30 bg-transparent hover:bg-white/10 text-white hover:text-white px-8 py-6 text-base font-medium transition-all duration-300 transform hover:-translate-y-1"
+                >
+                  Explore Tools
+                </Button>
+              </Link>
             </motion.div>
           </motion.div>
           
@@ -91,7 +101,7 @@ export default function Hero({ lang = 'en' }) {
               <div className="p-6">
                 <h3 className="text-2xl font-bold mb-6 flex items-center">
                   <span className="bg-gradient-to-r from-yellow-300 to-amber-400 bg-clip-text text-transparent">
-                    Today's Overview
+                    {t('home.hero.todaysOverview', lang)}
                   </span>
                 </h3>
                 

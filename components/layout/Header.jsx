@@ -6,7 +6,8 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useLanguage } from '@/context/LanguageContext';
-import { t } from '@/translations/index'; // Make sure to include /index
+import { t } from '@/translations/index'; 
+import Image from 'next/image';
 import { 
   Menu, 
   X, 
@@ -81,12 +82,14 @@ export default function Header() {
           <div className="flex items-center">
             <div className="flex-shrink-0">
               <Link href={getLocalizedPath('/home')} className="flex items-center group">
-                <div className="h-10 w-10 rounded-full bg-gradient-to-r from-green-600 to-emerald-500 flex items-center justify-center text-white font-bold text-lg group-hover:scale-105 transition-transform">
-                  <Leaf className="h-5 w-5" />
-                </div>
-                <span className="ml-2 text-xl font-bold bg-gradient-to-r from-green-700 to-emerald-600 bg-clip-text text-transparent">
-                  {t('app.name', currentLanguage) || 'Agrosarthi'}
-                </span>
+                <Image
+              src="/images/logo.jpeg"
+              alt="Agrosarthi Logo"
+              width={160}
+              height={40}
+              className="h-10 w-auto object-contain"
+              priority
+            />
               </Link>
             </div>
             <nav className="hidden lg:ml-8 lg:flex lg:space-x-1 overflow-x-auto">
@@ -180,7 +183,7 @@ export default function Header() {
                 
                 {active && (
                   <span className="ml-auto inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                    {t('common.current', memoizedCurrentLanguage) || 'Current'}
+                    {t('common.current', memoizedCurrentLanguage)}
                   </span>
                 )}
               </Link>

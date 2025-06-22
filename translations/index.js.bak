@@ -1,0 +1,532 @@
+const translations = {
+  en: {
+    // App
+    app: {
+      name: 'Agrosarthi'
+    },
+    
+    // Navigation
+    nav: {
+      home: 'Home',
+      weather: 'Weather',
+      cropCalendar: 'Crop Calendar',
+      cropAI: 'Crop AI',
+      calculators: 'Calculators',
+      equipment: 'Equipment',
+      guides: 'Guides',
+      dashboard: 'Dashboard'
+    },
+    
+    // Common
+    welcome: 'Welcome to Agrosarthi',
+    heroDescription: 'Make data-driven decisions for your farm with our comprehensive suite of tools providing weather updates, market prices, farming calculators, and AI-powered advice.',
+    getStarted: 'Get Started',
+    learnMore: 'Learn More',
+    
+    // Buttons
+    submit: 'Submit',
+    cancel: 'Cancel',
+    save: 'Save',
+    loading: 'Loading...',
+    selectLanguage: 'Select Language',
+    current: 'Current',
+    
+    // Home Page
+    home: {
+      // Newsletter
+      newsletter: {
+        title: 'Stay Updated',
+        description: 'Get the latest farming tips, weather updates, and exclusive offers delivered to your inbox.',
+        emailPlaceholder: 'Enter your email address',
+        subscribeButton: 'Subscribe Now',
+        thankYou: 'Thank you for subscribing!'
+      },
+      
+      // Disease Detection
+      diseaseDetection: {
+        title: 'Crop Disease Detection',
+        description: 'Instantly identify plant diseases with our AI-powered detection system',
+        tryNow: 'Try Now',
+        supports: 'Supports',
+        cropsCount: '10+ Crops',
+        cropsList: 'Including rice, wheat, maize, and more',
+        detects: 'Detects',
+        diseasesCount: '50+ Diseases',
+        treatmentPlans: 'With detailed treatment plans'
+      },
+      
+      // Smart Farming Assistant
+      smartAssistant: {
+        title: 'Smart Farming Assistant',
+        subtitle: 'AI-powered guidance for your farming needs',
+        openFull: 'Open Full Assistant',
+        welcomeMessage: 'Hello! I\'m your Smart Farming Assistant. I can help with crop planning, pest identification, and farming best practices. How can I assist you today?',
+        inputPlaceholder: 'Ask me anything about farming...',
+        disclaimer: 'Agrosarthi AI may produce inaccurate information about people, places, or facts.',
+        features: {
+          cropPlanning: {
+            title: 'Crop Planning',
+            description: 'Get personalized crop recommendations based on your soil type and climate'
+          },
+          pestDisease: {
+            title: 'Pests & Diseases',
+            description: 'Identify and treat common crop diseases and pests'
+          },
+          smartTips: {
+            title: 'Smart Tips',
+            description: 'Daily farming tips and best practices'
+          }
+        }
+      }
+    }
+  },
+  hi: {
+    // App
+    app: {
+      name: 'अग्रोसार्थी'
+    },
+    
+    // Navigation
+    nav: {
+      home: 'होम',
+      weather: 'मौसम',
+      cropCalendar: 'फसल कैलेंडर',
+      cropAI: 'फसल एआई',
+      calculators: 'कैलकुलेटर',
+      equipment: 'उपकरण',
+      guides: 'मार्गदर्शिकाएँ',
+      dashboard: 'डैशबोर्ड'
+    },
+    
+    // Common
+    welcome: 'किसान साथी में आपका स्वागत है',
+    heroDescription: 'मौसम अपडेट, बाजार भाव, कृषि कैलकुलेटर और एआई-सहायित सलाह के साथ अपने खेत के लिए डेटा-संचालित निर्णय लें।',
+    getStarted: 'शुरू करें',
+    learnMore: 'और जानें',
+    
+    // Buttons
+    submit: 'जमा करें',
+    cancel: 'रद्द करें',
+    save: 'सेव करें',
+    loading: 'लोड हो रहा है...',
+    selectLanguage: 'भाषा चुनें',
+    current: 'वर्तमान',
+    
+    // Home Page
+    home: {
+      // Newsletter
+      newsletter: {
+        title: 'अपडेट रहें',
+        description: 'नवीनतम कृषि युक्तियों, मौसम अपडेट और विशेष ऑफ़र्स के लिए हमारे न्यूज़लेटर की सदस्यता लें।',
+        emailPlaceholder: 'अपना ईमेल दर्ज करें',
+        subscribeButton: 'सदस्यता लें',
+        thankYou: 'सदस्यता लेने के लिए धन्यवाद!'
+      },
+      
+      // Featured Tools
+      featuredTools: {
+        title: 'विशेष उपकरण',
+        weather: {
+          name: 'मौसम पूर्वानुमान',
+          description: 'स्थान-विशिष्ट मौसम अपडेट प्राप्त करें'
+        },
+        prices: {
+          name: 'बाजार भाव',
+          description: 'फसलों के रीयल-टाईम मूल्यों को ट्रैक करें'
+        },
+        calculators: {
+          name: 'कृषि कैलकुलेटर',
+          description: 'उपज, इनपुट और लाभ की गणना करें'
+        },
+        calendar: {
+          name: 'फसल कैलेंडर',
+          description: 'बुवाई और कटाई का इष्टतम समय'
+        },
+        irrigation: {
+          name: 'सिंचाई योजनाकार',
+          description: 'जल प्रबंधन की योजना बनाएं'
+        },
+        soil: {
+          name: 'मृदा विश्लेषण',
+          description: 'अपनी मिट्टी की संरचना को समझें'
+        }
+      },
+      
+      // Disease Detection
+      diseaseDetection: {
+        title: 'फसल रोग पहचान',
+        description: 'हमारी एआई-संचालित पहचान प्रणाली के साथ पौधों के रोगों को तुरंत पहचानें',
+        tryNow: 'अभी आजमाएं',
+        supports: 'समर्थन करता है',
+        cropsCount: '10+ फसलें',
+        cropsList: 'चावल, गेहूं, मक्का और अन्य सहित',
+        detects: 'पहचानता है',
+        diseasesCount: '50+ रोग',
+        treatmentPlans: 'विस्तृत उपचार योजनाओं के साथ'
+      },
+      
+      // Smart Farming Assistant
+      smartAssistant: {
+        title: 'स्मार्ट फार्मिंग सहायक',
+        subtitle: 'आपकी खेती के लिए एआई-सहायक मार्गदर्शन',
+        openFull: 'पूरा सहायक खोलें',
+        welcomeMessage: 'नमस्ते! मैं आपका स्मार्ट फार्मिंग सहायक हूं। मैं आपकी फसल योजना, कीट पहचान और खेती की सर्वोत्तम प्रथाओं में मदद कर सकता हूं। मैं आपकी आज कैसे मदद कर सकता हूं?',
+        inputPlaceholder: 'मुझसे खेती के बारे में कुछ भी पूछें...',
+        disclaimer: 'अग्रोसार्थी एआई लोगों, स्थानों या तथ्यों के बारे में गलत जानकारी दे सकता है।',
+        features: {
+          cropPlanning: {
+            title: 'फसल योजना',
+            description: 'आपकी मिट्टी के प्रकार और जलवायु के आधार पर व्यक्तिगत फसल सिफारिशें प्राप्त करें'
+          },
+          pestDisease: {
+            title: 'कीट और रोग',
+            description: 'आम फसल रोगों और कीटों की पहचान करें और उनका इलाज करें'
+          },
+          smartTips: {
+            title: 'स्मार्ट सुझाव',
+            description: 'दैनिक खेती के सुझाव और सर्वोत्तम प्रथाएं'
+          }
+        }
+      },
+      
+      // Dashboard
+      dashboard: {
+        title: 'डैशबोर्ड अवलोकन',
+        subtitle: 'एक नजर में आपकी व्यक्तिगत खेती की जानकारी',
+        viewFull: 'पूरा डैशबोर्ड देखें',
+        weatherFor: 'दिल्ली, भारत के लिए मौसम',
+        marketPrices: 'बाजार भाव',
+        viewAll: 'सभी देखें',
+        upcomingTasks: 'आगामी कार्य',
+        viewAllTasks: 'सभी कार्य देखें',
+        tasks: {
+          fertilizer: {
+            title: 'उर्वरक डालें',
+            due: '2 दिनों में नियत'
+          },
+          irrigation: {
+            title: 'सिंचाई की जाँच करें',
+            due: '5 दिनों में नियत'
+          },
+          pest: {
+            title: 'कीट निगरानी',
+            due: '7 दिनों में नियत'
+          }
+        }
+      },
+      
+      // Quick Stats
+      quickStats: {
+        weather: {
+          title: 'वर्तमान मौसम',
+          value: '32°C',
+          description: 'दिल्ली, साफ आसमान'
+        },
+        cropPrice: {
+          title: 'शीर्ष फसल मूल्य',
+          value: '₹2,200',
+          description: 'चावल (प्रति क्विंटल)'
+        },
+        season: {
+          title: 'बुआई का मौसम',
+          value: 'खरीफ',
+          description: 'जून-सितंबर (चल रहा है)'
+        },
+        marketTrend: {
+          title: 'बाजार रुझान',
+          value: '4.8%',
+          description: 'साप्ताहिक औसत'
+        },
+        trending: 'ट्रेंडिंग'
+      },
+      
+      // Hero
+      hero: {
+        tagline: 'स्मार्ट फार्मिंग सहायक',
+        title: {
+          prefix: 'आपका स्वागत है',
+          suffix: 'में'
+        },
+        exploreTools: 'उपकरण एक्सप्लोर करें',
+        todaysOverview: 'आज का अवलोकन'
+      },
+      everythingYouNeed: 'स्मार्ट खेती के लिए आपको जो कुछ चाहिए',
+      comprehensiveTools: 'हमारे व्यापक उपकरण आपको बेहतर खेत प्रबंधन के लिए डेटा-संचालित निर्णय लेने में मदद करते हैं।',
+      quickActions: 'त्वरित कार्रवाई',
+      getInstantInsights: 'तुरंत जानकारी प्राप्त करें और अपने डैशबोर्ड से ही कार्रवाई करें।',
+      trustedByFarmers: 'पूरे भारत के किसानों द्वारा भरोसा किया गया',
+      
+      // Features
+      features: {
+        weatherForecast: {
+          title: 'मौसम पूर्वानुमान',
+          description: 'अपने खेत के स्थान के लिए सटीक मौसम पूर्वानुमान प्राप्त करें।'
+        },
+        cropHealth: {
+          title: 'फसल स्वास्थ्य',
+          description: 'एआई-सहायित विश्लेषण के साथ फसल के स्वास्थ्य की निगरानी और भविष्यवाणी करें।'
+        },
+        irrigation: {
+          title: 'सिंचाई',
+          description: 'स्मार्ट सिंचाई सिफारिशों के साथ पानी के उपयोग को अनुकूलित करें।'
+        },
+        marketPrices: {
+          title: 'बाजार भाव',
+          description: 'अपने उत्पादों के लिए रीयल-टाइम बाजार भावों के बारे में अपडेटेड रहें।'
+        }
+      },
+      
+      // Testimonials
+      testimonials: {
+        rajesh: {
+          name: 'राजेश कुमार',
+          role: 'किसान, पंजाब',
+          content: 'अग्रोसार्थी ने मेरे खेत के प्रबंधन के तरीके को बदल दिया है। मौसम का पूर्वानुमान बिल्कुल सटीक है!'
+        },
+        priya: {
+          name: 'प्रिया शर्मा',
+          role: 'जैविक किसान, केरल',
+          content: 'फसल रोग पहचान सुविधा ने मेरी पूरी फसल को बचा लिया। अत्यधिक अनुशंसित!'
+        }
+      },
+      
+      // Newsletter
+      newsletter: {
+        title: 'अपडेटेड रहें',
+        description: 'नवीनतम कृषि युक्तियों, मौसम अपडेट और विशेष ऑफर्स के लिए हमारे न्यूज़लेटर की सदस्यता लें।',
+        emailPlaceholder: 'अपना ईमेल दर्ज करें',
+        subscribeButton: 'सदस्यता लें',
+        thankYou: 'सदस्यता लेने के लिए धन्यवाद!'
+      }
+    }
+  },
+  bn: {
+    // App
+    app: {
+      name: 'অ্যাগ্রোসার্থী'
+    },
+    
+    // Navigation
+    nav: {
+      home: 'হোম',
+      weather: 'আবহাওয়া',
+      cropCalendar: 'ফসলের ক্যালেন্ডার',
+      cropAI: 'ফসল এআই',
+      calculators: 'ক্যালকুলেটর',
+      equipment: 'সরঞ্জাম',
+      guides: 'গাইড',
+      dashboard: 'ড্যাশবোর্ড'
+    },
+    
+    welcome: 'কিসান সাথীতে স্বাগতম',
+    heroDescription: 'আমাদের ব্যাপক সরঞ্জাম স্যুট দিয়ে আপনার খামারের জন্য ডেটা-চালিত সিদ্ধান্ত নিন যা আবহাওয়ার আপডেট, বাজার মূল্য, চাষের ক্যালকুলেটর এবং এআই-চালিত পরামর্শ প্রদান করে।',
+    getStarted: 'শুরু করুন',
+    learnMore: 'আরও জানুন',
+    home: 'হোম',
+    dashboard: 'ড্যাশবোর্ড',
+    weather: 'আবহাওয়া',
+    marketPrices: 'বাজার দর',
+    calculators: 'ক্যালকুলেটর',
+    farmingTips: 'চাষের টিপস',
+    cropAssistant: 'ফসল সহায়ক',
+    view: 'দেখুন',
+    addActivity: 'কার্যকলাপ যোগ করুন',
+    
+    // Dashboard
+    temperature: 'তাপমাত্রা',
+    humidity: 'আর্দ্রতা',
+    rainfall: 'বৃষ্টিপাত',
+    windSpeed: 'বাতাসের গতি',
+    current: 'বর্তমান',
+    last24h: 'শেষ 24 ঘন্টা',
+    weatherForecast: 'আবহাওয়ার পূর্বাভাস',
+    next5Days: 'পরবর্তী 5 দিন',
+    marketPrices: 'বাজার দর',
+    currentRates: 'বর্তমান বাজার হার',
+    recentActivities: 'সাম্প্রতিক কার্যকলাপ',
+    irrigation: 'সেচ',
+    fertilizer: 'সার',
+    pest_control: 'পোকামাকড় নিয়ন্ত্রণ',
+    completed: 'সম্পন্ন',
+    pending: 'বিচারাধীন',
+    alerts: 'সতর্কতা',
+    importantUpdates: 'গুরুত্বপূর্ণ আপডেট এবং বিজ্ঞপ্তি',
+    weather: 'আবহাওয়া',
+    pest: 'পোকা',
+    market: 'বাজার',
+    submit: 'জমা দিন',
+    cancel: 'বাতিল',
+    save: 'সংরক্ষণ করুন',
+    loading: 'লোড হচ্ছে...',
+    selectLanguage: 'ভাষা নির্বাচন করুন',
+    
+    // Home Page
+    home: {
+      everythingYouNeed: 'স্মার্ট চাষের জন্য আপনার যা কিছু প্রয়োজন',
+      comprehensiveTools: 'আমাদের ব্যাপক সরঞ্জামগুলির স্যুট আপনাকে ভাল খামার ব্যবস্থাপনার জন্য ডেটা-চালিত সিদ্ধান্ত নিতে সাহায্য করে।',
+      quickActions: 'দ্রুত কর্ম',
+      getInstantInsights: 'তাত্ক্ষণিক অন্তর্দৃষ্টি পান এবং আপনার ড্যাশবোর্ড থেকে সরাসরি ব্যবস্থা নিন।',
+      trustedByFarmers: 'সারা ভারতের কৃষকদের দ্বারা বিশ্বস্ত'
+    },
+  },
+  te: {
+    // App
+    app: {
+      name: 'అగ్రోసార్థి'
+    },
+    
+    // Navigation
+    nav: {
+      home: 'హోమ్',
+      weather: 'వాతావరణం',
+      cropCalendar: 'పంట క్యాలెండర్',
+      cropAI: 'పంట AI',
+      calculators: 'కాలిక్యులేటర్లు',
+      equipment: 'పరికరాలు',
+      guides: 'గైడ్లు',
+      dashboard: 'డాష్బోర్డ్'
+    },
+    
+    welcome: 'కిసాన్ సాథికి స్వాగతం',
+    heroDescription: 'వాతావరణ నవీకరణలు, మార్కెట్ ధరలు, వ్యవసాయ కాలిక్యులేటర్లు మరియు AI-ఆధారిత సలహాలతో మీ వ్యవసాయ ఫారమ్ కోసం డేటా-ఆధారిత నిర్ణయాలు తీసుకోండి.',
+    getStarted: 'ప్రారంభించండి',
+    learnMore: 'మరింత తెలుసుకోండి',
+    home: 'హోమ్',
+    dashboard: 'డాష్బోర్డ్',
+    weather: 'వాతావరణం',
+    marketPrices: 'మార్కెట్ ధరలు',
+    calculators: 'కాలిక్యులేటర్లు',
+    farmingTips: 'వ్యవసాయ చిట్కాలు',
+    cropAssistant: 'పంట సహాయకుడు',
+    submit: 'సమర్పించండి',
+    cancel: 'రద్దు చేయి',
+    save: 'సేవ్ చేయి',
+    loading: 'లోడ్ అవుతోంది...',
+    selectLanguage: 'భాషను ఎంచుకోండి',
+  },
+  ta: {
+    // App
+    app: {
+      name: 'அக்ரோசார்த்தி'
+    },
+    
+    // Navigation
+    nav: {
+      home: 'முகப்பு',
+      weather: 'வானிலை',
+      cropCalendar: 'பயிர் நாட்காட்டி',
+      cropAI: 'பயிர் AI',
+      calculators: 'கால்குலேட்டர்கள்',
+      equipment: 'உபகரணங்கள்',
+      guides: 'வழிகாட்டிகள்',
+      dashboard: 'டாஷ்போர்டு'
+    },
+    
+    welcome: 'கிசான் சாதிக்கு வரவேற்கிறோம்',
+    heroDescription: 'வானிலை புதுப்பிப்புகள், சந்தை விலைகள், விவசாய கால்குலேட்டர்கள் மற்றும் AI-இயக்கப்படும் ஆலோசனைகளுடன் உங்கள் பண்ணைக்கான தரவு-இயக்கப்பட்ட முடிவுகளை எடுக்கவும்.',
+    getStarted: 'தொடங்கவும்',
+    learnMore: 'மேலும் அறிய',
+    home: 'முகப்பு',
+    dashboard: 'டாஷ்போர்டு',
+    weather: 'வானிலை',
+    marketPrices: 'சந்தை விலைகள்',
+    calculators: 'கால்குலேட்டர்கள்',
+    farmingTips: 'விவசாய உதவிக்குறிப்புகள்',
+    cropAssistant: 'பயிர் உதவியாளர்',
+    submit: 'சமர்ப்பி',
+    cancel: 'ரத்து செய்',
+    save: 'சேமி',
+    loading: 'ஏற்றுகிறது...',
+    selectLanguage: 'மொழியைத் தேர்ந்தெடுக்கவும்',
+  },
+  mr: {
+    // App
+    app: {
+      name: 'अग्रोसार्थी'
+    },
+    
+    // Navigation
+    nav: {
+      home: 'मुख्यपृष्ठ',
+      weather: 'हवामान',
+      cropCalendar: 'पिक कॅलेंडर',
+      cropAI: 'पिक AI',
+      calculators: 'कॅल्क्युलेटर',
+      equipment: 'साधने',
+      guides: 'मार्गदर्शक',
+      dashboard: 'डॅशबोर्ड'
+    },
+    
+    welcome: 'किसान साथी मध्ये आपले स्वागत आहे',
+    heroDescription: 'हवामान अद्यतने, बाजारभाव, शेती कॅल्क्युलेटर आणि कृत्रिम बुद्धिमत्तेच्या सल्ल्यासह आपल्या शेतासाठी डेटा-आधारित निर्णय घ्या.',
+    getStarted: 'सुरू करा',
+    learnMore: 'अधिक जाणून घ्या',
+    home: 'मुख्यपृष्ठ',
+    dashboard: 'डॅशबोर्ड',
+    weather: 'हवामान',
+    marketPrices: 'बाजारभाव',
+    calculators: 'कॅल्क्युलेटर',
+    farmingTips: 'शेतीचे टिप्स',
+    cropAssistant: 'पीक सहाय्यक',
+    submit: 'सबमिट करा',
+    cancel: 'रद्द करा',
+    save: 'जतन करा',
+    loading: 'लोड होत आहे...',
+    selectLanguage: 'भाषा निवडा',
+  }
+};
+
+const defaultTranslations = translations.en;
+
+/**
+ * Get translation for a given key and language
+ * Supports nested keys using dot notation (e.g., 'nav.home')
+ */
+const t = (key, lang = 'en') => {
+  // If no key is provided, return empty string
+  if (!key) return '';
+  
+  // Get the translation object for the specified language, fallback to English
+  const langTranslations = translations[lang] || translations.en;
+  
+  // Handle nested keys (e.g., 'nav.home')
+  const keys = key.split('.');
+  let result = langTranslations;
+  
+  try {
+    // Traverse the nested object structure
+    for (const k of keys) {
+      if (result === undefined || result === null) break;
+      result = result[k];
+    }
+    
+    // If we found a result, return it
+    if (result !== undefined && result !== null) {
+      return result;
+    }
+    
+    // Fallback to English if the key is not found in the specified language
+    if (lang !== 'en') {
+      result = translations.en;
+      for (const k of keys) {
+        if (result === undefined || result === null) break;
+        result = result[k];
+      }
+      if (result !== undefined && result !== null) {
+        return result;
+      }
+    }
+    
+    // If still not found, return the last part of the key as a fallback
+    return keys[keys.length - 1];
+  } catch (error) {
+    console.error(`Translation error for key "${key}":`, error);
+    return key;
+  }
+};
+
+// Export the translations object as default
+export default translations;
+
+// Named export for the t function
+export { t };
