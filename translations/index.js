@@ -33,7 +33,18 @@ const translations = {
       feelsLike: 'Feels like',
       lastUpdated: 'Last updated',
       error: 'Error',
-      retry: 'Retry'
+      retry: 'Retry',
+      loading: 'Loading...',
+      save: 'Save',
+      cancel: 'Cancel',
+      confirm: 'Confirm',
+      delete: 'Delete',
+      edit: 'Edit',
+      close: 'Close',
+      next: 'Next',
+      previous: 'Previous',
+      submit: 'Submit',
+      reset: 'Reset'
     },
     
     // Home Page
@@ -43,42 +54,121 @@ const translations = {
       quickActions: 'Smart Farming Tools',
       getInstantInsights: 'Leverage our AI-powered tools to make informed decisions and boost your farm\'s productivity',
       
+      // Hero Section
+      hero: {
+        title: 'Smart Farming Made Simple',
+        subtitle: 'Powered by AI & Data Science',
+        description: 'Transform your agricultural decisions with real-time weather insights, market analytics, and AI-powered recommendations tailored for modern farmers.',
+        getStarted: 'Start Your Journey',
+        exploreFree: 'Explore Free Tools',
+        watchDemo: 'Watch Demo',
+        todaysOverview: 'Today\'s Farm Overview',
+        trustedBy: 'Trusted by 50,000+ Farmers',
+        freeTrialDays: 'Free 30-day Trial',
+        noCreditCard: 'No Credit Card Required',
+        rating: '4.9/5 Rating'
+      },
+
+      // Stats Section
+      stats: {
+        activeFarmers: 'Active Farmers',
+        cropsMonitored: 'Crops Monitored', 
+        successRate: 'Success Rate',
+        regionsCovered: 'Regions Covered',
+        accuracyRate: 'Accuracy Rate',
+        userRating: 'User Rating'
+      },
+      
       // Features
       features: {
         weatherForecast: {
-          title: 'Precision Weather Insights',
-          description: 'Hyper-local weather forecasts and real-time alerts to optimize your farming schedule and protect your crops'
+          title: 'Precision Weather Intelligence',
+          description: 'Hyper-local forecasts with satellite imagery and ML-powered predictions for optimal farming decisions',
+          stats: '99.2% Accuracy',
+          trend: '+15% yield improvement'
         },
         cropHealth: {
-          title: 'Crop Health Monitoring',
-          description: 'AI-powered disease detection and health analysis for over 50+ crops with actionable recommendations'
+          title: 'AI Crop Health Monitoring',
+          description: 'Computer vision and IoT sensors detect diseases, pests, and nutrient deficiencies before visible symptoms',
+          stats: '50+ Crop Types',
+          trend: '85% early detection'
         },
         irrigation: {
-          title: 'Smart Irrigation Planning',
-          description: 'Data-driven water management solutions to maximize yield while conserving water resources'
+          title: 'Smart Water Management',
+          description: 'Automated irrigation scheduling using soil moisture sensors and evapotranspiration models',
+          stats: '40% Water Savings',
+          trend: 'Automated scheduling'
         },
         marketPrices: {
-          title: 'Market Intelligence',
-          description: 'Real-time crop prices, demand forecasts, and market trends across major mandis in India'
+          title: 'Market Intelligence Hub',
+          description: 'Real-time pricing, demand forecasting, and supply chain optimization across 2000+ markets',
+          stats: '2000+ Markets',
+          trend: '12% better prices'
         }
+      },
+
+      // Dashboard Section
+      dashboard: {
+        title: 'Real-Time Farm Intelligence',
+        subtitle: 'Monitor, analyze, and optimize your farming operations with our comprehensive dashboard',
+        liveData: 'Live Agricultural Data',
+        farmControlCenter: 'Farm Control Center',
+        realTimeMonitoring: 'Real-time monitoring',
+        weatherAlerts: 'Weather Alerts',
+        marketTrends: 'Market Trends',
+        aiInsights: 'AI Insights',
+        cropRecommendations: 'Crop Recommendations',
+        yieldOptimization: 'Yield Optimization',
+        diseasePrevention: 'Disease Prevention',
+        optimalPlanting: 'Optimal Planting Window',
+        irrigationStatus: 'Irrigation Status',
+        weeklyGrowth: 'Weekly Growth'
+      },
+
+      // Tools Section
+      tools: {
+        title: 'Smart Farming Assistant',
+        subtitle: 'Leverage cutting-edge AI technology to make data-driven decisions and maximize your farm\'s potential',
+        aiPoweredTools: 'AI-Powered Tools',
+        diseaseDetection: 'Disease Detection',
+        cropAdvice: 'Crop Advisory',
+        marketAnalysis: 'Market Analysis',
+        weatherPrediction: 'Weather Prediction',
+        yieldCalculator: 'Yield Calculator',
+        fertilizerCalculator: 'Fertilizer Calculator',
+        pestManagement: 'Pest Management',
+        soilAnalysis: 'Soil Analysis'
       },
       
       // Testimonials
       testimonials: {
-        title: 'Trusted by Farmers Across India',
-        subtitle: 'Join thousands of successful farmers who have transformed their agricultural practices with our innovative solutions',
+        title: 'Trusted by 50,000+ Farmers',
+        subtitle: 'Join the growing community of successful farmers who have transformed their agricultural practices with our innovative solutions',
+        successStories: 'Success Stories',
         rajesh: {
           name: 'Rajesh Kumar',
-          role: 'Organic Farmer, Punjab',
-          content: 'Agrosarthi has transformed how I manage my crops. The disease detection feature saved my entire tomato harvest last season!'
+          role: 'Wheat Farmer, Punjab',
+          content: 'Agrosarthi transformed my farming. The weather predictions are incredibly accurate, and I increased my yield by 30% while using 25% less water.',
+          yieldIncrease: '+30%',
+          location: 'Punjab, India'
         },
         priya: {
           name: 'Priya Sharma',
-          role: 'Dairy & Crop Farmer, Maharashtra',
-          content: 'The weather alerts and crop planning tools have helped me increase my yield by 30% this year.'
+          role: 'Organic Vegetable Farmer, Maharashtra',
+          content: 'The disease prediction feature saved my tomato crop twice this season. The AI recommendations are like having an agricultural expert on call 24/7.',
+          yieldIncrease: '+25%',
+          location: 'Maharashtra, India'
+        },
+        arun: {
+          name: 'Arun Patel',
+          role: 'Cotton Farmer, Gujarat',
+          content: 'Market intelligence helped me time my sales perfectly. I got 15% better prices than my neighbors and the planning tools are incredibly user-friendly.',
+          yieldIncrease: '+15%',
+          location: 'Gujarat, India'
         }
       },
-         // Smart Assistant
+
+      // Smart Assistant
       smartAssistant: {
         title: 'Your AI Farming Assistant',
         subtitle: 'Get instant answers to all your farming questions - from crop care to market trends',
@@ -131,14 +221,54 @@ const translations = {
           offline: 'Connection lost. Working in limited mode - some features may not be available.'
         }
       },
+
+      // Featured Tools Section
+      featuredTools: {
+        title: 'Everything You Need to Succeed',
+        subtitle: 'Access our complete suite of agricultural tools and calculators designed to optimize every aspect of your farming operation',
+        comprehensiveToolkit: 'Comprehensive Toolkit',
+        viewAllTools: 'View All Tools',
+        getStarted: 'Get Started',
+        learnMore: 'Learn More'
+      },
+
+      // CTA Section
+      cta: {
+        title: 'Ready to Transform Your Farm?',
+        subtitle: 'Join thousands of successful farmers who have revolutionized their agricultural practices with our AI-powered platform',
+        startJourney: 'Start Your Journey',
+        getStartedFree: 'Get Started Free',
+        freeTrialText: 'Free 30-day trial',
+        noCreditCardText: 'No credit card required',
+        farmersTrackRecord: '50K+ farmers trust us',
+        rating: '4.9/5 rating'
+      },
       
       // Newsletter
       newsletter: {
-        title: 'Stay Ahead with Agrosarthi',
-        description: 'Subscribe to our newsletter for the latest farming insights, weather updates, and exclusive tips to maximize your harvest',
+        title: 'Stay Ahead with Smart Farming',
+        description: 'Get exclusive insights, weather alerts, market trends, and expert farming tips delivered directly to your inbox every week',
+        weeklyNewsletter: 'Weekly Newsletter',
         emailPlaceholder: 'Enter your email address',
         subscribeButton: 'Subscribe Now',
-        thankYou: 'Thank you for subscribing!'
+        thankYou: 'Welcome to Agrosarthi!',
+        confirmationMessage: 'Check your email for confirmation',
+        benefits: {
+          noSpam: 'No spam, ever',
+          joinFarmers: 'Join 15,000+ farmers',
+          trustedContent: 'Trusted content'
+        }
+      },
+
+      // Quick Stats Component
+      quickStats: {
+        title: 'Transforming Agriculture Across India',
+        activeFarmers: 'Active Farmers',
+        cropsSupported: 'Crops Supported',
+        averageYieldIncrease: 'Avg. Yield Increase',
+        waterSavings: 'Water Savings',
+        statesConnected: 'States Connected',
+        dailyPredictions: 'Daily Predictions'
       }
     }
   },

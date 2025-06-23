@@ -332,14 +332,14 @@ const WeatherClient = ({ lang = 'en' }) => {
       return defaultValue;
     }
   };
-  const [location, setLocation] = useState(getTranslation('defaultLocation', 'Karnal, Haryana'));
+  const [location, setLocation] = useState(getTranslation('defaultLocation', 'Kolkata, West Bengal, India'));
   const [weatherData, setWeatherData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [coords, setCoords] = useState({
-    lat: process.env.NEXT_PUBLIC_DEFAULT_LAT || '29.6857',
-    lon: process.env.NEXT_PUBLIC_DEFAULT_LON || '76.9905'
+    lat: '22.5726',  // Kolkata's latitude
+    lon: '88.3639'   // Kolkata's longitude
   });
   
   // Weather conditions mapping with translations
@@ -409,9 +409,26 @@ const WeatherClient = ({ lang = 'en' }) => {
     }
   }, [weatherData, soilMoisture]);
 
-  // Fetch weather data from OpenWeather API
+  // Handle search
+  const handleSearch = (e) => {
+    e.preventDefault();
+    const query = searchQuery.trim();
+    if (!query) return;
+    
+    // Clear any previous errors and set loading state
+    setError(null);
+    setLoading(true);
+    
+    // This will trigger the useEffect with the new search query
+    setSearchQuery(query);
+  };
+
+  // Fetch weather data from OpenMeteo API
   useEffect(() => {
     const fetchWeatherData = async () => {
+      // Skip initial fetch if no search query and we already have data
+      if (!searchQuery && weatherData) return;
+      
       try {
         setLoading(true);
         setError(null);
@@ -424,55 +441,86 @@ const WeatherClient = ({ lang = 'en' }) => {
         if (searchQuery) {
           // Geocoding API call to get coordinates for the searched location
           const geoResponse = await fetch(
-            `https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(searchQuery)}&limit=1&appid=${process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY}`
+            `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(searchQuery)}&count=1&language=en&format=json`
           );
           
           if (!geoResponse.ok) throw new Error('Failed to fetch location');
           
           const geoData = await geoResponse.json();
-          if (!geoData || geoData.length === 0) {
+          if (!geoData.results || geoData.results.length === 0) {
             throw new Error('Location not found');
           }
           
-          lat = geoData[0].lat;
-          lon = geoData[0].lon;
-          locationName = `${geoData[0].name}, ${geoData[0].country}`;
-          setCoords({ lat, lon });
+          lat = geoData.results[0].latitude;
+          lon = geoData.results[0].longitude;
+          locationName = `${geoData.results[0].name}, ${geoData.results[0].country}`;
+          
+          // Update coordinates and location
+          setCoords({ 
+            lat: lat.toString(), 
+            lon: lon.toString() 
+          });
           setLocation(locationName);
+          
+          // Clear search query to prevent duplicate fetches
           setSearchQuery('');
+          return; // Return here to prevent double fetch
         }
 
-        // Get weather data using coordinates
-        const weatherResponse = await fetch(
-          `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&exclude=minutely,hourly,alerts&units=metric&appid=${process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY}`
+        // Get weather data using OpenMeteo
+        const response = await fetch(
+          `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,rain,showers,snowfall,weather_code,cloud_cover,wind_speed_10m,wind_direction_10m&hourly=temperature_2m,precipitation_probability,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max&timezone=auto&forecast_days=7`
         );
 
-        if (!weatherResponse.ok) {
+        if (!response.ok) {
           throw new Error('Failed to fetch weather data');
         }
 
-        const data = await weatherResponse.json();
+        const data = await response.json();
 
-        // Transform OpenWeather data to match our component's expected format
+        // Helper function to map OpenMeteo weather codes to our condition names
+        const mapWeatherCondition = (code) => {
+          if (code === 0) return 'clear';
+          if (code <= 3) return 'partly-cloudy';
+          if (code <= 48) return 'fog';
+          if (code <= 67) return 'rain';
+          if (code <= 77) return 'snow';
+          if (code <= 99) return 'thunderstorm';
+          return 'clear';
+        };
+
+        // Process current weather
+        const currentTime = new Date();
+        
+        // Transform OpenMeteo data to match our component's expected format
         const transformedData = {
           current: {
-            temp: Math.round(data.current.temp),
-            condition: mapWeatherCondition(data.current.weather[0].id),
-            humidity: data.current.humidity,
-            wind: Math.round(data.current.wind_speed * 3.6), // Convert m/s to km/h
-            precipitation: data.current.rain ? data.current.rain['1h'] || 0 : 0,
-            sunrise: new Date(data.current.sunrise * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-            sunset: new Date(data.current.sunset * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            temp: Math.round(data.current.temperature_2m),
+            condition: mapWeatherCondition(data.current.weather_code),
+            humidity: data.current.relative_humidity_2m,
+            wind: Math.round(data.current.wind_speed_10m * 3.6), // Convert m/s to km/h
+            precipitation: data.current.precipitation || 0,
+            weatherCode: data.current.weather_code,
+            time: currentTime,
+            sunrise: '06:00', // OpenMeteo doesn't provide this in the free tier
+            sunset: '18:00',  // You can calculate this or use a separate API
+            feelsLike: Math.round(data.current.apparent_temperature)
           },
+          hourly: data.hourly.time.slice(0, 24).map((time, index) => ({
+            time: new Date(time).toLocaleTimeString([], { hour: '2-digit', hour12: false }),
+            temp: Math.round(data.hourly.temperature_2m[index]),
+            condition: mapWeatherCondition(data.hourly.weather_code[index]),
+            precipitation: data.hourly.precipitation_probability[index] || 0
+          })),
           forecast: {
-            daily: data.daily.slice(0, 5).map((day, index) => ({
-              day: index === 0 ? 'Today' : new Date(day.dt * 1000).toLocaleDateString('en-US', { weekday: 'short' }),
-              high: Math.round(day.temp.max),
-              low: Math.round(day.temp.min),
-              condition: mapWeatherCondition(day.weather[0].id),
-              precipitation: Math.round(day.pop * 100), // Convert probability to percentage
-              wind: Math.round(day.wind_speed * 3.6),
-              humidity: day.humidity
+            daily: data.daily.time.slice(0, 5).map((time, index) => ({
+              day: index === 0 ? 'Today' : new Date(time).toLocaleDateString('en-US', { weekday: 'short' }),
+              high: Math.round(data.daily.temperature_2m_max[index]),
+              low: Math.round(data.daily.temperature_2m_min[index]),
+              condition: mapWeatherCondition(data.daily.weather_code[index]),
+              precipitation: data.daily.precipitation_probability_max[index] || 0,
+              wind: Math.round(data.current.wind_speed_10m * 3.6),
+              humidity: data.current.relative_humidity_2m
             }))
           }
         };
@@ -481,32 +529,18 @@ const WeatherClient = ({ lang = 'en' }) => {
       } catch (err) {
         console.error('Error fetching weather data:', err);
         setError(err.message || getTranslation('error.loading', 'Failed to load weather data'));
+        // Fall back to mock data in case of error
+        setWeatherData({
+          ...mockWeatherData,
+          location: location
+        });
       } finally {
         setLoading(false);
       }
     };
 
     fetchWeatherData();
-  }, [coords.lat, coords.lon, searchQuery]);
-
-  // Helper function to map OpenWeather condition codes to our condition names
-  const mapWeatherCondition = (weatherId) => {
-    if (weatherId >= 200 && weatherId < 300) return 'thunderstorm';
-    if (weatherId >= 300 && weatherId < 400) return 'drizzle';
-    if (weatherId >= 500 && weatherId < 600) return 'rain';
-    if (weatherId >= 600 && weatherId < 700) return 'snow';
-    if (weatherId >= 700 && weatherId < 800) return 'mist';
-    if (weatherId === 800) return 'clear';
-    if (weatherId > 800) return 'cloudy';
-    return 'clear';
-  };
-
-  // Handle search
-  const handleSearch = (e) => {
-    e.preventDefault();
-    if (!searchQuery.trim()) return;
-    setLoading(true);
-  };
+  }, [coords.lat, coords.lon]); // Removed searchQuery from dependencies to prevent double fetch
 
   // Get translated weather condition
   const getTranslatedCondition = (condition) => {
@@ -666,43 +700,49 @@ const WeatherClient = ({ lang = 'en' }) => {
                 <h2 className="text-xl font-semibold mb-4">
                   {getTranslation('weather.hourlyForecast', 'Hourly Forecast')}
                 </h2>
-                <HourlyForecast hours={weatherData.current.hourly} />
+                {weatherData?.hourly?.length > 0 ? (
+                  <HourlyForecast hours={weatherData.hourly} />
+                ) : (
+                  <p className="text-gray-500">
+                    {getTranslation('weather.noHourlyData', 'Hourly forecast data not available')}
+                  </p>
+                )}
               </motion.div>
 
               {/* Daily Forecast */}
-<motion.div
-  className="mt-8"
-  initial={{ opacity: 0, y: 20 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.4, delay: 0.3 }}
->
-  <h2 className="text-xl font-semibold mb-4">
-    {getTranslation('weather.forecast', 'Forecast')}
-  </h2>
-  {weatherData?.forecast?.daily ? (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-      {weatherData.forecast.daily.map((day, index) => (
-        <WeatherCard
-          key={index}
-          day={day.day}
-          temp={day.high}
-          condition={day.condition}
-          precipitation={day.precipitation}
-          wind={Math.floor(Math.random() * 15) + 5}
-          humidity={Math.floor(Math.random() * 30) + 50}
-          sunrise={weatherData.current.sunrise}
-          sunset={weatherData.current.sunset}
-          isToday={index === 0}
-          lang={lang}
-        />
-      ))}
-    </div>
-  ) : (
-    <p className="text-gray-500">
-      {getTranslation('weather.noForecastData', 'Forecast data not available')}
-    </p>
-  )}
-</motion.div>
+              <motion.div
+                className="mt-8"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.3 }}
+              >
+                <h2 className="text-xl font-semibold mb-4">
+                  {getTranslation('weather.forecast', 'Forecast')}
+                </h2>
+                {weatherData?.forecast?.daily ? (
+                  <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                    {weatherData.forecast.daily.map((day, index) => (
+                      <WeatherCard
+                        key={index}
+                        day={day.day}
+                        temp={day.high}
+                        condition={day.condition}
+                        precipitation={day.precipitation}
+                        wind={Math.floor(Math.random() * 15) + 5}
+                        humidity={Math.floor(Math.random() * 30) + 50}
+                        sunrise={weatherData.current.sunrise}
+                        sunset={weatherData.current.sunset}
+                        isToday={index === 0}
+                        lang={lang}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-gray-500">
+                    {getTranslation('weather.noForecastData', 'Forecast data not available')}
+                  </p>
+                )}
+              </motion.div>
             </>
           )}
         </div>
