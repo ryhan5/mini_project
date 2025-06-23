@@ -32,22 +32,29 @@ return (
         </motion.div>
        
         
-        <motion.h1 
-          className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-tight"
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
+          className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 mb-6"
         >
-          Welcome to 
-          <img 
-            src="/images/logo.jpeg" 
-            alt="Agrosarthi Logo" 
-            className="h-16 w-150 rounded-lg shadow-lg"
-          />
-        </motion.h1>
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-tight">
+            Welcome to
+          </h1>
+          <div className="relative w-full max-w-[200px] h-auto">
+            <Image
+              src="/images/logo.jpeg"
+              alt="Agrosarthi Logo"
+              width={200}
+              height={64}
+              className="rounded-lg shadow-lg object-contain"
+              priority
+            />
+          </div>
+        </motion.div>
         
         <motion.p 
-          className="text-lg md:text-xl text-green-50 max-w-2xl mx-auto lg:mx-0 leading-relaxed"
+          className="text-lg md:text-xl text-green-50 max-w-2xl mx-auto lg:mx-0 leading-relaxed mt-4"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}

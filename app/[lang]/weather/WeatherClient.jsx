@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { 
   CloudRain, 
@@ -419,17 +419,23 @@ const WeatherClient = ({ lang = 'en' }) => {
     setError(null);
     setLoading(true);
     
-    // This will trigger the useEffect with the new search query
+    // Update the search query which will trigger the useEffect
     setSearchQuery(query);
+    
+    // Explicitly trigger the data fetch
+    fetchWeatherData(query);
   };
 
+  // Track if component is mounted
+  const isMounted = useRef(true);
+  
   // Fetch weather data from OpenMeteo API
-  useEffect(() => {
-    const fetchWeatherData = async () => {
-      // Skip initial fetch if no search query and we already have data
-      if (!searchQuery && weatherData) return;
-      
-      try {
+  const fetchWeatherData = async (query = searchQuery) => {
+    // Skip fetch if no query and we have data
+    if (!query && weatherData) return;
+    
+    try {
+        console.log('Starting weather data fetch...');
         setLoading(true);
         setError(null);
 
@@ -462,8 +468,8 @@ const WeatherClient = ({ lang = 'en' }) => {
           });
           setLocation(locationName);
           
-          // Clear search query to prevent duplicate fetches
-          setSearchQuery('');
+          // Don't clear search query here to show the searched location
+          // The search input will still show what was searched
           return; // Return here to prevent double fetch
         }
 
@@ -525,22 +531,43 @@ const WeatherClient = ({ lang = 'en' }) => {
           }
         };
 
-        setWeatherData(transformedData);
+        console.log('Weather data fetched successfully:', transformedData);
+        if (isMounted.current) {
+          setWeatherData(transformedData);
+        }
       } catch (err) {
         console.error('Error fetching weather data:', err);
-        setError(err.message || getTranslation('error.loading', 'Failed to load weather data'));
-        // Fall back to mock data in case of error
-        setWeatherData({
-          ...mockWeatherData,
-          location: location
+        console.error('Error details:', {
+          message: err.message,
+          stack: err.stack,
+          name: err.name
         });
+        
+        if (isMounted.current) {
+          setError(err.message || getTranslation('error.loading', 'Failed to load weather data'));
+          // Fall back to mock data in case of error
+          console.log('Falling back to mock data');
+          setWeatherData({
+            ...mockWeatherData,
+            location: location
+          });
+        }
       } finally {
-        setLoading(false);
+        if (isMounted.current) {
+          setLoading(false);
+        }
       }
     };
 
+  // Initial data fetch when component mounts
+  useEffect(() => {
     fetchWeatherData();
-  }, [coords.lat, coords.lon]); // Removed searchQuery from dependencies to prevent double fetch
+    
+    // Cleanup function
+    return () => {
+      isMounted.current = false;
+    };
+  }, [coords.lat, coords.lon]);
 
   // Get translated weather condition
   const getTranslatedCondition = (condition) => {
