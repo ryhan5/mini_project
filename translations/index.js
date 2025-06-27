@@ -38,6 +38,12 @@ const translations = {
     
     // Home Page
     home: {
+      hero: {
+        welcomeMessage: "Welcome to Agrosarthi",
+        heroDescription: "Make data-driven decisions for your farm with our comprehensive suite of tools providing weather updates, market prices, farming calculators, and AI-powered advice.",
+        getStarted: "Get Started",
+        exploreTools: "Explore Tools"
+      },
       everythingYouNeed: 'Your Complete Farming Companion',
       comprehensiveTools: 'Access powerful tools and insights to optimize every aspect of your farming operations, from crop planning to market sales',
       quickActions: 'Smart Farming Tools',
@@ -61,6 +67,14 @@ const translations = {
           title: 'Market Intelligence',
           description: 'Real-time crop prices, demand forecasts, and market trends across major mandis in India'
         }
+      },
+      
+      hero: {
+        todaysOverview: "Today's Overview",
+        welcomeMessage: "Welcome to ",
+        heroDescription: "Make data-driven decisions for your farm with our comprehensive suite of tools providing weather updates, market prices, farming calculators, and AI-powered advice.",
+        getStarted: "Get Started",
+        exploreTools: "Explore Tools"
       },
       
       // Testimonials
@@ -139,6 +153,22 @@ const translations = {
         emailPlaceholder: 'Enter your email address',
         subscribeButton: 'Subscribe Now',
         thankYou: 'Thank you for subscribing!'
+      },
+      card: {
+        weather: {
+          label: 'Weather', // English
+          clearSky: 'Clear Sky',
+          alert: 'Weather Alert',
+          lightRain: 'Light Rain'
+        },
+        market: {
+          trend: 'Market Trend',
+          weeklyAvg: 'Weekly Average'
+        },
+        planting: {
+          season: 'Planting Season',
+          kharif: 'Kharif Crops'
+        }
       }
     }
   },
@@ -176,6 +206,12 @@ const translations = {
       retry: 'पुनः प्रयास करें'
     },
     home: {
+      hero: {
+        welcomeMessage: "अग्रोसार्थी में आपका स्वागत है",
+        heroDescription: "मौसम अपडेट, बाजार मूल्य, कृषि कैलकुलेटर और एआई-सक्षम सलाह प्रदान करने वाले हमारे व्यापक उपकरणों के साथ अपने खेत के लिए डेटा-संचालित निर्णय लें।",
+        getStarted: "शुरू करें",
+        exploreTools: "उपकरण एक्सप्लोर करें"
+      },
       everythingYouNeed: 'आपका संपूर्ण कृषि सहयोगी',
       comprehensiveTools: 'फसल योजना से लेकर बाजार बिक्री तक, अपने कृषि संचालन के हर पहलू को अनुकूलित करने के लिए शक्तिशाली उपकरण और अंतर्दृष्टि प्राप्त करें',
       quickActions: 'स्मार्ट खेती उपकरण',
@@ -196,7 +232,13 @@ const translations = {
         marketPrices: {
           title: 'बाजार बुद्धिमत्ता',
           description: 'भारत के प्रमुख मंडियों में रीयल-टाइम फसल मूल्य, मांग पूर्वानुमान और बाजार रुझान'
-        }
+        },
+        hero: {
+          welcomeMessage: "अग्रोसार्थी में आपका स्वागत है",
+          heroDescription: "हमारे व्यापक उपकरणों के साथ अपने खेत के लिए डेटा-संचालित निर्णय लें जो मौसम अपडेट, बाजार मूल्य, कृषि कैलकुलेटर और एआई-संचालित सलाह प्रदान करते हैं।",
+          getStarted: "शुरू हो जाओ",
+          exploreTools: "उपकरणों का अन्वेषण करें"
+        }    
       },
       testimonials: {
         title: 'पूरे भारत के किसानों द्वारा विश्वसनीय',
@@ -218,6 +260,22 @@ const translations = {
         emailPlaceholder: 'अपना ईमेल पता दर्ज करें',
         subscribeButton: 'अभी सदस्यता लें',
         thankYou: 'सदस्यता लेने के लिए धन्यवाद!'
+      },
+      card: {
+        weather: {
+          label: 'मौसम',
+          clearSky: 'साफ आसमान',
+          alert: 'मौसम चेतावनी',
+          lightRain: 'हल्की बारिश'
+        },
+        market: {
+          trend: 'बाजार प्रवृत्ति',
+          weeklyAvg: 'साप्ताहिक औसत'
+        },
+        planting: {
+          season: 'रोपण का मौसम',
+          kharif: 'खरीफ फसलें'
+        }
       }
     }
   },
@@ -255,6 +313,12 @@ const translations = {
       retry: 'পুনরায় চেষ্টা করুন'
     },
     home: {
+      hero: {
+        welcomeMessage: "অগ্রোসার্থীতে স্বাগতম",
+        heroDescription: "আবহাওয়া আপডেট, বাজার মূল্য, কৃষি ক্যালকুলেটর এবং এআই-সক্ষম পরামর্শ প্রদানকারী আমাদের ব্যাপক সরঞ্জামগুলির সাথে আপনার খামারের জন্য ডেটা-চালিত সিদ্ধান্ত নিন।",
+        getStarted: "শুরু করুন",
+        exploreTools: "সরঞ্জামগুলি অন্বেষণ করুন"
+      },
       everythingYouNeed: 'আপনার সম্পূর্ণ কৃষি সঙ্গী',
       comprehensiveTools: 'ফসল পরিকল্পনা থেকে বাজার বিক্রয় পর্যন্ত, আপনার কৃষি কার্যক্রমের প্রতিটি দিক অপ্টিমাইজ করার জন্য শক্তিশালী সরঞ্জাম এবং অন্তর্দৃষ্টি অ্যাক্সেস করুন',
       quickActions: 'স্মার্ট ফার্মিং টুলস',
@@ -275,6 +339,12 @@ const translations = {
         marketPrices: {
           title: 'বাজার বুদ্ধিমত্তা',
           description: 'ভারতের প্রধান মন্ডিগুলিতে রিয়েল-টাইম ফসলের দাম, চাহিদার পূর্বাভাস এবং বাজার প্রবণতা'
+        },
+        hero: {
+          welcomeMessage: "অগ্রোসার্থীতে স্বাগতম",
+          heroDescription: "আমাদের ব্যাপক সরঞ্জামগুলির সাথে আপনার খামারের জন্য ডেটা-চালিত সিদ্ধান্ত নিন যা আবহাওয়া আপডেট, বাজার মূল্য, কৃষি ক্যালকুলেটর এবং AI-চালিত পরামর্শ প্রদান করে।",
+          getStarted: "শুরু করুন",
+          exploreTools: "সরঞ্জাম অন্বেষণ করুন"
         }
       },
       testimonials: {
@@ -297,6 +367,22 @@ const translations = {
         emailPlaceholder: 'আপনার ইমেল ঠিকানা লিখুন',
         subscribeButton: 'এখনই সাবস্ক্রাইব করুন',
         thankYou: 'সাবস্ক্রাইব করার জন্য ধন্যবাদ!'
+      },
+      card: {
+        weather: {
+          label: 'আবহাওয়া',
+          clearSky: 'পরিষ্কার আকাশ',
+          alert: 'আবহাওয়া সতর্কতা',
+          lightRain: 'হালকা বৃষ্টি'
+        },
+        market: {
+          trend: 'বাজার প্রবণতা',
+          weeklyAvg: 'সাপ্তাহিক গড়'
+        },
+        planting: {
+          season: 'রোপণের মৌসুম',
+          kharif: 'খরিফ ফসল'
+        }
       }
     }
   },
@@ -334,6 +420,12 @@ const translations = {
       retry: 'మళ్లీ ప్రయత్నించండి'
     },
     home: {
+      hero: {
+        welcomeMessage: "అగ్రోసార్థికి స్వాగతం",
+        heroDescription: "వాతావరణ నవీకరణలు, మార్కెట్ ధరలు, వ్యవసాయ కాలిక్యులేటర్లు మరియు AI-ఆధారిత సలహాలను అందించే మా సమగ్ర సాధనాలతో మీ వ్యవసాయ భూమికి డేటా-ఆధారిత నిర్ణయాలు తీసుకోండి.",
+        getStarted: "ప్రారంభించండి",
+        exploreTools: "సాధనాలు అన్వేషించండి"
+      },
       everythingYouNeed: 'మీ సంపూర్ణ వ్యవసాయ సహచరుడు',
       comprehensiveTools: 'పంట ప్రణాళిక నుండి మార్కెట్ విక్రయాల వరకు, మీ వ్యవసాయ కార్యకలాపాల యొక్క ప్రతి అంశాన్ని ఆప్టిమైజ్ చేయడానికి శక్తివంతమైన సాధనాలు మరియు అంతర్దృష్టులను యాక్సెస్ చేయండి',
       quickActions: 'స్మార్ట్ ఫార్మింగ్ టూల్స్',
@@ -376,6 +468,22 @@ const translations = {
         emailPlaceholder: 'మీ ఇమెయిల్ చిరునామాను నమోదు చేయండి',
         subscribeButton: 'ఇప్పుడే సభ్యత్వాన్ని పొందండి',
         thankYou: 'చందాదారయ్యినందుకు ధన్యవాదాలు!'
+      },
+      card: {
+        weather: {
+          label: 'వాతావరణం',
+          clearSky: 'స్పష్టమైన ఆకాశం',
+          alert: 'వాతావరణ హెచ్చరిక',
+          lightRain: 'తేలికపాటి వర్షం'
+        },
+        market: {
+          trend: 'మార్కెట్ ట్రెండ్',
+          weeklyAvg: 'వారం సగటు'
+        },
+        planting: {
+          season: 'నాటే సీజన్',
+          kharif: 'ఖరీఫ్ పంటలు'
+        }
       }
     }
   },
@@ -413,6 +521,12 @@ const translations = {
       retry: 'மீண்டும் முயற்சிக்கவும்'
     },
     home: {
+      hero: {
+        welcomeMessage: "அக்ரோசார்த்திக்கு வரவேற்கிறோம்",
+        heroDescription: "வானிலை புதுப்பிப்புகள், சந்தை விலைகள், விவசாய கால்குலேட்டர்கள் மற்றும் AI-இயக்கப்பட்ட ஆலோசனைகளை வழங்கும் எங்கள் விரிவான கருவிகளுடன் உங்கள் பண்ணைக்கான தரவு-ஆதரவுடன் முடிவுகளை எடுக்கவும்.",
+        getStarted: "தொடங்கவும்",
+        exploreTools: "கருவிகளை ஆராயவும்"
+      },
       everythingYouNeed: 'உங்கள் முழுமையான விவசாய துணை',
       comprehensiveTools: 'பயிர் திட்டமிடல் முதல் சந்தை விற்பனை வரை, உங்கள் விவசாய செயல்பாடுகளின் ஒவ்வொரு அம்சத்தையும் மேம்படுத்த சக்திவாய்ந்த கருவிகள் மற்றும் நுண்ணறிவுகளை அணுகவும்',
       quickActions: 'ஸ்மார்ட் பண்ணை கருவிகள்',
@@ -455,6 +569,22 @@ const translations = {
         emailPlaceholder: 'உங்கள் மின்னஞ்சல் முகவரியை உள்ளிடவும்',
         subscribeButton: 'இப்போதே குழுசேரவும்',
         thankYou: 'குழுசேர்ந்ததற்கு நன்றி!'
+      },
+      card: {
+        weather: {
+          label: 'வானிலை',
+          clearSky: 'தெளிவான வானம்',
+          alert: 'வானிலை எச்சரிக்கை',
+          lightRain: 'இலேசான மழை'
+        },
+        market: {
+          trend: 'சந்தை போக்கு',
+          weeklyAvg: 'வாராந்திர சராசரி'
+        },
+        planting: {
+          season: 'நடவு காலம்',
+          kharif: 'கரிப்பு பயிர்கள்'
+        }
       }
     }
   },
@@ -492,6 +622,12 @@ const translations = {
       retry: 'पुन्हा प्रयत्न करा'
     },
     home: {
+      hero: {
+        welcomeMessage: "अॅग्रोसार्थी मध्ये आपले स्वागत आहे",
+        heroDescription: 'हवामान अद्यतने, बाजारभाव, शेती कॅल्क्युलेटर आणि कृत्रिम बुद्धीमत्तेने सक्षम केलेल्या सल्ल्यांसह आमच्या सर्वसमावेशक साधनांसह तुमच्या शेतासाठी डेटा-चालित निर्णय घ्या.',
+        getStarted: "सुरू करा",
+        exploreTools: "साधने एक्सप्लोर करा"
+      },
       everythingYouNeed: 'तुमचा संपूर्ण शेती सहकारी',
       comprehensiveTools: 'पीक नियोजनापासून बाजार विक्रीपर्यंत, तुमच्या शेतीच्या सर्व पैलूंना ऑप्टिमाइझ करण्यासाठी शक्तिशाली साधने आणि अंतर्दृष्टी मिळवा',
       quickActions: 'स्मार्ट शेती साधने',
@@ -534,6 +670,22 @@ const translations = {
         emailPlaceholder: 'तुमचा ईमेल पत्ता प्रविष्ट करा',
         subscribeButton: 'आता सदस्यता घ्या',
         thankYou: 'सदस्यता घेतल्याबद्दल धन्यवाद!'
+      },
+      card: {
+        weather: {
+          label: 'हवामान',
+          clearSky: 'स्वच्छ आकाश',
+          alert: 'हवामान सतर्कता',
+          lightRain: 'हलका पाऊस'
+        },
+        market: {
+          trend: 'बाजाराची प्रवृत्ती',
+          weeklyAvg: 'साप्ताहिक सरासरी'
+        },
+        planting: {
+          season: 'लागवडीचा हंगाम',
+          kharif: 'खरीप पिके'
+        }
       }
     }
   }
