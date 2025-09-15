@@ -1,10 +1,11 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { Camera, Image as ImageIcon, Loader2, AlertCircle, CheckCircle, X } from 'lucide-react';
+import { Camera, Image as ImageIcon, Loader2, AlertCircle, CheckCircle, X, Send, MessageCircle, Bot, User, Mic, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { predictCropDisease, validateImageForML, imageToBase64 } from '@/lib/cropDiseaseML';
+import { getAIResponse, analyzeImageQuery } from '@/lib/aiAssistant';
 
 export default function CropDiseaseClient() {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -17,6 +18,21 @@ export default function CropDiseaseClient() {
   const fileInputRef = useRef(null);
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
+  
+  // AI Chat functionality
+  const [messages, setMessages] = useState([
+    {
+      id: 1,
+      role: 'assistant',
+      content: 'Hello! I\'m your AI farming assistant. I can help you with crop diseases, farming advice, and answer any agricultural questions. You can also upload images for disease analysis.',
+      timestamp: new Date().toISOString(),
+      type: 'text'
+    }
+  ]);
+  const [inputMessage, setInputMessage] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
+  const [activeTab, setActiveTab] = useState('chat'); // 'chat' or 'scanner'
+  const messagesEndRef = useRef(null);
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
@@ -41,86 +57,34 @@ export default function CropDiseaseClient() {
     
     setIsAnalyzing(true);
     setResult(null);
+    setError(null);
     
     try {
-      // Initialize the Gemini API with your API key
-      // Note: In production, store this in an environment variable
-      const genAI = new GoogleGenerativeAI('YOUR_GEMINI_API_KEY');
+      // Validate image before processing
+      validateImageForML(selectedImage);
       
-      // For text-and-image input (multimodal), use the gemini-pro-vision model
-      const model = genAI.getGenerativeModel({ model: 'gemini-pro-vision' });
+      // Convert image to base64 for ML model
+      const base64Image = await imageToBase64(selectedImage);
       
-      // Convert image to base64
-      const reader = new FileReader();
-      const base64Image = await new Promise((resolve, reject) => {
-        reader.onload = () => resolve(reader.result.split(',')[1]);
-        reader.onerror = error => reject(error);
-        reader.readAsDataURL(selectedImage);
-      });
+      // Use our custom ML model for prediction
+      const mlResult = await predictCropDisease(base64Image, 'general');
       
-      // Prepare the prompt
-      const prompt = `Analyze this crop image and provide the following information in JSON format:
-      {
-        "disease": "Name of the disease or 'Healthy' if no disease is detected",
-        "confidence": "Your confidence level (0-1)",
-        "description": "Brief description of the disease",
-        "treatment": ["List", "of", "treatment", "options"],
-        "prevention": ["List", "of", "prevention", "tips"]
-      }
-      
-      Only respond with the JSON object, no other text.`;
-      
-      const imageParts = [
-        {
-          inlineData: {
-            data: base64Image,
-            mimeType: selectedImage.type
-          }
-        },
-      ];
-      
-      // Generate content
-      const result = await model.generateContent([prompt, ...imageParts]);
-      const response = await result.response;
-      const text = response.text();
-      
-      // Parse the response
-      let geminiResponse;
-      try {
-        // Extract JSON from markdown code block if present
-        const jsonMatch = text.match(/```json\n([\s\S]*?)\n```/);
-        const jsonString = jsonMatch ? jsonMatch[1] : text;
-        geminiResponse = JSON.parse(jsonString);
-      } catch (e) {
-        console.error('Failed to parse Gemini response:', text);
-        throw new Error('Failed to process the AI response. Please try again.');
-      }
-      
-      // Format the response
+      // Format the response for UI
       const formattedResult = {
-        disease: geminiResponse.disease || 'Unknown Disease',
-        confidence: geminiResponse.confidence ? 
-          `${Math.round(parseFloat(geminiResponse.confidence) * 100)}%` : 'Unknown',
-        description: geminiResponse.description || 'No description available',
-        treatment: Array.isArray(geminiResponse.treatment) ? 
-          geminiResponse.treatment : [
-            'No specific treatment information available',
-            'Consult with an agricultural expert for advice'
-          ],
-        prevention: Array.isArray(geminiResponse.prevention) ? 
-          geminiResponse.prevention : [
-            'Practice crop rotation',
-            'Maintain proper plant spacing',
-            'Monitor plants regularly for early signs of disease'
-          ]
+        disease: mlResult.disease,
+        confidence: `${Math.round(mlResult.confidence * 100)}%`,
+        description: mlResult.description,
+        treatment: mlResult.treatment,
+        prevention: mlResult.prevention,
+        severity: mlResult.severity,
+        analysisDetails: mlResult.analysisDetails
       };
       
       setResult(formattedResult);
     } catch (error) {
       console.error('Error analyzing image:', error);
-      setResult({
-        error: 'Failed to analyze the image. Please ensure the image is clear and try again.'
-      });
+      setError(error.message || 'Failed to analyze the image. Please ensure the image is clear and try again.');
+      setResult(null);
     } finally {
       setIsAnalyzing(false);
     }
@@ -188,14 +152,263 @@ export default function CropDiseaseClient() {
     }
   };
 
+  // Scroll to bottom of messages
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  // Handle text message send
+  const handleSendMessage = async () => {
+    if (!inputMessage.trim()) return;
+    
+    const userMessage = {
+      id: Date.now(),
+      role: 'user',
+      content: inputMessage,
+      timestamp: new Date().toISOString(),
+      type: 'text'
+    };
+    
+    setMessages(prev => [...prev, userMessage]);
+    setInputMessage('');
+    setIsTyping(true);
+    
+    try {
+      const aiResponse = await getAIResponse(inputMessage);
+      
+      const assistantMessage = {
+        id: Date.now() + 1,
+        role: 'assistant',
+        content: aiResponse.message,
+        timestamp: new Date().toISOString(),
+        type: 'text'
+      };
+      
+      setMessages(prev => [...prev, assistantMessage]);
+    } catch (error) {
+      console.error('Error getting AI response:', error);
+      const errorMessage = {
+        id: Date.now() + 1,
+        role: 'assistant',
+        content: 'Sorry, I encountered an error. Please try again.',
+        timestamp: new Date().toISOString(),
+        type: 'text'
+      };
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
+      setIsTyping(false);
+    }
+  };
+
+  // Handle image analysis with chat integration
+  const analyzeImageWithChat = async () => {
+    if (!selectedImage) return;
+    
+    // Add user message with image
+    const userMessage = {
+      id: Date.now(),
+      role: 'user',
+      content: 'Please analyze this crop image for diseases',
+      timestamp: new Date().toISOString(),
+      type: 'image',
+      imageUrl: imagePreview
+    };
+    
+    setMessages(prev => [...prev, userMessage]);
+    setIsAnalyzing(true);
+    setIsTyping(true);
+    
+    try {
+      // Use ML model for disease prediction
+      const base64Image = await imageToBase64(selectedImage);
+      const mlResult = await predictCropDisease(base64Image, 'general');
+      
+      // Format response for chat
+      const analysisContent = `🔍 **Disease Analysis Complete**
+
+**Detected:** ${mlResult.disease}
+**Confidence:** ${Math.round(mlResult.confidence * 100)}%
+**Description:** ${mlResult.description}
+
+**🩺 Treatment Recommendations:**
+${mlResult.treatment.map((t, i) => `${i + 1}. ${t}`).join('\n')}
+
+**🛡️ Prevention Tips:**
+${mlResult.prevention.map((p, i) => `${i + 1}. ${p}`).join('\n')}
+
+**Severity Level:** ${mlResult.severity.replace('_', ' ').toUpperCase()}`;
+      
+      const assistantMessage = {
+        id: Date.now() + 1,
+        role: 'assistant',
+        content: analysisContent,
+        timestamp: new Date().toISOString(),
+        type: 'analysis',
+        analysisData: mlResult
+      };
+      
+      setMessages(prev => [...prev, assistantMessage]);
+      setResult({
+        disease: mlResult.disease,
+        confidence: `${Math.round(mlResult.confidence * 100)}%`,
+        description: mlResult.description,
+        treatment: mlResult.treatment,
+        prevention: mlResult.prevention,
+        severity: mlResult.severity
+      });
+      
+    } catch (error) {
+      console.error('Error analyzing image:', error);
+      const errorMessage = {
+        id: Date.now() + 1,
+        role: 'assistant',
+        content: 'Sorry, I had trouble analyzing the image. Please ensure it\'s clear and try again.',
+        timestamp: new Date().toISOString(),
+        type: 'text'
+      };
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
+      setIsAnalyzing(false);
+      setIsTyping(false);
+    }
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Crop Disease Detection</h1>
-        <p className="text-gray-600">Upload an image of your crop to detect diseases and get treatment recommendations</p>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">AI Farming Assistant & Disease Scanner</h1>
+        <p className="text-gray-600">Get instant farming advice and analyze crop diseases with AI-powered assistance</p>
       </div>
       
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      {/* Tab Navigation */}
+      <div className="flex justify-center mb-6">
+        <div className="bg-gray-100 p-1 rounded-lg">
+          <button
+            onClick={() => setActiveTab('chat')}
+            className={`px-6 py-2 rounded-md font-medium transition-colors ${
+              activeTab === 'chat'
+                ? 'bg-white text-green-600 shadow-sm'
+                : 'text-gray-600 hover:text-gray-900'
+            }`}
+          >
+            <MessageCircle className="w-4 h-4 inline mr-2" />
+            AI Chat
+          </button>
+          <button
+            onClick={() => setActiveTab('scanner')}
+            className={`px-6 py-2 rounded-md font-medium transition-colors ${
+              activeTab === 'scanner'
+                ? 'bg-white text-green-600 shadow-sm'
+                : 'text-gray-600 hover:text-gray-900'
+            }`}
+          >
+            <Camera className="w-4 h-4 inline mr-2" />
+            Disease Scanner
+          </button>
+        </div>
+      </div>
+      
+      {activeTab === 'chat' ? (
+        /* AI Chat Interface */
+        <div className="max-w-4xl mx-auto">
+          <Card className="h-[600px] flex flex-col">
+            <CardHeader className="border-b">
+              <CardTitle className="flex items-center">
+                <Bot className="w-5 h-5 mr-2 text-green-600" />
+                AI Farming Assistant
+              </CardTitle>
+              <CardDescription>Ask questions about farming, crops, diseases, or upload images for analysis</CardDescription>
+            </CardHeader>
+            
+            <CardContent className="flex-1 flex flex-col p-0">
+              {/* Messages Area */}
+              <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                {messages.map((message) => (
+                  <div
+                    key={message.id}
+                    className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                  >
+                    <div className={`max-w-[80%] rounded-lg p-3 ${
+                      message.role === 'user'
+                        ? 'bg-green-600 text-white'
+                        : 'bg-gray-100 text-gray-900'
+                    }`}>
+                      {message.type === 'image' && message.imageUrl && (
+                        <div className="mb-2">
+                          <img
+                            src={message.imageUrl}
+                            alt="Uploaded crop"
+                            className="w-full h-32 object-cover rounded"
+                          />
+                        </div>
+                      )}
+                      <div className="whitespace-pre-wrap text-sm">
+                        {message.content}
+                      </div>
+                      <div className={`text-xs mt-1 opacity-70`}>
+                        {new Date(message.timestamp).toLocaleTimeString()}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                
+                {isTyping && (
+                  <div className="flex justify-start">
+                    <div className="bg-gray-100 rounded-lg p-3">
+                      <div className="flex items-center space-x-1">
+                        <span className="text-gray-600 text-sm mr-2">AI is typing</span>
+                        <div className="w-2 h-2 bg-green-500 rounded-full animate-bounce"></div>
+                        <div className="w-2 h-2 bg-green-500 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                        <div className="w-2 h-2 bg-green-500 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                <div ref={messagesEndRef} />
+              </div>
+              
+              {/* Input Area */}
+              <div className="border-t p-4">
+                <div className="flex space-x-2">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    ref={fileInputRef}
+                    className="hidden"
+                  />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="flex-shrink-0"
+                  >
+                    <Upload className="w-4 h-4" />
+                  </Button>
+                  <input
+                    type="text"
+                    value={inputMessage}
+                    onChange={(e) => setInputMessage(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                    placeholder="Ask about farming, crops, diseases, or upload an image..."
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    disabled={isTyping}
+                  />
+                  <Button
+                    onClick={handleSendMessage}
+                    disabled={!inputMessage.trim() || isTyping}
+                    className="flex-shrink-0"
+                  >
+                    <Send className="w-4 h-4" />
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      ) : (
+        /* Disease Scanner Interface */
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">{/* Scanner content */}
         {/* Upload Section */}
         <Card className="h-full">
           <CardHeader>
@@ -288,10 +501,10 @@ export default function CropDiseaseClient() {
               </div>
             )}
             
-            <div className="mt-6">
+            <div className="mt-6 space-y-3">
               <Button 
                 className="w-full" 
-                onClick={analyzeDisease}
+                onClick={analyzeImageWithChat}
                 disabled={!selectedImage || isAnalyzing}
               >
                 {isAnalyzing ? (
@@ -299,7 +512,15 @@ export default function CropDiseaseClient() {
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     Analyzing...
                   </>
-                ) : 'Analyze Image'}
+                ) : 'Analyze with AI Chat'}
+              </Button>
+              <Button 
+                variant="outline"
+                className="w-full" 
+                onClick={analyzeDisease}
+                disabled={!selectedImage || isAnalyzing}
+              >
+                Quick Analysis Only
               </Button>
             </div>
           </CardContent>
@@ -313,13 +534,12 @@ export default function CropDiseaseClient() {
               <CardDescription>Detailed disease information and recommendations</CardDescription>
             </CardHeader>
             <CardContent>
-              {result ? (
-                result.error ? (
-                  <div className="text-center py-8">
-                    <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
-                    <p className="text-red-600">{result.error}</p>
-                  </div>
-                ) : (
+              {error ? (
+                <div className="text-center py-8">
+                  <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
+                  <p className="text-red-600">{error}</p>
+                </div>
+              ) : result ? (
                   <div className="space-y-6">
                     <div className="bg-green-50 p-4 rounded-lg">
                       <div className="flex items-center">
@@ -364,8 +584,7 @@ export default function CropDiseaseClient() {
                       </ul>
                     </div>
                   </div>
-                )
-              ) : (
+                ) : (
                 <div className="text-center py-12">
                   <ImageIcon className="w-12 h-12 text-gray-300 mx-auto mb-4" />
                   <p className="text-gray-500">Upload an image to analyze for crop diseases</p>
@@ -374,7 +593,8 @@ export default function CropDiseaseClient() {
             </CardContent>
           </Card>
         </div>
-      </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -21,7 +21,7 @@ import {
   Bot
 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
-import { generateText, analyzeImage, fileToGenerativePart } from '@/lib/gemini';
+import { getAIResponse, analyzeImageQuery } from '@/lib/aiAssistant';
 
 const analysisTypes = [
   { id: 'soil', name: 'Soil Analysis', icon: <Droplet className="h-5 w-5" />, color: 'bg-blue-500' },
@@ -122,7 +122,12 @@ export default function ChatInterface({ initialMessage }) {
     
     try {
       // Convert image to base64
-      const base64Image = await fileToGenerativePart(selectedImage);
+      const base64Image = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+        reader.readAsDataURL(selectedImage);
+      });
       
       // Create a prompt based on the selected analysis type
       let prompt = '';
@@ -143,14 +148,14 @@ export default function ChatInterface({ initialMessage }) {
           prompt = 'Please analyze this image and provide detailed insights.';
       }
       
-      // Call the Gemini API for image analysis
-      const analysisResult = await analyzeImage(base64Image, prompt);
+      // Call our AI assistant for image analysis
+      const analysisResult = await analyzeImageQuery(base64Image, prompt);
       
       // Add AI response
       const aiResponse = {
         id: Date.now() + 1,
         role: 'assistant',
-        content: analysisResult,
+        content: analysisResult.message,
         timestamp: new Date().toISOString(),
         type: 'text',
         analysis: {
@@ -231,8 +236,9 @@ export default function ChatInterface({ initialMessage }) {
       
       Please provide a helpful, accurate, and practical response. Include relevant agricultural advice, best practices, and any other useful information.`;
       
-      // Call the Gemini API
-      const response = await generateText(prompt);
+      // Call our AI assistant
+      const aiResponse = await getAIResponse(prompt);
+      const response = aiResponse.message;
       
       // Remove loading message and add AI response
       setMessages(prev => {

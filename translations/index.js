@@ -39,18 +39,20 @@ const translations = {
     // Home Page
     home: {
       hero: {
-        welcomeMessage: "Welcome to Agrosarthi",
-        heroDescription: "Make data-driven decisions for your farm with our comprehensive suite of tools providing weather updates, market prices, farming calculators, and AI-powered advice.",
+        welcomeMessage: "Welcome to AgroSarthi",
+        heroDescription: 'Make data-driven decisions for your farm with our comprehensive suite of tools including weather updates, market prices, farming calculators, and AI-powered insights.',
         getStarted: "Get Started",
         exploreTools: "Explore Tools"
       },
       everythingYouNeed: 'Your Complete Farming Companion',
-      comprehensiveTools: 'Access powerful tools and insights to optimize every aspect of your farming operations, from crop planning to market sales',
+      comprehensiveTools: 'From crop planning to market sales, get powerful tools and insights to optimize every aspect of your farming operation',
       quickActions: 'Smart Farming Tools',
-      getInstantInsights: 'Leverage our AI-powered tools to make informed decisions and boost your farm\'s productivity',
+      getInstantInsights: 'Leverage our AI-powered tools to make informed decisions and boost your farm productivity',
       
       // Features
       features: {
+        title: 'Your Complete Farming Ecosystem',
+        description: 'Harness the power of artificial intelligence, satellite imagery, and IoT sensors to transform every aspect of your agricultural operations',
         weatherForecast: {
           title: 'Precision Weather Insights',
           description: 'Hyper-local weather forecasts and real-time alerts to optimize your farming schedule and protect your crops'
@@ -69,6 +71,18 @@ const translations = {
         }
       },
       
+      // Dashboard
+      dashboard: {
+        title: 'Real-Time Farm Intelligence',
+        description: 'Monitor, analyze, and optimize your farming operations with our comprehensive dashboard'
+      },
+      
+      // Tools
+      tools: {
+        title: 'Smart Farming Assistant',
+        description: 'Leverage cutting-edge AI technology to make data-driven decisions and maximize your farm\'s potential'
+      },
+      
       hero: {
         todaysOverview: "Today's Overview",
         welcomeMessage: "Welcome to ",
@@ -79,8 +93,9 @@ const translations = {
       
       // Testimonials
       testimonials: {
-        title: 'Trusted by Farmers Across India',
-        subtitle: 'Join thousands of successful farmers who have transformed their agricultural practices with our innovative solutions',
+        title: 'Trusted by',
+        subtitle: 'Farmers',
+        description: 'Join the growing community of successful farmers who have transformed their agricultural practices with our innovative solutions',
         rajesh: {
           name: 'Rajesh Kumar',
           role: 'Organic Farmer, Punjab',
@@ -148,15 +163,48 @@ const translations = {
       
       // Newsletter
       newsletter: {
-        title: 'Stay Ahead with Agrosarthi',
-        description: 'Subscribe to our newsletter for the latest farming insights, weather updates, and exclusive tips to maximize your harvest',
+        title: 'Stay Ahead with',
+        highlight: 'Smart Farming',
+        description: 'Get exclusive insights, weather alerts, market trends, and expert farming tips delivered directly to your inbox every week',
         emailPlaceholder: 'Enter your email address',
         subscribeButton: 'Subscribe Now',
         thankYou: 'Thank you for subscribing!'
       },
-      card: {
+      
+      // Featured Tools
+      featuredTools: {
+        title: 'Featured Tools',
+        subtitle: 'Essential farming tools at your fingertips',
+        weatherCard: {
+          title: 'Weather Forecast',
+          description: 'Real-time weather updates and 7-day forecasts'
+        },
+        cropHealthCard: {
+          title: 'Crop Health Scanner',
+          description: 'AI-powered disease detection and treatment recommendations'
+        },
+        marketPricesCard: {
+          title: 'Market Prices',
+          description: 'Live commodity prices and market trends'
+        },
+        calculatorsCard: {
+          title: 'Farm Calculators',
+          description: 'Calculate fertilizer needs, irrigation requirements, and more'
+        }
+      },
+      
+      // Call to Action
+      cta: {
+        title: 'Ready to Transform Your Farm?',
+        description: 'Join thousands of farmers who are already using AgroSarthi to increase their yields and profits',
+        getStartedButton: 'Get Started Today',
+        learnMoreButton: 'Learn More'
+      },
+      
+      // Cards
+      cards: {
         weather: {
-          label: 'Weather', // English
+          label: 'Weather',
           clearSky: 'Clear Sky',
           alert: 'Weather Alert',
           lightRain: 'Light Rain'
@@ -168,6 +216,34 @@ const translations = {
         planting: {
           season: 'Planting Season',
           kharif: 'Kharif Crops'
+        }
+      },
+      
+      // Webinars
+      webinars: {
+        gettingStarted: {
+          title: 'Getting Started with Agrosarthi',
+          description: 'Learn how to navigate our platform and set up your farm profile for maximum benefit'
+        },
+        cropOptimization: {
+          title: 'Crop Optimization Strategies',
+          description: 'Master AI-powered crop planning and disease prediction to maximize your harvest yield'
+        },
+        incomeMaximization: {
+          title: 'Income Maximization Techniques',
+          description: 'Discover market intelligence tools and pricing strategies to boost your farm revenue'
+        },
+        smartIrrigation: {
+          title: 'Smart Irrigation & Water Management',
+          description: 'Learn efficient water usage techniques and automated irrigation systems'
+        },
+        weatherForecasting: {
+          title: 'Weather Forecasting for Better Planning',
+          description: 'Understand weather patterns and use forecasts for optimal farming decisions'
+        },
+        equipmentOptimization: {
+          title: 'Equipment Exchange & Cost Optimization',
+          description: 'Maximize equipment utilization and reduce operational costs through smart sharing'
         }
       }
     }
@@ -217,6 +293,8 @@ const translations = {
       quickActions: 'स्मार्ट खेती उपकरण',
       getInstantInsights: 'सूचित निर्णय लेने और अपने खेत की उत्पादकता बढ़ाने के लिए हमारे एआई-संचालित उपकरणों का लाभ उठाएं',
       features: {
+        title: 'आपका संपूर्ण कृषि पारिस्थितिकी तंत्र',
+        description: 'कृत्रिम बुद्धिमत्ता, उपग्रह इमेजरी और IoT सेंसर की शक्ति का उपयोग करके अपने कृषि संचालन के हर पहलू को बदलें',
         weatherForecast: {
           title: 'सटीक मौसम जानकारी',
           description: 'हाइपर-लोकल मौसम पूर्वानुमान और रीयल-टाइम अलर्ट जो आपके खेती के कार्यक्रम को अनुकूलित करने और आपकी फसलों की सुरक्षा करने में मदद करते हैं'
@@ -232,17 +310,31 @@ const translations = {
         marketPrices: {
           title: 'बाजार बुद्धिमत्ता',
           description: 'भारत के प्रमुख मंडियों में रीयल-टाइम फसल मूल्य, मांग पूर्वानुमान और बाजार रुझान'
-        },
-        hero: {
-          welcomeMessage: "अग्रोसार्थी में आपका स्वागत है",
-          heroDescription: "हमारे व्यापक उपकरणों के साथ अपने खेत के लिए डेटा-संचालित निर्णय लें जो मौसम अपडेट, बाजार मूल्य, कृषि कैलकुलेटर और एआई-संचालित सलाह प्रदान करते हैं।",
-          getStarted: "शुरू हो जाओ",
-          exploreTools: "उपकरणों का अन्वेषण करें"
-        }    
+        }
+      },
+      
+      // Dashboard
+      dashboard: {
+        title: 'रीयल-टाइम फार्म इंटेलिजेंस',
+        description: 'हमारे व्यापक डैशबोर्ड के साथ अपने कृषि संचालन की निगरानी, विश्लेषण और अनुकूलन करें'
+      },
+      
+      // Tools
+      tools: {
+        title: 'स्मार्ट कृषि सहायक',
+        description: 'डेटा-संचालित निर्णय लेने और अपने खेत की क्षमता को अधिकतम करने के लिए अत्याधुनिक एआई तकनीक का लाभ उठाएं'
+      },
+      
+      hero: {
+        welcomeMessage: "अग्रोसार्थी में आपका स्वागत है",
+        heroDescription: "हमारे व्यापक उपकरणों के साथ अपने खेत के लिए डेटा-संचालित निर्णय लें जो मौसम अपडेट, बाजार मूल्य, कृषि कैलकुलेटर और एआई-संचालित सलाह प्रदान करते हैं।",
+        getStarted: "शुरू हो जाओ",
+        exploreTools: "उपकरणों का अन्वेषण करें"
       },
       testimonials: {
-        title: 'पूरे भारत के किसानों द्वारा विश्वसनीय',
-        subtitle: 'हमारे नवीन समाधानों के साथ अपने कृषि अभ्यास को बदलने वाले हजारों सफल किसानों में शामिल हों',
+        title: 'भरोसेमंद',
+        subtitle: 'किसान',
+        description: 'सफल किसानों के बढ़ते समुदाय में शामिल हों जिन्होंने हमारे नवाचार समाधानों के साथ अपनी कृषि प्रथाओं को बदल दिया है',
         rajesh: {
           name: 'राजेश कुमार',
           role: 'जैविक किसान, पंजाब',
@@ -255,11 +347,26 @@ const translations = {
         }
       },
       newsletter: {
-        title: 'एग्रोसार्थी के साथ आगे रहें',
-        description: 'नवीनतम कृषि अंतर्दृष्टि, मौसम अपडेट और अपनी फसल को अधिकतम करने के विशेष सुझावों के लिए हमारे न्यूजलेटर की सदस्यता लें',
+        title: 'आगे रहें',
+        highlight: 'स्मार्ट खेती',
+        description: 'विशेष अंतर्दृष्टि, मौसम अलर्ट, बाजार रुझान और विशेषज्ञ कृषि सुझाव हर सप्ताह सीधे अपने इनबॉक्स में प्राप्त करें',
         emailPlaceholder: 'अपना ईमेल पता दर्ज करें',
         subscribeButton: 'अभी सदस्यता लें',
         thankYou: 'सदस्यता लेने के लिए धन्यवाद!'
+      },
+      
+      // Featured Tools
+      featuredTools: {
+        title: 'सफल होने के लिए आपको जो कुछ चाहिए',
+        description: 'अपने कृषि संचालन के हर पहलू को अनुकूलित करने के लिए डिज़ाइन किए गए हमारे कृषि उपकरण और कैलकुलेटर के पूर्ण सूट तक पहुंच प्राप्त करें'
+      },
+      
+      // CTA
+      cta: {
+        title: 'अपने खेत को बदलने के लिए तैयार',
+        highlight: 'हैं?',
+        description: 'हजारों सफल किसानों के साथ जुड़ें जिन्होंने हमारे एआई-संचालित प्लेटफॉर्म के साथ अपनी कृषि प्रथाओं में क्रांति ला दी है',
+        button: 'मुफ्त में शुरू करें'
       },
       card: {
         weather: {
@@ -275,6 +382,34 @@ const translations = {
         planting: {
           season: 'रोपण का मौसम',
           kharif: 'खरीफ फसलें'
+        }
+      },
+      
+      // Webinars
+      webinars: {
+        gettingStarted: {
+          title: 'एग्रोसार्थी के साथ शुरुआत',
+          description: 'हमारे प्लेटफॉर्म को नेविगेट करना और अधिकतम लाभ के लिए अपना फार्म प्रोफाइल सेट करना सीखें'
+        },
+        cropOptimization: {
+          title: 'फसल अनुकूलन रणनीतियां',
+          description: 'अपनी फसल की उपज को अधिकतम करने के लिए AI-संचालित फसल योजना और रोग पूर्वानुमान में महारत हासिल करें'
+        },
+        incomeMaximization: {
+          title: 'आय अधिकतमकरण तकनीकें',
+          description: 'अपने खेत की आय बढ़ाने के लिए बाजार बुद्धिमत्ता उपकरण और मूल्य निर्धारण रणनीतियों की खोज करें'
+        },
+        smartIrrigation: {
+          title: 'स्मार्ट सिंचाई और जल प्रबंधन',
+          description: 'कुशल जल उपयोग तकनीकों और स्वचालित सिंचाई प्रणालियों को सीखें'
+        },
+        weatherForecasting: {
+          title: 'बेहतर योजना के लिए मौसम पूर्वानुमान',
+          description: 'मौसम के पैटर्न को समझें और इष्टतम कृषि निर्णयों के लिए पूर्वानुमानों का उपयोग करें'
+        },
+        equipmentOptimization: {
+          title: 'उपकरण एक्सचेंज और लागत अनुकूलन',
+          description: 'स्मार्ट साझाकरण के माध्यम से उपकरण उपयोग को अधिकतम करें और परिचालन लागत कम करें'
         }
       }
     }
@@ -324,6 +459,8 @@ const translations = {
       quickActions: 'স্মার্ট ফার্মিং টুলস',
       getInstantInsights: 'সচেতন সিদ্ধান্ত নিতে এবং আপনার খামারের উত্পাদনশীলতা বৃদ্ধি করতে আমাদের এআই-চালিত সরঞ্জামগুলির সুবিধা নিন',
       features: {
+        title: 'আপনার সম্পূর্ণ কৃষি ইকোসিস্টেম',
+        description: 'কৃত্রিম বুদ্ধিমত্তা, স্যাটেলাইট ইমেজারি এবং IoT সেন্সরের শক্তি ব্যবহার করে আপনার কৃষি কার্যক্রমের প্রতিটি দিক রূপান্তরিত করুন',
         weatherForecast: {
           title: 'সুনির্দিষ্ট আবহাওয়ার তথ্য',
           description: 'হাইপার-লোকাল আবহাওয়ার পূর্বাভাস এবং রিয়েল-টাইম অ্যালার্ট যা আপনার কৃষি সময়সূচী অপ্টিমাইজ করতে এবং আপনার ফসল রক্ষা করতে সাহায্য করে'
@@ -339,17 +476,31 @@ const translations = {
         marketPrices: {
           title: 'বাজার বুদ্ধিমত্তা',
           description: 'ভারতের প্রধান মন্ডিগুলিতে রিয়েল-টাইম ফসলের দাম, চাহিদার পূর্বাভাস এবং বাজার প্রবণতা'
-        },
-        hero: {
-          welcomeMessage: "অগ্রোসার্থীতে স্বাগতম",
-          heroDescription: "আমাদের ব্যাপক সরঞ্জামগুলির সাথে আপনার খামারের জন্য ডেটা-চালিত সিদ্ধান্ত নিন যা আবহাওয়া আপডেট, বাজার মূল্য, কৃষি ক্যালকুলেটর এবং AI-চালিত পরামর্শ প্রদান করে।",
-          getStarted: "শুরু করুন",
-          exploreTools: "সরঞ্জাম অন্বেষণ করুন"
         }
       },
+      
+      // Dashboard
+      dashboard: {
+        title: 'রিয়েল-টাইম ফার্ম ইন্টেলিজেন্স',
+        description: 'আমাদের ব্যাপক ড্যাশবোর্ডের সাথে আপনার কৃষি কার্যক্রম পর্যবেক্ষণ, বিশ্লেষণ এবং অপ্টিমাইজ করুন'
+      },
+      
+      // Tools
+      tools: {
+        title: 'স্মার্ট কৃষি সহায়ক',
+        description: 'ডেটা-চালিত সিদ্ধান্ত নিতে এবং আপনার খামারের সম্ভাবনা সর্বাধিক করতে অত্যাধুনিক এআই প্রযুক্তির সুবিধা নিন'
+      },
+      
+      hero: {
+        welcomeMessage: "অগ্রোসার্থীতে স্বাগতম",
+        heroDescription: "আমাদের ব্যাপক সরঞ্জামগুলির সাথে আপনার খামারের জন্য ডেটা-চালিত সিদ্ধান্ত নিন যা আবহাওয়া আপডেট, বাজার মূল্য, কৃষি ক্যালকুলেটর এবং AI-চালিত পরামর্শ প্রদান করে।",
+        getStarted: "শুরু করুন",
+        exploreTools: "সরঞ্জাম অন্বেষণ করুন"
+      },
       testimonials: {
-        title: 'সারা ভারতের কৃষকদের দ্বারা বিশ্বস্ত',
-        subtitle: 'আমাদের উদ্ভাবনী সমাধান দিয়ে তাদের কৃষি অনুশীলন রূপান্তরিত করেছে এমন হাজার হাজার সফল কৃষকের সাথে যোগ দিন',
+        title: 'বিশ্বস্ত',
+        subtitle: 'কৃষক',
+        description: 'সফল কৃষকদের ক্রমবর্ধমান সম্প্রদায়ে যোগ দিন যারা আমাদের উদ্ভাবনী সমাধান দিয়ে তাদের কৃষি অনুশীলন রূপান্তরিত করেছে',
         rajesh: {
           name: 'রাজেশ কুমার',
           role: 'জৈব কৃষক, পাঞ্জাব',
@@ -362,11 +513,26 @@ const translations = {
         }
       },
       newsletter: {
-        title: 'অগ্রোসার্থীর সাথে এগিয়ে থাকুন',
-        description: 'সর্বশেষ কৃষি অন্তর্দৃষ্টি, আবহাওয়া আপডেট এবং আপনার ফসল সর্বাধিক করার জন্য একচেটিয়া টিপস জন্য আমাদের নিউজলেটার সাবস্ক্রাইব করুন',
+        title: 'এগিয়ে থাকুন',
+        highlight: 'স্মার্ট কৃষি',
+        description: 'একচেটিয়া অন্তর্দৃষ্টি, আবহাওয়া সতর্কতা, বাজার প্রবণতা এবং বিশেষজ্ঞ কৃষি টিপস প্রতি সপ্তাহে সরাসরি আপনার ইনবক্সে পান',
         emailPlaceholder: 'আপনার ইমেল ঠিকানা লিখুন',
         subscribeButton: 'এখনই সাবস্ক্রাইব করুন',
         thankYou: 'সাবস্ক্রাইব করার জন্য ধন্যবাদ!'
+      },
+      
+      // Featured Tools
+      featuredTools: {
+        title: 'সফল হওয়ার জন্য আপনার যা প্রয়োজন',
+        description: 'আপনার কৃষি কার্যক্রমের প্রতিটি দিক অপ্টিমাইজ করার জন্য ডিজাইন করা আমাদের কৃষি সরঞ্জাম এবং ক্যালকুলেটরের সম্পূর্ণ স্যুট অ্যাক্সেস করুন'
+      },
+      
+      // CTA
+      cta: {
+        title: 'আপনার খামার রূপান্তরিত করতে প্রস্তুত',
+        highlight: 'আছেন?',
+        description: 'হাজার হাজার সফল কৃষকের সাথে যোগ দিন যারা আমাদের এআই-চালিত প্ল্যাটফর্মের সাথে তাদের কৃষি অনুশীলনে বিপ্লব এনেছে',
+        button: 'বিনামূল্যে শুরু করুন'
       },
       card: {
         weather: {
@@ -431,6 +597,8 @@ const translations = {
       quickActions: 'స్మార్ట్ ఫార్మింగ్ టూల్స్',
       getInstantInsights: 'సమాచారం పూర్వక నిర్ణయాలు తీసుకోవడానికి మరియు మీ పొలం ఉత్పాదకతను పెంచడానికి మా AI-ఆధారిత సాధనాలను ఉపయోగించుకోండి',
       features: {
+        title: 'మీ సంపూర్ణ వ్యవసాయ పర్యావరణ వ్యవస్థ',
+        description: 'కృత్రిమ మేధస్సు, ఉపగ్రహ చిత్రణ మరియు IoT సెన్సార్ల శక్తిని ఉపయోగించి మీ వ్యవసాయ కార్యకలాపాల ప్రతి అంశాన్ని మార్చండి',
         weatherForecast: {
           title: 'ఖచ్చితమైన వాతావరణ సమాచారం',
           description: 'మీ వ్యవసాయ షెడ్యూల్ను ఆప్టిమైజ్ చేయడానికి మరియు మీ పంటలను రక్షించడానికి హైపర్-లోకల్ వాతావరణ అంచనాలు మరియు రియల్-టైమ్ అలర్ట్లు'
@@ -448,9 +616,22 @@ const translations = {
           description: 'భారతదేశంలోని ప్రధాన మండీలలో రియల్-టైమ్ పంట ధరలు, డిమాండ్ అంచనాలు మరియు మార్కెట్ ట్రెండ్స్'
         }
       },
+      
+      // Dashboard
+      dashboard: {
+        title: 'రియల్-టైమ్ ఫార్మ్ ఇంటెలిజెన్స్',
+        description: 'మా సమగ్ర డాష్బోర్డ్తో మీ వ్యవసాయ కార్యకలాపాలను పర్యవేక్షించండి, విశ్లేషించండి మరియు ఆప్టిమైజ్ చేయండి'
+      },
+      
+      // Tools
+      tools: {
+        title: 'స్మార్ట్ వ్యవసాయ సహాయకుడు',
+        description: 'డేటా-ఆధారిత నిర్ణయాలు తీసుకోవడానికి మరియు మీ పొలం సామర్థ్యాన్ని గరిష్టంగా చేయడానికి అత్యాధునిక AI సాంకేతికతను ఉపయోగించుకోండి'
+      },
       testimonials: {
-        title: 'భారతదేశం అంతటా రైతులచే విశ్వసించబడింది',
-        subtitle: 'మా నూతన పరిష్కారాలతో తమ వ్యవసాయ పద్ధతులను మార్చుకున్న వేలాది విజయవంతమైన రైతులలో చేరండి',
+        title: 'విశ్వసనీయమైన',
+        subtitle: 'రైతులు',
+        description: 'మా నూతన పరిష్కారాలతో తమ వ్యవసాయ పద్ధతులను మార్చుకున్న విజయవంతమైన రైతుల పెరుగుతున్న సమాజంలో చేరండి',
         rajesh: {
           name: 'రాజేష్ కుమార్',
           role: 'సేంద్రీయ రైతు, పంజాబ్',
@@ -463,11 +644,26 @@ const translations = {
         }
       },
       newsletter: {
-        title: 'అగ్రోసార్థితో ముందుండండి',
-        description: 'తాజా వ్యవసాయ అంతర్దృష్టులు, వాతావరణ నవీకరణలు మరియు మీ పంటను గరిష్టంగా చేయడానికి ప్రత్యేక చిట్కాల కోసం మా న్యూజ్లెటర్కు సభ్యత్వాన్ని పొందండి',
+        title: 'ముందుండండి',
+        highlight: 'స్మార్ట్ వ్యవసాయం',
+        description: 'ప్రత్యేక అంతర్దృష్టులు, వాతావరణ హెచ్చరికలు, మార్కెట్ ట్రెండ్లు మరియు నిపుణుల వ్యవసాయ చిట్కాలను ప్రతి వారం నేరుగా మీ ఇన్బాక్స్లో పొందండి',
         emailPlaceholder: 'మీ ఇమెయిల్ చిరునామాను నమోదు చేయండి',
         subscribeButton: 'ఇప్పుడే సభ్యత్వాన్ని పొందండి',
         thankYou: 'చందాదారయ్యినందుకు ధన్యవాదాలు!'
+      },
+      
+      // Featured Tools
+      featuredTools: {
+        title: 'విజయవంతం కావడానికి మీకు అవసరమైనవన్నీ',
+        description: 'మీ వ్యవసాయ కార్యకలాపాల ప్రతి అంశాన్ని ఆప్టిమైజ్ చేయడానికి రూపొందించిన మా వ్యవసాయ సాధనాలు మరియు కాలిక్యులేటర్ల పూర్తి సూట్ను యాక్సెస్ చేయండి'
+      },
+      
+      // CTA
+      cta: {
+        title: 'మీ పొలాన్ని మార్చడానికి సిద్ధంగా',
+        highlight: 'ఉన్నారా?',
+        description: 'మా AI-ఆధారిత ప్లాట్ఫారమ్తో తమ వ్యవసాయ పద్ధతులలో విప్లవం తెచ్చిన వేలాది విజయవంతమైన రైతులతో చేరండి',
+        button: 'ఉచితంగా ప్రారంభించండి'
       },
       card: {
         weather: {
@@ -532,6 +728,8 @@ const translations = {
       quickActions: 'ஸ்மார்ட் பண்ணை கருவிகள்',
       getInstantInsights: 'தகவலறிந்த முடிவுகளை எடுக்கவும், உங்கள் பண்ணையின் உற்பத்தித்திறனை அதிகரிக்கவும் எங்கள் AI-இயக்கி கருவிகளைப் பயன்படுத்தவும்',
       features: {
+        title: 'உங்கள் முழுமையான விவசாய சுற்றுச்சூழல் அமைப்பு',
+        description: 'செயற்கை நுண்ணறிவு, செயற்கைக்கோள் படங்கள் மற்றும் IoT சென்சார்களின் சக்தியைப் பயன்படுத்தி உங்கள் விவசாய செயல்பாடுகளின் ஒவ்வொரு அம்சத்தையும் மாற்றவும்',
         weatherForecast: {
           title: 'துல்லியமான வானிலை நுண்ணறிவு',
           description: 'உங்கள் விவசாய அட்டவணையை மேம்படுத்தவும், உங்கள் பயிர்களைப் பாதுகாக்கவும் ஹைப்பர்-லோக்கல் வானிலை முன்னறிவிப்புகள் மற்றும் நிகழ்நேர அறிவிப்புகள்'
@@ -549,9 +747,23 @@ const translations = {
           description: 'இந்தியாவின் முக்கிய மண்டிகளில் நிகழ்நேர பயிர் விலைகள், தேவை முன்னறிவிப்புகள் மற்றும் சந்தை போக்குகள்'
         }
       },
+      
+      // Dashboard
+      dashboard: {
+        title: 'நிகழ்நேர பண்ணை நுண்ணறிவு',
+        description: 'எங்கள் விரிவான டாஷ்போர்டுடன் உங்கள் விவசாய செயல்பாடுகளை கண்காணிக்கவும், பகுப்பாய்வு செய்யவும் மற்றும் மேம்படுத்தவும்'
+      },
+      
+      // Tools
+      tools: {
+        title: 'ஸ்மார்ட் விவசாய உதவியாளர்',
+        description: 'தரவு-இயக்கி முடிவுகளை எடுக்கவும், உங்கள் பண்ணையின் திறனை அதிகரிக்கவும் அதிநவீன AI தொழில்நுட்பத்தைப் பயன்படுத்தவும்'
+      },
+      
       testimonials: {
-        title: 'இந்தியா முழுவதும் உள்ள விவசாயிகளால் நம்பப்படுகிறது',
-        subtitle: 'எங்கள் புதுமையான தீர்வுகளால் தங்கள் விவசாய முறைகளை மாற்றிய ஆயிரக்கணக்கான வெற்றிகரமான விவசாயிகளுடன் சேருங்கள்',
+        title: 'நம்பகமான',
+        subtitle: 'விவசாயிகள்',
+        description: 'எங்கள் புதுமையான தீர்வுகளால் தங்கள் விவசாய முறைகளை மாற்றிய வெற்றிகரமான விவசாயிகளின் வளர்ந்து வரும் சமூகத்துடன் சேருங்கள்',
         rajesh: {
           name: 'ராஜேஷ் குமார்',
           role: 'கரிம விவசாயி, பஞ்சாப்',
@@ -564,11 +776,26 @@ const translations = {
         }
       },
       newsletter: {
-        title: 'அக்ரோசார்த்தியுடன் முன்னேறுங்கள்',
-        description: 'சமீபத்திய விவசாய நுண்ணறிவுகள், வானிலை புதுப்பிப்புகள் மற்றும் உங்கள் அறுவடையை அதிகரிக்க பிரத்தியேக உதவிக்குறிப்புகளுக்கு எங்கள் செய்திமடலுக்கு குழுசேரவும்',
+        title: 'முன்னேறுங்கள்',
+        highlight: 'ஸ்மார்ட் விவசாயம்',
+        description: 'பிரத்தியேக நுண்ணறிவுகள், வானிலை எச்சரிக்கைகள், சந்தை போக்குகள் மற்றும் நிபுணர் விவசாய உதவிக்குறிப்புகளை ஒவ்வொரு வாரமும் நேரடியாக உங்கள் இன்பாக்ஸில் பெறுங்கள்',
         emailPlaceholder: 'உங்கள் மின்னஞ்சல் முகவரியை உள்ளிடவும்',
         subscribeButton: 'இப்போதே குழுசேரவும்',
         thankYou: 'குழுசேர்ந்ததற்கு நன்றி!'
+      },
+      
+      // Featured Tools
+      featuredTools: {
+        title: 'வெற்றிபெற உங்களுக்குத் தேவையான அனைத்தும்',
+        description: 'உங்கள் விவசாய செயல்பாடுகளின் ஒவ்வொரு அம்சத்தையும் மேம்படுத்த வடிவமைக்கப்பட்ட எங்கள் விவசாய கருவிகள் மற்றும் கால்குலேட்டர்களின் முழுமையான தொகுப்பை அணுகவும்'
+      },
+      
+      // CTA
+      cta: {
+        title: 'உங்கள் பண்ணையை மாற்றத் தயாரா',
+        highlight: 'இருக்கிறீர்களா?',
+        description: 'எங்கள் AI-இயக்கப்பட்ட தளத்துடன் தங்கள் விவசாய முறைகளில் புரட்சி செய்த ஆயிரக்கணக்கான வெற்றிகரமான விவசாயிகளுடன் சேருங்கள்',
+        button: 'இலவசமாக தொடங்குங்கள்'
       },
       card: {
         weather: {
@@ -584,6 +811,141 @@ const translations = {
         planting: {
           season: 'நடவு காலம்',
           kharif: 'கரிப்பு பயிர்கள்'
+        }
+      }
+    }
+  },
+
+  // Malayalam translations
+  ml: {
+    app: {
+      name: 'അഗ്രോസാർത്തി'
+    },
+    nav: {
+      home: 'ഹോം',
+      weather: 'കാലാവസ്ഥ',
+      cropCalendar: 'വിള കലണ്ടർ',
+      cropAI: 'വിള AI',
+      calculators: 'കാൽക്കുലേറ്ററുകൾ',
+      equipment: 'ഉപകരണങ്ങൾ',
+      guides: 'ഗൈഡുകൾ',
+      dashboard: 'ഡാഷ്ബോർഡ്'
+    },
+    common: {
+      current: 'നിലവിലുള്ള',
+      search: 'തിരയുക',
+      location: 'സ്ഥലം',
+      temperature: 'താപനില',
+      humidity: 'ആർദ്രത',
+      wind: 'കാറ്റ്',
+      precipitation: 'മഴ',
+      sunrise: 'സൂര്യോദയം',
+      sunset: 'സൂര്യാസ്തമയം',
+      high: 'ഉയർന്ന',
+      low: 'താഴ്ന്ന',
+      feelsLike: 'അനുഭവപ്പെടുന്നത്',
+      lastUpdated: 'അവസാനം അപ്ഡേറ്റ് ചെയ്തത്',
+      error: 'പിശക്',
+      retry: 'വീണ്ടും ശ്രമിക്കുക'
+    },
+    home: {
+      hero: {
+        welcomeMessage: "അഗ്രോസാർത്തിയിലേക്ക് സ്വാഗതം",
+        heroDescription: "കാലാവസ്ഥാ അപ്ഡേറ്റുകൾ, മാർക്കറ്റ് വിലകൾ, കാർഷിക കാൽക്കുലേറ്ററുകൾ, AI-പവർഡ് ഉപദേശം എന്നിവ നൽകുന്ന ഞങ്ങളുടെ സമഗ്ര ഉപകരണങ്ങൾ ഉപയോഗിച്ച് നിങ്ങളുടെ കൃഷിയിടത്തിനായി ഡാറ്റാ-അധിഷ്ഠിത തീരുമാനങ്ങൾ എടുക്കുക.",
+        getStarted: "ആരംഭിക്കുക",
+        exploreTools: "ഉപകരണങ്ങൾ പര്യവേക്ഷണം ചെയ്യുക"
+      },
+      everythingYouNeed: 'നിങ്ങളുടെ സമ്പൂർണ്ണ കാർഷിക സഹായി',
+      comprehensiveTools: 'വിള ആസൂത്രണം മുതൽ മാർക്കറ്റ് വിൽപ്പന വരെ, നിങ്ങളുടെ കാർഷിക പ്രവർത്തനങ്ങളുടെ എല്ലാ വശങ്ങളും ഒപ്റ്റിമൈസ് ചെയ്യുന്നതിനുള്ള ശക്തമായ ഉപകരണങ്ങളും ഉൾക്കാഴ്ചകളും ആക്സസ് ചെയ്യുക',
+      quickActions: 'സ്മാർട്ട് ഫാർമിംഗ് ടൂളുകൾ',
+      getInstantInsights: 'വിവരമുള്ള തീരുമാനങ്ങൾ എടുക്കാനും നിങ്ങളുടെ കൃഷിയിടത്തിന്റെ ഉൽപ്പാദനക്ഷമത വർദ്ധിപ്പിക്കാനും ഞങ്ങളുടെ AI-പവർഡ് ഉപകരണങ്ങൾ പ്രയോജനപ്പെടുത്തുക',
+      
+      features: {
+        title: 'നിങ്ങളുടെ സമ്പൂർണ്ണ കാർഷിക ഇക്കോസിസ്റ്റം',
+        description: 'ആർട്ടിഫിഷ്യൽ ഇന്റലിജൻസ്, സാറ്റലൈറ്റ് ഇമേജറി, IoT സെൻസറുകൾ എന്നിവയുടെ ശക്തി ഉപയോഗിച്ച് നിങ്ങളുടെ കാർഷിക പ്രവർത്തനങ്ങളുടെ എല്ലാ വശങ്ങളും രൂപാന്തരപ്പെടുത്തുക',
+        weatherForecast: {
+          title: 'കൃത്യമായ കാലാവസ്ഥാ ഉൾക്കാഴ്ചകൾ',
+          description: 'നിങ്ങളുടെ കാർഷിക ഷെഡ്യൂൾ ഒപ്റ്റിമൈസ് ചെയ്യാനും നിങ്ങളുടെ വിളകളെ സംരക്ഷിക്കാനും ഹൈപ്പർ-ലോക്കൽ കാലാവസ്ഥാ പ്രവചനങ്ങളും തത്സമയ അലേർട്ടുകളും'
+        },
+        cropHealth: {
+          title: 'വിള ആരോഗ്യ നിരീക്ഷണം',
+          description: '50+ വിളകൾക്കായി AI-പവർഡ് രോഗ കണ്ടെത്തലും ആരോഗ്യ വിശകലനവും, പ്രവർത്തനക്ഷമമായ ശുപാർശകളോടെ'
+        },
+        irrigation: {
+          title: 'സ്മാർട്ട് ജലസേചന ആസൂത്രണം',
+          description: 'ജല വിഭവങ്ങൾ സംരക്ഷിക്കുന്നതിനൊപ്പം വിളവ് പരമാവധിയാക്കുന്നതിനുള്ള ഡാറ്റാ-അധിഷ്ഠിത ജല മാനേജ്മെന്റ് പരിഹാരങ്ങൾ'
+        },
+        marketPrices: {
+          title: 'മാർക്കറ്റ് ഇന്റലിജൻസ്',
+          description: 'ഇന്ത്യയിലെ പ്രധാന മണ്ഡികളിൽ തത്സമയ വിള വിലകൾ, ഡിമാൻഡ് പ്രവചനങ്ങൾ, മാർക്കറ്റ് ട്രെൻഡുകൾ'
+        }
+      },
+      
+      // Dashboard
+      dashboard: {
+        title: 'തത്സമയ ഫാം ഇന്റലിജൻസ്',
+        description: 'ഞങ്ങളുടെ സമഗ്ര ഡാഷ്ബോർഡ് ഉപയോഗിച്ച് നിങ്ങളുടെ കാർഷിക പ്രവർത്തനങ്ങൾ നിരീക്ഷിക്കുകയും വിശകലനം ചെയ്യുകയും ഒപ്റ്റിമൈസ് ചെയ്യുകയും ചെയ്യുക'
+      },
+      
+      // Tools
+      tools: {
+        title: 'സ്മാർട്ട് കാർഷിക സഹായി',
+        description: 'ഡാറ്റാ-അധിഷ്ഠിത തീരുമാനങ്ങൾ എടുക്കാനും നിങ്ങളുടെ കൃഷിയിടത്തിന്റെ സാധ്യതകൾ പരമാവധിയാക്കാനും അത്യാധുനിക AI സാങ്കേതികവിദ്യ പ്രയോജനപ്പെടുത്തുക'
+      },
+      
+      testimonials: {
+        title: 'വിശ്വസനീയമായ',
+        subtitle: 'കർഷകർ',
+        description: 'ഞങ്ങളുടെ നൂതന പരിഹാരങ്ങൾ ഉപയോഗിച്ച് അവരുടെ കാർഷിക രീതികൾ മാറ്റിയ വിജയകരമായ കർഷകരുടെ വളരുന്ന സമൂഹത്തിൽ ചേരുക',
+        rajesh: {
+          name: 'രാജേഷ് കുമാർ',
+          role: 'ജൈവ കർഷകൻ, പഞ്ചാബ്',
+          content: 'അഗ്രോസാർത്തി എന്റെ വിളകൾ കൈകാര്യം ചെയ്യുന്ന രീതി മാറ്റിമറിച്ചു. രോഗ കണ്ടെത്തൽ ഫീച്ചർ കഴിഞ്ഞ സീസണിൽ എന്റെ മുഴുവൻ തക്കാളി വിളയും രക്ഷിച്ചു!'
+        },
+        priya: {
+          name: 'പ്രിയ ശർമ്മ',
+          role: 'ഡയറി & വിള കർഷകൻ, മഹാരാഷ്ട്ര',
+          content: 'കാലാവസ്ഥാ അലേർട്ടുകളും വിള ആസൂത്രണ ഉപകരണങ്ങളും ഈ വർഷം എന്റെ വിളവ് 30% വർദ്ധിപ്പിക്കാൻ സഹായിച്ചു.'
+        }
+      },
+      
+      newsletter: {
+        title: 'മുന്നിൽ നിൽക്കുക',
+        highlight: 'സ്മാർട്ട് കൃഷി',
+        description: 'എക്സ്ക്ലൂസീവ് ഉൾക്കാഴ്ചകൾ, കാലാവസ്ഥാ അലേർട്ടുകൾ, മാർക്കറ്റ് ട്രെൻഡുകൾ, വിദഗ്ധ കാർഷിക ടിപ്പുകൾ എന്നിവ എല്ലാ ആഴ്ചയും നേരിട്ട് നിങ്ങളുടെ ഇൻബോക്സിൽ ലഭിക്കുക',
+        emailPlaceholder: 'നിങ്ങളുടെ ഇമെയിൽ വിലാസം നൽകുക',
+        subscribeButton: 'ഇപ്പോൾ സബ്സ്ക്രൈബ് ചെയ്യുക',
+        thankYou: 'സബ്സ്ക്രൈബ് ചെയ്തതിന് നന്ദി!'
+      },
+      
+      // Featured Tools
+      featuredTools: {
+        title: 'വിജയിക്കാൻ നിങ്ങൾക്ക് ആവശ്യമായതെല്ലാം',
+        description: 'നിങ്ങളുടെ കാർഷിക പ്രവർത്തനങ്ങളുടെ എല്ലാ വശങ്ങളും ഒപ്റ്റിമൈസ് ചെയ്യുന്നതിനായി രൂപകൽപ്പന ചെയ്ത ഞങ്ങളുടെ കാർഷിക ഉപകരണങ്ങളുടെയും കാൽക്കുലേറ്ററുകളുടെയും സമ്പൂർണ്ണ സ്യൂട്ട് ആക്സസ് ചെയ്യുക'
+      },
+      
+      // CTA
+      cta: {
+        title: 'നിങ്ങളുടെ കൃഷിയിടം മാറ്റാൻ തയ്യാറാണോ',
+        highlight: '?',
+        description: 'ഞങ്ങളുടെ AI-പവർഡ് പ്ലാറ്റ്ഫോം ഉപയോഗിച്ച് അവരുടെ കാർഷിക രീതികളിൽ വിപ്ലവം സൃഷ്ടിച്ച ആയിരക്കണക്കിന് വിജയകരമായ കർഷകരോടൊപ്പം ചേരുക',
+        button: 'സൗജന്യമായി ആരംഭിക്കുക'
+      },
+      
+      card: {
+        weather: {
+          label: 'കാലാവസ്ഥ',
+          clearSky: 'തെളിഞ്ഞ ആകാശം',
+          alert: 'കാലാവസ്ഥാ അലേർട്ട്',
+          lightRain: 'നേരിയ മഴ'
+        },
+        market: {
+          trend: 'മാർക്കറ്റ് ട്രെൻഡ്',
+          weeklyAvg: 'പ്രതിവാര ശരാശരി'
+        },
+        planting: {
+          season: 'നടീൽ സീസൺ',
+          kharif: 'ഖരീഫ് വിളകൾ'
         }
       }
     }

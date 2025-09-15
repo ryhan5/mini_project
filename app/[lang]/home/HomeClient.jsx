@@ -2,6 +2,7 @@
 
 import { Suspense, useState, useEffect } from 'react';
 import { t } from '@/translations';
+import { useTranslation } from '@/hooks/useTranslation';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
 import { 
   ArrowRight, 
@@ -29,6 +30,7 @@ import DashboardOverview from '@/components/home/DashboardOverview';
 import SmartFarmingAssistant from '@/components/home/SmartFarmingAssistant';
 import DiseasePredictionCard from '@/components/home/DiseasePredictionCard';
 import FeaturedTools from '@/components/home/FeaturedTools';
+import WebinarsSection from '@/components/home/WebinarsSection';
 import { Button } from '@/components/ui/button';
 import { useRef } from 'react';
 
@@ -102,6 +104,7 @@ const testimonials = (lang) => [
 ];
 
 const HomeClient = ({ lang = 'en' }) => {
+  const translate = useTranslation();
   const [email, setEmail] = useState('');
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [activeFeature, setActiveFeature] = useState(0);
@@ -153,23 +156,13 @@ const HomeClient = ({ lang = 'en' }) => {
                 <span className="text-emerald-700 font-medium text-sm">AI-Powered Solutions</span>
               </motion.div>
               
-              <motion.h2 
-                className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-900 via-emerald-800 to-gray-900 bg-clip-text text-transparent mb-6"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-              >
-                Your Complete Farming Ecosystem
-              </motion.h2>
+              <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-900 via-emerald-800 to-gray-900 bg-clip-text text-transparent mb-6">
+                {translate('home.features.title') || 'Your Complete Farming Ecosystem'}
+              </h2>
               
-              <motion.p 
-                className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-              >
-                Harness the power of artificial intelligence, satellite imagery, and IoT sensors to transform every aspect of your agricultural operations
-              </motion.p>
+              <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
+                {translate('home.features.description') || 'Harness the power of artificial intelligence, satellite imagery, and IoT sensors to transform every aspect of your agricultural operations'}
+              </p>
             </div>
             
             <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-8">
@@ -253,10 +246,10 @@ const HomeClient = ({ lang = 'en' }) => {
                 <span className="text-blue-700 font-medium text-sm">Live Dashboard</span>
               </div>
               <h2 className="text-4xl font-bold text-gray-900 mb-4">
-                Real-Time Farm Intelligence
+                {translate('home.dashboard.title') || 'Real-Time Farm Intelligence'}
               </h2>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                Monitor, analyze, and optimize your farming operations with our comprehensive dashboard
+                {translate('home.dashboard.description') || 'Monitor, analyze, and optimize your farming operations with our comprehensive dashboard'}
               </p>
             </div>
             
@@ -290,10 +283,10 @@ const HomeClient = ({ lang = 'en' }) => {
                 <span className="text-purple-700 font-medium text-sm">AI-Powered Tools</span>
               </div>
               <h2 className="text-4xl font-bold text-gray-900 mb-4">
-                Smart Farming Assistant
+                {translate('home.tools.title') || 'Smart Farming Assistant'}
               </h2>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                Leverage cutting-edge AI technology to make data-driven decisions and maximize your farm's potential
+                {translate('home.tools.description') || 'Leverage cutting-edge AI technology to make data-driven decisions and maximize your farm\'s potential'}
               </p>
             </div>
             
@@ -355,10 +348,10 @@ const HomeClient = ({ lang = 'en' }) => {
                 </div>
                 
                 <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-                  Trusted by <span className="text-emerald-600">50,000+</span> Farmers
+                  {translate('home.testimonials.title') || 'Trusted by'} <span className="text-emerald-600">50,000+</span> {translate('home.testimonials.subtitle') || 'Farmers'}
                 </h2>
                 <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                  Join the growing community of successful farmers who have transformed their agricultural practices with our innovative solutions
+                  {translate('home.testimonials.description') || 'Join the growing community of successful farmers who have transformed their agricultural practices with our innovative solutions'}
                 </p>
               </div>
 
@@ -456,6 +449,9 @@ const HomeClient = ({ lang = 'en' }) => {
             </div>
           </motion.section>
           
+          {/* Webinars Section */}
+          <WebinarsSection lang={lang} />
+          
           {/* Enhanced Newsletter Section */}
           <motion.section
             className="relative"
@@ -488,12 +484,12 @@ const HomeClient = ({ lang = 'en' }) => {
                   <span className="text-emerald-100 font-medium text-sm">Weekly Newsletter</span>
                 </motion.div>
                 
-                <h2 className="text-4xl md:text-5xl font-bold mb-6">
-                  Stay Ahead with <span className="text-cyan-200">Smart Farming</span>
+                <h2 className="text-4xl md:text-5xl font-bold mb-8 leading-tight">
+                  {translate('home.newsletter.title') || 'Stay Ahead with'} <span className="text-cyan-200">{translate('home.newsletter.highlight') || 'Smart Farming'}</span>
                 </h2>
                 
                 <p className="text-xl text-emerald-50 mb-12 max-w-3xl mx-auto leading-relaxed">
-                  Get exclusive insights, weather alerts, market trends, and expert farming tips delivered directly to your inbox every week
+                  {translate('home.newsletter.description') || 'Get exclusive insights, weather alerts, market trends, and expert farming tips delivered directly to your inbox every week'}
                 </p>
                 
                 <AnimatePresence mode="wait">
@@ -576,10 +572,10 @@ const HomeClient = ({ lang = 'en' }) => {
                 <span className="text-purple-700 font-medium text-sm">Comprehensive Toolkit</span>
               </div>
               <h2 className="text-4xl font-bold text-gray-900 mb-4">
-                Everything You Need to Succeed
+                {translate('home.featuredTools.title') || 'Everything You Need to Succeed'}
               </h2>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                Access our complete suite of agricultural tools and calculators designed to optimize every aspect of your farming operation
+                {translate('home.featuredTools.description') || 'Access our complete suite of agricultural tools and calculators designed to optimize every aspect of your farming operation'}
               </p>
             </div>
             
@@ -630,11 +626,11 @@ const HomeClient = ({ lang = 'en' }) => {
                 </motion.div>
                 
                 <h2 className="text-5xl md:text-6xl font-bold mb-8 leading-tight">
-                  Ready to Transform Your <span className="text-emerald-300">Farm?</span>
+                  {translate('home.cta.title') || 'Ready to Transform Your'} <span className="text-emerald-300">{translate('home.cta.highlight') || 'Farm?'}</span>
                 </h2>
                 
                 <p className="text-xl text-gray-300 mb-12 max-w-2xl mx-auto leading-relaxed">
-                  Join thousands of successful farmers who have revolutionized their agricultural practices with our AI-powered platform
+                  {translate('home.cta.description') || 'Join thousands of successful farmers who have revolutionized their agricultural practices with our AI-powered platform'}
                 </p>
                 
                 <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
@@ -643,7 +639,7 @@ const HomeClient = ({ lang = 'en' }) => {
                     className="group bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white px-12 py-6 text-xl font-semibold shadow-2xl hover:shadow-emerald-500/25 transition-all duration-300 transform hover:-translate-y-2"
                   >
                     <span className="flex items-center">
-                      Get Started Free
+                      {translate('home.cta.button') || 'Get Started Free'}
                       <motion.div
                         className="ml-3"
                         whileHover={{ x: 4 }}
