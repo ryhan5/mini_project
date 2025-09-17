@@ -66,28 +66,10 @@ export default function CropAssistantClient() {
           >
             <Tabs defaultValue="assistant" className="w-full">
               {/* Tab Header */}
-              <div className="bg-gradient-to-r from-green-500 to-green-600 p-6">
-                <div className="flex justify-center">
-                  <TabsList className="bg-white/20 backdrop-blur-sm border-white/30">
-                    <TabsTrigger 
-                      value="assistant" 
-                      className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-emerald-700 text-white"
-                    >
-                      <Bot className="h-4 w-4" /> 
-                      AI Assistant & Disease Scanner
-                    </TabsTrigger>
-                  </TabsList>
-                </div>
-              </div>
               
               <div className="p-6">
                 <TabsContent value="assistant" className="mt-0">
                   <div className="space-y-6">
-                    <div className="text-center p-6 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl border border-green-200">
-                      <Bot className="w-12 h-12 mx-auto text-green-600 mb-4" />
-                      <h3 className="text-xl font-bold text-gray-900 mb-2">AI Farming Assistant & Disease Scanner</h3>
-                      <p className="text-gray-600">Chat with our AI assistant for farming advice or upload crop images for disease analysis</p>
-                    </div>
                     
                     <div className="rounded-xl overflow-hidden border-2 border-green-100 shadow-lg">
                       <CropDiseaseDetection />

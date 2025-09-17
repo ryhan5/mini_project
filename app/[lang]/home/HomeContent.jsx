@@ -143,14 +143,14 @@ export default function HomeContent() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Tabs defaultValue="weather" className="w-full">
             <TabsList className="grid w-full grid-cols-2 max-w-xs">
-              <TabsTrigger value="weather">{t('weather')}</TabsTrigger>
-              <TabsTrigger value="market">{t('marketPrices')}</TabsTrigger>
+              <TabsTrigger value="weather">Weather</TabsTrigger>
+              <TabsTrigger value="market">Market Prices</TabsTrigger>
             </TabsList>
             <TabsContent value="weather">
               <Card>
                 <CardHeader>
-                  <CardTitle>{t('weatherForecast')}</CardTitle>
-                  <CardDescription>{t('currentWeatherConditions')}</CardDescription>
+                  <CardTitle>Weather Forecast</CardTitle>
+                  <CardDescription>Current weather conditions</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="flex items-center justify-between">
@@ -158,17 +158,17 @@ export default function HomeContent() {
                       <div className="text-5xl">🌤️</div>
                       <div>
                         <div className="text-4xl font-bold">28°C</div>
-                        <div className="text-gray-500">{t('partlyCloudy')}</div>
+                        <div className="text-gray-500">Partly Cloudy</div>
                       </div>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div className="flex items-center space-x-2">
                         <Droplet className="h-5 w-5 text-blue-500" />
-                        <span>{t('humidity')}: 65%</span>
+                        <span>Humidity: 65%</span>
                       </div>
                       <div className="flex items-center space-x-2">
                         <Wind className="h-5 w-5 text-gray-500" />
-                        <span>{t('wind')}: 10 km/h</span>
+                        <span>Wind: 10 km/h</span>
                       </div>
                     </div>
                   </div>

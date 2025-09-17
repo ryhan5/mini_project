@@ -66,7 +66,7 @@ export default function Hero({ lang = 'en' }) {
               className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 mb-6"
             >
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-tight">
-                {translations.hero.welcomeMessage}
+{t('home.hero.welcomeMessage')}
               </h1>
               <div className="relative w-full max-w-[200px] h-auto">
                 <Image
@@ -86,7 +86,7 @@ export default function Hero({ lang = 'en' }) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
             >
-              {translations.hero.heroDescription}
+{t('home.hero.heroDescription')}
             </motion.p>
             
             <motion.div 
@@ -102,7 +102,7 @@ export default function Hero({ lang = 'en' }) {
                   onMouseEnter={() => setIsHovered(true)}
                   onMouseLeave={() => setIsHovered(false)}
                 >
-                  {translations.hero.getStarted}
+{t('home.hero.getStarted')}
                   <motion.span
                     animate={{ x: isHovered ? 5 : 0 }}
                     transition={{ duration: 0.2 }}
@@ -118,7 +118,7 @@ export default function Hero({ lang = 'en' }) {
                   size="lg" 
                   className="border-2 border-white/30 bg-transparent hover:bg-white/10 text-white hover:text-white px-8 py-6 text-base font-medium transition-all duration-300 transform hover:-translate-y-1"
                 >
-                  {translations.hero.exploreTools}
+{t('home.hero.exploreTools')}
                 </Button>
               </Link>
             </motion.div>
@@ -134,7 +134,7 @@ export default function Hero({ lang = 'en' }) {
               <div className="p-6">
                 <h3 className="text-2xl font-bold mb-6 flex items-center">
                   <span className="bg-gradient-to-r from-yellow-300 to-amber-400 bg-clip-text text-transparent">
-                    {translations.hero.todaysOverview}
+{t('home.hero.todaysOverview')}
                   </span>
                 </h3>
                 
@@ -179,7 +179,7 @@ export default function Hero({ lang = 'en' }) {
                     </div>
                     <div>
                       <p className="font-medium text-green-100">{t('home.card.planting.season')}</p>
-                      <p className="text-sm text-green-100/80">{translations.card.planting.kharif}</p>
+                      <p className="text-sm text-green-100/80">{t('home.card.planting.kharif')}</p>
                     </div>
                   </div>
                 </div>

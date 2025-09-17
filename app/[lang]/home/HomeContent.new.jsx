@@ -14,33 +14,33 @@ export default function HomeContent() {
   const overviewItems = [
     {
       icon: Thermometer,
-      title: t('weather'),
-      value: '28°C, ' + t('sunny'),
-      trend: t('idealForPlanting'),
+      title: 'Weather',
+      value: '28°C, Sunny',
+      trend: 'Ideal for planting',
       color: 'text-blue-600',
       bgColor: 'bg-blue-50'
     },
     {
       icon: BarChart2,
-      title: t('marketTrend'),
-      value: t('wheat') + ' +2.3%',
-      trend: t('pricesRising'),
+      title: 'Market Trend',
+      value: 'Wheat +2.3%',
+      trend: 'Prices rising',
       color: 'text-green-600',
       bgColor: 'bg-green-50'
     },
     {
       icon: AlertTriangle,
-      title: t('weatherAlert'),
-      value: t('noAlerts'),
-      trend: t('allClear'),
+      title: 'Weather Alert',
+      value: 'No alerts',
+      trend: 'All clear',
       color: 'text-green-600',
       bgColor: 'bg-yellow-50'
     },
     {
       icon: CalendarIcon,
-      title: t('plantingSeason'),
-      value: t('active'),
-      trend: t('bestTimeToPlant'),
+      title: 'Planting Season',
+      value: 'Active',
+      trend: 'Best time to plant',
       color: 'text-green-600',
       bgColor: 'bg-green-50'
     }
@@ -50,8 +50,8 @@ export default function HomeContent() {
   const tools = [
     {
       icon: CloudSun,
-      title: t('weatherForecast'),
-      description: t('weatherForecastDescription'),
+      title: 'Weather Forecast',
+      description: 'Real-time weather updates and 7-day forecasts',
       link: '/weather',
       bgColor: 'bg-blue-50',
       iconColor: 'text-blue-600'

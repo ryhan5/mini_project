@@ -230,7 +230,7 @@ const KnowledgeHubClient = () => {
             <div className="flex items-center space-x-2">
               <span className="text-sm text-gray-500 whitespace-nowrap">Filter by:</span>
               <select 
-                className="text-sm border rounded-md px-3 py-2 focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                className="text-sm border rounded-md px-3 py-2 focus:ring-2 focus:ring-green-500 focus:border-green-500 text-gray-900 bg-white"
                 value={activeTab}
                 onChange={(e) => setActiveTab(e.target.value)}
               >

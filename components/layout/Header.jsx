@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useLanguage } from '@/context/LanguageContext';
-import { t } from '@/translations/index'; 
+import { useTranslation } from '@/hooks/useTranslation';
 import Image from 'next/image';
 import { 
   Menu, 
@@ -21,25 +21,31 @@ import {
   Tractor,
   Leaf,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  Satellite,
+  BarChart3,
+  Bug,
+  Cloud,
+  Truck,
+  BookOpen
 } from 'lucide-react';
 import LanguageSelector from '@/components/LanguageSelector';
 
 // Navigation items with translation keys
 const navigation = [
   { name: 'nav.home', href: '/home', icon: Home },
-  { name: 'nav.weather', href: '/weather', icon: CloudSun },
-  { name: 'nav.cropCalendar', href: '/crop-calendar', icon: Calendar },
-  { name: 'nav.cropAI', href: '/crop-assistant', icon: Bot },
-  { name: 'nav.calculators', href: '/calculators', icon: Calculator },
-  { name: 'nav.equipment', href: '/equipment-exchange', icon: Tractor },
-  { name: 'nav.guides', href: '/knowledge-hub', icon: Book },
-  { name: 'nav.dashboard', href: '/dashboard', icon: LayoutDashboard, protected: true }
+  { name: 'crop-calendar', href: '/crop-calendar', icon: Calendar },
+  { name: 'crop-disease', href: '/crop-disease', icon: Bug },
+  { name: 'weather', href: '/weather', icon: Cloud },
+  { name: 'equipment-exchange', href: '/equipment-exchange', icon: Truck },
+  { name: 'knowledge-hub', href: '/knowledge-hub', icon: BookOpen },
+  { name: 'dashboard', href: '/dashboard', icon: BarChart3 }
 ];
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { currentLanguage } = useLanguage();
+  const t = useTranslation();
   const router = useRouter();
   const pathname = usePathname();
   
@@ -70,9 +76,9 @@ export default function Header() {
   const translatedNavigation = useMemo(() => 
     navigation.map(item => ({
       ...item,
-      label: t(item.name, memoizedCurrentLanguage) || item.name.replace('nav.', '')
+      label: t(item.name) || item.name.replace('nav.', '')
     })),
-    [memoizedCurrentLanguage]
+    [t]
   );
 
   return (
@@ -183,7 +189,7 @@ export default function Header() {
                 
                 {active && (
                   <span className="ml-auto inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                    {t('common.current', memoizedCurrentLanguage)}
+                    {t('common.current')}
                   </span>
                 )}
               </Link>

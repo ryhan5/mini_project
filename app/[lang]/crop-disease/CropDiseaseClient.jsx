@@ -275,10 +275,6 @@ ${mlResult.prevention.map((p, i) => `${i + 1}. ${p}`).join('\n')}
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">AI Farming Assistant & Disease Scanner</h1>
-        <p className="text-gray-600">Get instant farming advice and analyze crop diseases with AI-powered assistance</p>
-      </div>
       
       {/* Tab Navigation */}
       <div className="flex justify-center mb-6">
@@ -391,7 +387,7 @@ ${mlResult.prevention.map((p, i) => `${i + 1}. ${p}`).join('\n')}
                     onChange={(e) => setInputMessage(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
                     placeholder="Ask about farming, crops, diseases, or upload an image..."
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-900 placeholder-gray-500 bg-white"
                     disabled={isTyping}
                   />
                   <Button

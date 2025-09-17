@@ -213,12 +213,22 @@ const WeatherCard = ({ day, temp, condition, precipitation, wind, humidity, sunr
   );
 };
 
-const HourlyForecast = ({ hours }) => {
+const HourlyForecast = ({ hours, lang = 'en' }) => {
+  // Get translation with fallback
+  const getTranslation = (key, defaultValue = '') => {
+    try {
+      return t(`weather.${key}`, lang) || defaultValue;
+    } catch (e) {
+      console.warn(`Translation error for key: weather.${key}`, e);
+      return defaultValue;
+    }
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold text-gray-900">{t('weather.hourlyForecast', 'Hourly Forecast')}</h3>
-        <span className="text-sm text-green-600 font-medium">{t('weather.next24Hours', 'Next 24 hours')}</span>
+        <h3 className="text-lg font-semibold text-gray-900">{getTranslation('hourlyForecast', 'Hourly Forecast')}</h3>
+        <span className="text-sm text-green-600 font-medium">{getTranslation('next24Hours', 'Next 24 hours')}</span>
       </div>
       <div className="relative">
         <div className="flex space-x-4 pb-4 -mx-4 px-4 overflow-x-auto scrollbar-hide">
@@ -335,6 +345,11 @@ const WeatherClient = ({ lang = 'en' }) => {
   const [location, setLocation] = useState(getTranslation('defaultLocation', 'Kolkata, West Bengal, India'));
   const [weatherData, setWeatherData] = useState(null);
   const [loading, setLoading] = useState(true);
+  
+  // Debug loading state changes
+  useEffect(() => {
+    console.log('Loading state changed to:', loading);
+  }, [loading]);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [coords, setCoords] = useState({
@@ -426,16 +441,35 @@ const WeatherClient = ({ lang = 'en' }) => {
     fetchWeatherData(query);
   };
 
-  // Track if component is mounted
+  // Track if component is mounted and prevent double fetch
   const isMounted = useRef(true);
+  const fetchInProgress = useRef(false);
+  
+  // Debug isMounted state
+  useEffect(() => {
+    console.log('Component mounted, isMounted set to true');
+    isMounted.current = true;
+  }, []);
   
   // Fetch weather data from OpenMeteo API
   const fetchWeatherData = async (query = searchQuery) => {
-    // Skip fetch if no query and we have data
-    if (!query && weatherData) return;
+    // Skip fetch only if we already have weather data and no new query
+    if (weatherData && !query) {
+      console.log('Skipping fetch - already have data and no new query');
+      return;
+    }
+    
+    // Prevent double fetching using ref
+    if (fetchInProgress.current && !query) {
+      console.log('Fetch already in progress, skipping duplicate');
+      return;
+    }
+    
+    fetchInProgress.current = true;
     
     try {
         console.log('Starting weather data fetch...');
+        console.log('Setting loading to true');
         setLoading(true);
         setError(null);
 
@@ -470,7 +504,9 @@ const WeatherClient = ({ lang = 'en' }) => {
           
           // Don't clear search query here to show the searched location
           // The search input will still show what was searched
-          return; // Return here to prevent double fetch
+          // Clear search query and fetch weather data for the new location
+          setSearchQuery('');
+          // Continue to fetch weather data for the new coordinates
         }
 
         // Get weather data using OpenMeteo
@@ -533,8 +569,11 @@ const WeatherClient = ({ lang = 'en' }) => {
 
         console.log('Weather data fetched successfully:', transformedData);
         if (isMounted.current) {
+          console.log('About to set weather data and loading state');
           setWeatherData(transformedData);
+          console.log('Weather data set, now setting loading to false');
         }
+        console.log('Exiting try block, should go to finally');
       } catch (err) {
         console.error('Error fetching weather data:', err);
         console.error('Error details:', {
@@ -553,21 +592,24 @@ const WeatherClient = ({ lang = 'en' }) => {
           });
         }
       } finally {
-        if (isMounted.current) {
-          setLoading(false);
-        }
+        console.log('Entering finally block');
+        fetchInProgress.current = false;
+        // Always set loading to false regardless of mount state to prevent infinite loading
+        console.log('Finally block: setting loading to false (forced)');
+        setLoading(false);
       }
     };
 
   // Initial data fetch when component mounts
   useEffect(() => {
+    console.log('useEffect triggered - calling fetchWeatherData');
     fetchWeatherData();
     
     // Cleanup function
     return () => {
       isMounted.current = false;
     };
-  }, [coords.lat, coords.lon]);
+  }, []); // Remove coords dependencies to prevent infinite loops
 
   // Get translated weather condition
   const getTranslatedCondition = (condition) => {
@@ -603,10 +645,10 @@ const WeatherClient = ({ lang = 'en' }) => {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            {getTranslation('weather.weatherForecast', 'Weather Forecast')}
+            {getTranslation('weatherForecast', 'Weather Forecast')}
           </h1>
           <p className="text-gray-600">
-            {getTranslation('weather.forecastDescription', 'Get real-time weather updates and forecasts for your location')}
+            {getTranslation('forecastDescription', 'Get real-time weather updates and forecasts for your location')}
           </p>
           
           {/* Search Bar */}
@@ -618,7 +660,7 @@ const WeatherClient = ({ lang = 'en' }) => {
               <input
                 type="text"
                 className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm"
-                placeholder={getTranslation('weather.searchPlaceholder', 'Search for a location...')}
+                placeholder={getTranslation('searchPlaceholder', 'Search for a location...')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -627,7 +669,7 @@ const WeatherClient = ({ lang = 'en' }) => {
               type="submit"
               className="ml-3 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
             >
-              {getTranslation('common.search', 'Search')}
+              Search
             </button>
           </form>
         </div>
@@ -649,7 +691,7 @@ const WeatherClient = ({ lang = 'en' }) => {
                       <div className="flex justify-between items-start">
                         <div>
                           <CardTitle className="text-2xl">
-                            {getTranslation('weather.currentWeather', 'Current Weather')}
+                            {getTranslation('currentWeather', 'Current Weather')}
                           </CardTitle>
                           <CardDescription className="text-base">
                             {new Date().toLocaleDateString(lang, { 
@@ -676,22 +718,22 @@ const WeatherClient = ({ lang = 'en' }) => {
                           <div>
                             <div className="text-6xl font-bold">{weatherData.current.temp}°C</div>
                             <p className="text-gray-600 mt-2">
-                              {getTranslation('weather.feelsLike', 'Feels like')} {weatherData.current.feelsLike}°C
+                              {getTranslation('feelsLike', 'Feels like')} {weatherData.current.feelsLike}°C
                             </p>
                           </div>
                         </div>
                         <div className="mt-6 md:mt-0 space-y-2">
                           <div className="flex items-center">
                             <Droplet className="h-5 w-5 text-blue-400 mr-2" />
-                            <span>{getTranslation('weather.humidity', 'Humidity')}: {weatherData.current.humidity}%</span>
+                            <span>{getTranslation('humidity', 'Humidity')}: {weatherData.current.humidity}%</span>
                           </div>
                           <div className="flex items-center">
                             <WindIcon className="h-5 w-5 text-gray-400 mr-2" />
-                            <span>{getTranslation('weather.wind', 'Wind')}: {weatherData.current.wind} km/h</span>
+                            <span>{getTranslation('wind', 'Wind')}: {weatherData.current.wind} km/h</span>
                           </div>
                           <div className="flex items-center">
                             <CloudRain className="h-5 w-5 text-blue-400 mr-2" />
-                            <span>{getTranslation('weather.precipitation', 'Precipitation')}: {weatherData.current.precipitation}%</span>
+                            <span>{getTranslation('precipitation', 'Precipitation')}: {weatherData.current.precipitation}%</span>
                           </div>
                         </div>
                       </div>

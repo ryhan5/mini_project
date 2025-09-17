@@ -8,6 +8,7 @@ import { reminderSystem } from '@/lib/reminderSystem';
 import { knowledgeEngine } from '@/lib/knowledgeEngine';
 import SmartInsights from '@/components/dashboard/SmartInsights';
 import ActivityLogger from '@/components/dashboard/ActivityLogger';
+import SatelliteWidget from '@/components/dashboard/SatelliteWidget';
 import { 
   User,
   MapPin,
@@ -40,7 +41,8 @@ import {
   Sprout,
   TreePine,
   Tractor,
-  Zap
+  Zap,
+  Satellite
 } from 'lucide-react';
 
 // Farmer Profile Form Component
@@ -912,272 +914,342 @@ const DashboardClient = ({ lang }) => {
           </div>
         )}
 
-        {/* Main Dashboard Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Profile Summary */}
+        {/* Dashboard Sections */}
+        <div className="space-y-8">
+          {/* Profile & Overview Section */}
           {isProfileComplete && (
-            <div className="lg:col-span-2">
-              <ProfileSummaryCard
-                profile={farmerProfile}
-                farm={farmDetails}
-                onEdit={() => {
-                  setEditingProfile(true);
-                  setShowProfileForm(true);
-                }}
-              />
-            </div>
+            <section>
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-semibold text-gray-900">Farm Overview</h2>
+                <button
+                  onClick={() => {
+                    setEditingProfile(true);
+                    setShowProfileForm(true);
+                  }}
+                  className="flex items-center px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-800 border border-blue-200 rounded-lg hover:bg-blue-50"
+                >
+                  <Edit3 className="h-4 w-4 mr-2" />
+                  Edit Profile
+                </button>
+              </div>
+              <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+                <div className="xl:col-span-2">
+                  <ProfileSummaryCard
+                    profile={farmerProfile}
+                    farm={farmDetails}
+                    onEdit={() => {
+                      setEditingProfile(true);
+                      setShowProfileForm(true);
+                    }}
+                  />
+                </div>
+                <div className="space-y-6">
+                  {/* Quick Actions */}
+                  <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                    <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
+                      <Settings className="h-5 w-5 mr-2 text-gray-600" />
+                      Quick Actions
+                    </h3>
+                    <div className="grid grid-cols-2 gap-3">
+                      <button
+                        onClick={() => setShowFarmForm(true)}
+                        className="flex items-center justify-center px-3 py-3 text-sm font-medium text-gray-700 bg-gray-50 rounded-lg hover:bg-gray-100"
+                      >
+                        <MapPin className="h-4 w-4 mr-2 text-green-600" />
+                        Farm Details
+                      </button>
+                      <button
+                        onClick={() => window.open(`/${lang}/weather`, '_blank')}
+                        className="flex items-center justify-center px-3 py-3 text-sm font-medium text-gray-700 bg-gray-50 rounded-lg hover:bg-gray-100"
+                      >
+                        <Sun className="h-4 w-4 mr-2 text-yellow-600" />
+                        Weather
+                      </button>
+                      <button
+                        onClick={() => window.open(`/${lang}/crop-assistant`, '_blank')}
+                        className="flex items-center justify-center px-3 py-3 text-sm font-medium text-gray-700 bg-gray-50 rounded-lg hover:bg-gray-100"
+                      >
+                        <Leaf className="h-4 w-4 mr-2 text-green-600" />
+                        AI Assistant
+                      </button>
+                      <button
+                        onClick={() => window.open(`/${lang}/satellite-monitor`, '_blank')}
+                        className="flex items-center justify-center px-3 py-3 text-sm font-medium text-gray-700 bg-gray-50 rounded-lg hover:bg-gray-100"
+                      >
+                        <Satellite className="h-4 w-4 mr-2 text-blue-600" />
+                        Satellite
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
           )}
 
-          {/* Quick Actions */}
-          <div className="space-y-6">
-            <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-              <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
-                <Settings className="h-5 w-5 mr-2 text-gray-600" />
-                Quick Actions
-              </h3>
-              <div className="space-y-3">
-                <button
-                  onClick={() => setShowProfileForm(true)}
-                  className="w-full flex items-center px-4 py-3 text-sm font-medium text-gray-700 bg-gray-50 rounded-lg hover:bg-gray-100"
-                >
-                  <User className="h-4 w-4 mr-3 text-blue-600" />
-                  {farmerProfile ? 'Edit Profile' : 'Add Profile'}
-                </button>
-                <button
-                  onClick={() => setShowFarmForm(true)}
-                  className="w-full flex items-center px-4 py-3 text-sm font-medium text-gray-700 bg-gray-50 rounded-lg hover:bg-gray-100"
-                >
-                  <MapPin className="h-4 w-4 mr-3 text-green-600" />
-                  {farmDetails ? 'Edit Farm Details' : 'Add Farm Details'}
-                </button>
-                <button
-                  onClick={() => window.open(`/${lang}/weather`, '_blank')}
-                  className="w-full flex items-center px-4 py-3 text-sm font-medium text-gray-700 bg-gray-50 rounded-lg hover:bg-gray-100"
-                >
-                  <Sun className="h-4 w-4 mr-3 text-yellow-600" />
-                  Check Weather
-                </button>
-                <button
-                  onClick={() => window.open(`/${lang}/crop-assistant`, '_blank')}
-                  className="w-full flex items-center px-4 py-3 text-sm font-medium text-gray-700 bg-gray-50 rounded-lg hover:bg-gray-100"
-                >
-                  <Leaf className="h-4 w-4 mr-3 text-green-600" />
-                  AI Assistant
-                </button>
-              </div>
+          {/* Monitoring & Insights Section */}
+          <section>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-semibold text-gray-900">Farm Monitoring</h2>
             </div>
-
-            {/* Smart Advisories */}
-            <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-              <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
-                <Zap className="h-5 w-5 mr-2 text-blue-600" />
-                AI Advisories
-              </h3>
-              <div className="space-y-3">
-                {advisories.length > 0 ? (
-                  advisories.slice(0, 3).map((advisory, index) => (
-                    <div key={index} className="flex items-start space-x-3 p-3 bg-blue-50 rounded-lg">
-                      <div className={`w-2 h-2 rounded-full mt-2 ${
-                        advisory.priority === 'high' ? 'bg-red-500' : 
-                        advisory.priority === 'medium' ? 'bg-yellow-500' : 'bg-green-500'
-                      }`} />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-900">{advisory.title}</p>
-                        <p className="text-xs text-gray-600 truncate">{advisory.message}</p>
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+              {/* Weather Widget */}
+              {weatherData && (
+                <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                  <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
+                    <Sun className="h-5 w-5 mr-2 text-yellow-600" />
+                    Weather Today
+                  </h3>
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
+                      <p className="text-3xl font-bold text-gray-900">{weatherData.temperature}°C</p>
+                      <p className="text-sm text-gray-600">{weatherData.conditions}</p>
+                    </div>
+                    <div className="text-right">
+                      <div className="flex items-center text-sm text-gray-600 mb-1">
+                        <Droplets className="h-4 w-4 mr-1" />
+                        {weatherData.humidity}%
+                      </div>
+                      <div className="flex items-center text-sm text-gray-600">
+                        <Wind className="h-4 w-4 mr-1" />
+                        {weatherData.windSpeed} km/h
                       </div>
                     </div>
-                  ))
-                ) : (
-                  <div className="text-gray-500 text-center py-4 text-sm">
-                    No active advisories
                   </div>
-                )}
-              </div>
-            </div>
+                  <div className="grid grid-cols-3 gap-2 text-xs">
+                    {weatherData.forecast.map((day, index) => (
+                      <div key={index} className="text-center p-2 bg-gray-50 rounded">
+                        <p className="font-medium">{day.day}</p>
+                        <p className="text-gray-600">{day.temp}°C</p>
+                        <p className="text-blue-600">{day.rain}%</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
-            {/* Weather Widget */}
-            {weatherData && (
+              {/* Satellite Monitoring */}
+              <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-medium text-gray-900 flex items-center">
+                    <Satellite className="h-5 w-5 mr-2 text-blue-600" />
+                    Satellite Monitor
+                  </h3>
+                </div>
+                <SatelliteWidget 
+                  farmLocation={{
+                    coordinates: [77.2090, 28.6139],
+                    cropType: crops.length > 0 ? crops[0].name : 'Mixed Crops',
+                    area: farmDetails?.totalArea || '10 hectares'
+                  }}
+                  onViewDetails={null}
+                />
+              </div>
+
+              {/* AI Advisories */}
               <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
                 <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
-                  <Sun className="h-5 w-5 mr-2 text-yellow-600" />
-                  Weather Today
+                  <Zap className="h-5 w-5 mr-2 text-blue-600" />
+                  AI Advisories
                 </h3>
-                <div className="flex items-center justify-between mb-4">
-                  <div>
-                    <p className="text-3xl font-bold text-gray-900">{weatherData.temperature}°C</p>
-                    <p className="text-sm text-gray-600">{weatherData.conditions}</p>
-                  </div>
-                  <div className="text-right">
-                    <div className="flex items-center text-sm text-gray-600 mb-1">
-                      <Droplets className="h-4 w-4 mr-1" />
-                      {weatherData.humidity}%
-                    </div>
-                    <div className="flex items-center text-sm text-gray-600">
-                      <Wind className="h-4 w-4 mr-1" />
-                      {weatherData.windSpeed} km/h
-                    </div>
-                  </div>
-                </div>
-                <div className="grid grid-cols-3 gap-2 text-xs">
-                  {weatherData.forecast.map((day, index) => (
-                    <div key={index} className="text-center p-2 bg-gray-50 rounded">
-                      <p className="font-medium">{day.day}</p>
-                      <p className="text-gray-600">{day.temp}°C</p>
-                      <p className="text-blue-600">{day.rain}%</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Recent Activity */}
-            <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-              <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
-                <Clock className="h-5 w-5 mr-2 text-gray-600" />
-                Recent Activities
-              </h3>
-              <div className="space-y-3 text-sm">
-                {activities.length > 0 ? (
-                  activities.slice(0, 4).map((activity, index) => (
-                    <div key={index} className="flex items-center justify-between p-2 hover:bg-gray-50 rounded">
-                      <div className="flex items-center">
-                        <div className={`w-2 h-2 rounded-full mr-3 ${
-                          activity.type === 'sowing' ? 'bg-green-500' :
-                          activity.type === 'irrigation' ? 'bg-blue-500' :
-                          activity.type === 'fertilizer' ? 'bg-yellow-500' : 'bg-gray-500'
+                <div className="space-y-3">
+                  {advisories.length > 0 ? (
+                    advisories.slice(0, 3).map((advisory, index) => (
+                      <div key={index} className="flex items-start space-x-3 p-3 bg-blue-50 rounded-lg">
+                        <div className={`w-2 h-2 rounded-full mt-2 ${
+                          advisory.priority === 'high' ? 'bg-red-500' : 
+                          advisory.priority === 'medium' ? 'bg-yellow-500' : 'bg-green-500'
                         }`} />
-                        <div>
-                          <p className="font-medium text-gray-900">{activity.title}</p>
-                          <p className="text-xs text-gray-600">{activity.crop || 'General'}</p>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-gray-900">{advisory.title}</p>
+                          <p className="text-xs text-gray-600 truncate">{advisory.message}</p>
                         </div>
                       </div>
-                      <span className="text-xs text-gray-500">{activity.timeAgo}</span>
+                    ))
+                  ) : (
+                    <div className="text-gray-500 text-center py-4 text-sm">
+                      No active advisories
                     </div>
-                  ))
-                ) : (
-                  <div className="text-gray-500 text-center py-4">
-                    No recent activities
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
             </div>
+          </section>
 
-            {/* Upcoming Reminders */}
-            {reminders.length > 0 && (
+          {/* Activity & Reminders Section */}
+          <section>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-semibold text-gray-900">Activity & Reminders</h2>
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Recent Activity */}
+              <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
+                  <Clock className="h-5 w-5 mr-2 text-gray-600" />
+                  Recent Activities
+                </h3>
+                <div className="space-y-3 text-sm">
+                  {activities.length > 0 ? (
+                    activities.slice(0, 4).map((activity, index) => (
+                      <div key={index} className="flex items-center justify-between p-2 hover:bg-gray-50 rounded">
+                        <div className="flex items-center">
+                          <div className={`w-2 h-2 rounded-full mr-3 ${
+                            activity.type === 'sowing' ? 'bg-green-500' :
+                            activity.type === 'irrigation' ? 'bg-blue-500' :
+                            activity.type === 'fertilizer' ? 'bg-yellow-500' : 'bg-gray-500'
+                          }`} />
+                          <div>
+                            <p className="font-medium text-gray-900">{activity.title}</p>
+                            <p className="text-xs text-gray-600">{activity.crop || 'General'}</p>
+                          </div>
+                        </div>
+                        <span className="text-xs text-gray-500">{activity.timeAgo}</span>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-gray-500 text-center py-4">
+                      No recent activities
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Upcoming Reminders */}
               <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
                 <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
                   <AlertTriangle className="h-5 w-5 mr-2 text-orange-600" />
                   Upcoming Reminders
                 </h3>
                 <div className="space-y-3">
-                  {reminders.slice(0, 3).map((reminder, index) => (
-                    <div key={index} className="flex items-center justify-between p-3 bg-orange-50 rounded-lg">
-                      <div className="flex items-center">
-                        <Calendar className="h-4 w-4 mr-3 text-orange-600" />
-                        <div>
-                          <p className="text-sm font-medium text-gray-900">{reminder.title}</p>
-                          <p className="text-xs text-gray-600">{reminder.crop || 'General'}</p>
+                  {reminders.length > 0 ? (
+                    reminders.slice(0, 3).map((reminder, index) => (
+                      <div key={index} className="flex items-center justify-between p-3 bg-orange-50 rounded-lg">
+                        <div className="flex items-center">
+                          <Calendar className="h-4 w-4 mr-3 text-orange-600" />
+                          <div>
+                            <p className="text-sm font-medium text-gray-900">{reminder.title}</p>
+                            <p className="text-xs text-gray-600">{reminder.crop || 'General'}</p>
+                          </div>
                         </div>
+                        <span className="text-xs text-orange-600 font-medium">{reminder.nextTriggerText}</span>
                       </div>
-                      <span className="text-xs text-orange-600 font-medium">{reminder.nextTriggerText}</span>
+                    ))
+                  ) : (
+                    <div className="text-gray-500 text-center py-4 text-sm">
+                      No upcoming reminders
                     </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Crop Management */}
-        <div className="mt-8">
-          <CropManagement
-            crops={crops}
-            onAddCrop={handleAddCrop}
-            onEditCrop={handleEditCrop}
-            onDeleteCrop={handleDeleteCrop}
-          />
-        </div>
-
-        {/* Smart Insights */}
-        {isProfileComplete && (
-          <div className="mt-8">
-            <SmartInsights 
-              activities={activities}
-              advisories={advisories}
-              reminders={reminders}
-              crops={crops}
-              weatherData={weatherData}
-            />
-          </div>
-        )}
-
-        {/* Farm Analytics */}
-        {isProfileComplete && crops.length > 0 && (
-          <div className="mt-8">
-            <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-medium text-gray-900 flex items-center">
-                  <BarChart3 className="h-5 w-5 mr-2 text-purple-600" />
-                  Farm Analytics
-                </h3>
-                <button 
-                  onClick={() => window.open(`/${lang}/analytics`, '_blank')}
-                  className="text-sm text-blue-600 hover:text-blue-800"
-                >
-                  View detailed report
-                </button>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-blue-800">Land Utilization</p>
-                      <p className="text-2xl font-bold text-blue-900">
-                        {farmDetails?.cultivableArea && farmDetails?.totalArea 
-                          ? Math.round((parseFloat(farmDetails.cultivableArea) / parseFloat(farmDetails.totalArea)) * 100)
-                          : 0}%
-                      </p>
-                    </div>
-                    <Ruler className="h-8 w-8 text-blue-600" />
-                  </div>
-                </div>
-
-                <div className="bg-gradient-to-r from-green-50 to-green-100 rounded-lg p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-green-800">Crop Diversity</p>
-                      <p className="text-2xl font-bold text-green-900">{crops.length}</p>
-                      <p className="text-xs text-green-700">different crops</p>
-                    </div>
-                    <Wheat className="h-8 w-8 text-green-600" />
-                  </div>
-                </div>
-
-                <div className="bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-purple-800">Farming Experience</p>
-                      <p className="text-2xl font-bold text-purple-900">{farmerProfile?.experience || 0}</p>
-                      <p className="text-xs text-purple-700">years</p>
-                    </div>
-                    <TrendingUp className="h-8 w-8 text-purple-600" />
-                  </div>
+                  )}
                 </div>
               </div>
             </div>
-          </div>
-        )}
+          </section>
 
-        {/* Activity Logger */}
-        <ActivityLogger 
-          crops={crops}
-          onActivityAdded={(activity) => {
-            setActivities(prev => [activity, ...prev]);
-            // Refresh smart system data after new activity
-            loadSmartSystemData();
-          }}
-        />
+          {/* Crop Management Section */}
+          <section>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-semibold text-gray-900">Crop Management</h2>
+            </div>
+            <CropManagement
+              crops={crops}
+              onAddCrop={handleAddCrop}
+              onEditCrop={handleEditCrop}
+              onDeleteCrop={handleDeleteCrop}
+            />
+          </section>
+
+          {/* Analytics & Insights Section */}
+          {isProfileComplete && (
+            <section>
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-semibold text-gray-900">Analytics & Insights</h2>
+                <button 
+                  onClick={() => window.open(`/${lang}/analytics`, '_blank')}
+                  className="flex items-center px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-800 border border-blue-200 rounded-lg hover:bg-blue-50"
+                >
+                  <BarChart3 className="h-4 w-4 mr-2" />
+                  View Full Report
+                </button>
+              </div>
+              
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Farm Analytics */}
+                {crops.length > 0 && (
+                  <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                    <h3 className="text-lg font-medium text-gray-900 mb-6 flex items-center">
+                      <BarChart3 className="h-5 w-5 mr-2 text-purple-600" />
+                      Farm Analytics
+                    </h3>
+                    <div className="grid grid-cols-1 gap-4">
+                      <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg p-4">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-sm font-medium text-blue-800">Land Utilization</p>
+                            <p className="text-2xl font-bold text-blue-900">
+                              {farmDetails?.cultivableArea && farmDetails?.totalArea 
+                                ? Math.round((parseFloat(farmDetails.cultivableArea) / parseFloat(farmDetails.totalArea)) * 100)
+                                : 0}%
+                            </p>
+                          </div>
+                          <Ruler className="h-8 w-8 text-blue-600" />
+                        </div>
+                      </div>
+
+                      <div className="bg-gradient-to-r from-green-50 to-green-100 rounded-lg p-4">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-sm font-medium text-green-800">Crop Diversity</p>
+                            <p className="text-2xl font-bold text-green-900">{crops.length}</p>
+                            <p className="text-xs text-green-700">different crops</p>
+                          </div>
+                          <Wheat className="h-8 w-8 text-green-600" />
+                        </div>
+                      </div>
+
+                      <div className="bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg p-4">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-sm font-medium text-purple-800">Farming Experience</p>
+                            <p className="text-2xl font-bold text-purple-900">{farmerProfile?.experience || 0}</p>
+                            <p className="text-xs text-purple-700">years</p>
+                          </div>
+                          <TrendingUp className="h-8 w-8 text-purple-600" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Smart Insights */}
+                <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                  <h3 className="text-lg font-medium text-gray-900 mb-6 flex items-center">
+                    <Zap className="h-5 w-5 mr-2 text-indigo-600" />
+                    Smart Insights
+                  </h3>
+                  <SmartInsights 
+                    activities={activities}
+                    advisories={advisories}
+                    reminders={reminders}
+                    crops={crops}
+                    weatherData={weatherData}
+                  />
+                </div>
+              </div>
+            </section>
+          )}
+
+          {/* Activity Logger Section */}
+          <section>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-semibold text-gray-900">Log New Activity</h2>
+            </div>
+            <ActivityLogger 
+              crops={crops}
+              onActivityAdded={(activity) => {
+                setActivities(prev => [activity, ...prev]);
+                loadSmartSystemData();
+              }}
+            />
+          </section>
+        </div>
       </main>
     </div>
   );

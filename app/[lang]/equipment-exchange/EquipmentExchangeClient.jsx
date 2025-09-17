@@ -246,7 +246,7 @@ const EquipmentExchangeClient = () => {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
                 <select 
-                  className="w-full p-2 border rounded-md text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                  className="w-full p-2 border rounded-md text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 text-gray-900 bg-white"
                   value={filters.category}
                   onChange={(e) => setFilters({...filters, category: e.target.value})}
                 >
@@ -261,7 +261,7 @@ const EquipmentExchangeClient = () => {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Price Range</label>
                 <select 
-                  className="w-full p-2 border rounded-md text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                  className="w-full p-2 border rounded-md text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 text-gray-900 bg-white"
                   value={filters.priceRange}
                   onChange={(e) => setFilters({...filters, priceRange: e.target.value})}
                 >
@@ -279,7 +279,7 @@ const EquipmentExchangeClient = () => {
                   <input
                     type="text"
                     placeholder="City, State"
-                    className="w-full pl-10 pr-4 py-2 border rounded-md text-sm focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    className="w-full pl-10 pr-4 py-2 border rounded-md text-sm focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-900 placeholder-gray-500 bg-white"
                     value={filters.location}
                     onChange={(e) => setFilters({...filters, location: e.target.value})}
                   />

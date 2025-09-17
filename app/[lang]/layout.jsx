@@ -10,6 +10,7 @@ import { getPageMetadata } from '@/config/metadata';
 import { useLanguage } from '@/context/LanguageContext';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
+import ChatbotWidget from '@/components/ui/ChatbotWidget';
 
 export default function LanguageLayout({ children, params }) {
   const pathname = usePathname();
@@ -76,6 +77,9 @@ export default function LanguageLayout({ children, params }) {
             {children}
           </main>
           <Footer />
+          
+          {/* Chatbot Widget - appears on all pages */}
+          <ChatbotWidget lang={lang} />
         </div>
       </TooltipProvider>
     </>

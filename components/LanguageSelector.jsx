@@ -4,11 +4,12 @@ import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useLanguage } from '@/context/LanguageContext';
 import { Globe, Check, ChevronDown, ChevronUp } from 'lucide-react';
-import { t } from '@/translations/index'; // Make sure to include /index
+import { useTranslation } from '@/hooks/useTranslation';
 import { cn } from '@/lib/utils';
 
 export default function LanguageSelector() {
   const { currentLanguage, changeLanguage, languages } = useLanguage();
+  const t = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
   const router = useRouter();
@@ -76,7 +77,7 @@ export default function LanguageSelector() {
         )}
         aria-haspopup="true"
         aria-expanded={isOpen}
-        aria-label={t('selectLanguage', memoizedCurrentLanguage) || 'Select language'}
+        aria-label={t('selectLanguage') || 'Select language'}
       >
         <Globe className="h-4 w-4 text-gray-500" aria-hidden="true" />
         <span className="hidden sm:inline">{currentLang?.name || memoizedCurrentLanguage}</span>
@@ -99,7 +100,7 @@ export default function LanguageSelector() {
         aria-labelledby="language-selector"
       >
         <div className="px-4 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-100">
-          {t('selectLanguage', memoizedCurrentLanguage) || 'Select Language'}
+          {t('selectLanguage') || 'Select Language'}
         </div>
         <div className="py-1 max-h-60 overflow-auto">
           {languages.map((language) => {
