@@ -1,9 +1,9 @@
 import { languages } from '@/config/languages';
 import dynamic from 'next/dynamic';
 
-// Dynamically import the client component with SSR disabled
-const CropDiseaseClient = dynamic(
-  () => import('./CropDiseaseClient'),
+// Dynamically import the wrapper component with SSR disabled
+const CropDiseaseWrapper = dynamic(
+  () => import('./CropDiseaseWrapper'),
   { 
     ssr: false,
     loading: () => (
@@ -40,5 +40,5 @@ export default function CropDiseasePage({ params }) {
     );
   }
 
-  return <CropDiseaseClient />;
+  return <CropDiseaseWrapper />;
 }

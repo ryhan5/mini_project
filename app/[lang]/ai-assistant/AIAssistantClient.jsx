@@ -10,10 +10,10 @@ const ChatInterface = dynamic(
   { 
     ssr: false,
     loading: () => (
-      <div className="flex items-center justify-center h-screen bg-gray-50">
+      <div className="flex items-center justify-center h-full bg-gradient-to-br from-green-50 to-blue-50">
         <div className="flex flex-col items-center space-y-4">
-          <Loader2 className="h-8 w-8 animate-spin text-green-600" />
-          <p className="text-gray-600">Loading AI Assistant...</p>
+          <Loader2 className="h-12 w-12 animate-spin text-green-600" />
+          <p className="text-gray-600 text-lg">Loading AI Assistant...</p>
         </div>
       </div>
     )
@@ -22,15 +22,17 @@ const ChatInterface = dynamic(
 
 export default function AIAssistantClient() {
   return (
-    <Suspense fallback={
-      <div className="flex items-center justify-center h-screen bg-gray-50">
-        <div className="flex flex-col items-center space-y-4">
-          <Loader2 className="h-8 w-8 animate-spin text-green-600" />
-          <p className="text-gray-600">Loading AI Assistant...</p>
+    <div className="h-full w-full">
+      <Suspense fallback={
+        <div className="flex items-center justify-center h-full bg-gradient-to-br from-green-50 to-blue-50">
+          <div className="flex flex-col items-center space-y-4">
+            <Loader2 className="h-12 w-12 animate-spin text-green-600" />
+            <p className="text-gray-600 text-lg">Loading AI Assistant...</p>
+          </div>
         </div>
-      </div>
-    }>
-      <ChatInterface />
-    </Suspense>
+      }>
+        <ChatInterface />
+      </Suspense>
+    </div>
   );
 }

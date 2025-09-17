@@ -1,17 +1,16 @@
 import dynamic from 'next/dynamic';
-import { Suspense } from 'react';
 import { languages } from '@/config/languages';
 
-// Dynamically import the client component with SSR disabled
-const AIAssistantClient = dynamic(
-  () => import('./AIAssistantClient'),
+// Dynamically import the wrapper component with SSR disabled
+const AIAssistantWrapper = dynamic(
+  () => import('./AIAssistantWrapper'),
   { 
     ssr: false,
     loading: () => (
-      <div className="flex items-center justify-center h-screen bg-gray-50">
+      <div className="flex items-center justify-center h-screen bg-gradient-to-br from-green-50 to-blue-50">
         <div className="flex flex-col items-center space-y-4">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-green-600 border-t-transparent"></div>
-          <p className="text-gray-600">Loading AI Assistant...</p>
+          <div className="h-12 w-12 animate-spin rounded-full border-4 border-green-600 border-t-transparent"></div>
+          <p className="text-gray-600 text-lg">Loading AI Assistant...</p>
         </div>
       </div>
     )
@@ -37,16 +36,5 @@ export default function AIAssistantPage({ params }) {
     return null;
   }
 
-  return (
-    <Suspense fallback={
-      <div className="flex items-center justify-center h-screen bg-gray-50">
-        <div className="flex flex-col items-center space-y-4">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-green-600 border-t-transparent"></div>
-          <p className="text-gray-600">Loading AI Assistant...</p>
-        </div>
-      </div>
-    }>
-      <AIAssistantClient lang={lang} />
-    </Suspense>
-  );
+  return <AIAssistantWrapper lang={lang} />;
 }

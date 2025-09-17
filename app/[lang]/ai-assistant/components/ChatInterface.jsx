@@ -74,8 +74,10 @@ export default function ChatInterface({ initialMessage }) {
   const fileInputRef = useRef(null);
   const messagesEndRef = useRef(null);
 
-  // Removed auto-scrolling behavior
-  // Manual scroll is now handled by the user
+  // Auto-scroll to bottom when new messages are added
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
@@ -278,40 +280,65 @@ export default function ChatInterface({ initialMessage }) {
   };
 
   return (
-    <div className="flex flex-col h-full w-full bg-white">
-      {/* Header */}
-      <div className="bg-white border-b border-gray-200 p-3 flex items-center justify-between sticky top-0 z-10">
-        <div className="flex items-center space-x-2">
-          <div className="p-1.5 bg-green-100 rounded-lg">
-            <Bot className="h-4 w-4 text-green-600" />
-          </div>
-          <h2 className="font-medium text-gray-900 text-sm">Farming Assistant</h2>
-        </div>
-        
-        <div className="relative">
-          <select
-            value={selectedLanguage}
-            onChange={(e) => setSelectedLanguage(e.target.value)}
-            className="appearance-none bg-white border border-gray-200 rounded-lg pl-2 pr-6 py-1 text-xs text-gray-700 focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-transparent"
-          >
-            {languages.map((lang) => (
-              <option key={lang.code} value={lang.code}>
-                {lang.name}
-              </option>
-            ))}
-          </select>
-          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-1 text-gray-500">
-            <svg className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-            </svg>
-          </div>
+    <div className="flex flex-col h-full w-full bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 relative">
+      {/* Language Selector */}
+      <div className="absolute top-4 right-4 z-20">
+        <select
+          value={selectedLanguage}
+          onChange={(e) => setSelectedLanguage(e.target.value)}
+          className="appearance-none bg-white/95 backdrop-blur-sm border border-gray-300/50 rounded-2xl pl-4 pr-10 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent shadow-lg hover:bg-white transition-all duration-200 font-medium"
+        >
+          {languages.map((lang) => (
+            <option key={lang.code} value={lang.code}>
+              {lang.name}
+            </option>
+          ))}
+        </select>
+        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+          <Globe className="h-4 w-4" />
         </div>
       </div>
 
-      <div className="flex-1 overflow-hidden flex flex-col">
+      <div className="flex-1 overflow-hidden flex flex-col min-h-0 relative">
+        {/* Welcome Section */}
+        {messages.length === 1 && (
+          <div className="p-8 text-center">
+            <div className="max-w-2xl mx-auto">
+              <div className="mb-8">
+                <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full shadow-2xl mb-6">
+                  <Bot className="h-10 w-10 text-white" />
+                </div>
+                <h2 className="text-3xl font-bold text-gray-900 mb-4">Welcome to AI Farming Assistant</h2>
+                <p className="text-lg text-gray-600 mb-8">
+                  Get expert farming advice, crop analysis, and personalized recommendations powered by advanced AI technology.
+                </p>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                {suggestedQuestions[selectedLanguage]?.map((suggestion, index) => (
+                  <button
+                    key={index}
+                    onClick={() => handleSuggestionClick(suggestion)}
+                    className="group p-4 text-left bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-2xl hover:bg-white hover:border-green-300 hover:shadow-xl transition-all duration-300 text-gray-700 hover:text-green-700"
+                  >
+                    <div className="flex items-start space-x-3">
+                      <div className="flex-shrink-0 w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center group-hover:bg-green-200 transition-colors">
+                        <Sparkles className="h-4 w-4 text-green-600" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-medium text-sm">{suggestion.text}</p>
+                      </div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+        
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          {messages.map((msg) => (
+        <div className="flex-1 overflow-y-auto px-6 pb-6 space-y-6 min-h-0">
+          {messages.length > 1 && messages.slice(1).map((msg) => (
             <div
               key={msg.id}
               className={`flex ${
@@ -319,10 +346,10 @@ export default function ChatInterface({ initialMessage }) {
               }`}
             >
               <div
-                className={`max-w-3/4 rounded-2xl px-4 py-3 ${
+                className={`max-w-4xl rounded-3xl px-6 py-5 ${
                   msg.role === 'assistant'
-                    ? 'bg-white border border-gray-200 rounded-tl-none shadow-sm'
-                    : 'bg-green-600 text-white rounded-tr-none'
+                    ? 'bg-white/95 backdrop-blur-md border border-gray-200/30 rounded-tl-lg shadow-xl hover:shadow-2xl transition-all duration-300'
+                    : 'bg-gradient-to-r from-green-600 via-green-700 to-emerald-700 text-white rounded-tr-lg shadow-xl'
                 }`}
               >
                 {msg.type === 'image' ? (
@@ -384,8 +411,9 @@ export default function ChatInterface({ initialMessage }) {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Image preview and input area */}
-        <div className="border-t border-gray-200 p-4 bg-white">
+        {/* Modern Input Area */}
+        <div className="border-t border-gray-200/30 p-6 bg-white/95 backdrop-blur-md flex-shrink-0 relative">
+          <div className="absolute inset-0 bg-gradient-to-r from-green-500/5 to-blue-500/5"></div>
           {(selectedImage || imagePreview) && (
             <div className="mb-4">
               <div className="flex items-center justify-between mb-3">
@@ -440,23 +468,31 @@ export default function ChatInterface({ initialMessage }) {
             </div>
           )}
 
-          <form onSubmit={handleSendMessage} className="relative">
-            <div className="flex items-center space-x-2">
+          <form onSubmit={handleSendMessage} className="relative z-10">
+            <div className="flex items-end space-x-4 bg-white/90 backdrop-blur-sm rounded-3xl p-4 shadow-xl border border-gray-200/50">
               <div className="relative flex-1">
                 <Input
                   type="text"
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
-                  placeholder="Type your message..."
-                  className="pr-12"
+                  placeholder="Ask me anything about farming..."
+                  className="pr-16 h-14 rounded-2xl border-0 focus:border-0 focus:ring-2 focus:ring-green-500 bg-gray-50/80 backdrop-blur-sm shadow-inner text-base placeholder:text-gray-500"
                 />
-                <button
-                  type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-green-600"
-                >
-                  <ImageIcon className="h-5 w-5" />
-                </button>
+                <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center space-x-2">
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-xl transition-all duration-200"
+                  >
+                    <ImageIcon className="h-5 w-5" />
+                  </button>
+                  <button
+                    type="button"
+                    className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all duration-200"
+                  >
+                    <Camera className="h-5 w-5" />
+                  </button>
+                </div>
                 <input
                   type="file"
                   ref={fileInputRef}
@@ -469,10 +505,10 @@ export default function ChatInterface({ initialMessage }) {
               <Button
                 type="submit"
                 size="icon"
-                className="h-12 w-12 rounded-xl bg-green-600 hover:bg-green-700 flex-shrink-0"
+                className="h-14 w-14 rounded-2xl bg-gradient-to-r from-green-600 via-green-700 to-emerald-700 hover:from-green-700 hover:via-green-800 hover:to-emerald-800 flex-shrink-0 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-110 active:scale-95"
                 disabled={!message?.trim() && !selectedImage}
               >
-                <Send className="h-5 w-5" />
+                <Send className="h-6 w-6" />
               </Button>
             </div>
           </form>

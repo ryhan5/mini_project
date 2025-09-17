@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Camera, Image as ImageIcon, Loader2, AlertCircle, CheckCircle, X, Send, MessageCircle, Bot, User, Mic, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { predictCropDisease, validateImageForML, imageToBase64 } from '@/lib/cropDiseaseML';
-import { getAIResponse, analyzeImageQuery } from '@/lib/aiAssistant';
+import { getAIResponse, analyzeImageQuery } from '@/lib/geminiAI';
 
 export default function CropDiseaseClient() {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -34,6 +34,11 @@ export default function CropDiseaseClient() {
   const [activeTab, setActiveTab] = useState('chat'); // 'chat' or 'scanner'
   const messagesEndRef = useRef(null);
 
+  // Auto-scroll to bottom when messages change
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -52,43 +57,6 @@ export default function CropDiseaseClient() {
     reader.readAsDataURL(file);
   };
 
-  const analyzeDisease = async () => {
-    if (!selectedImage) return;
-    
-    setIsAnalyzing(true);
-    setResult(null);
-    setError(null);
-    
-    try {
-      // Validate image before processing
-      validateImageForML(selectedImage);
-      
-      // Convert image to base64 for ML model
-      const base64Image = await imageToBase64(selectedImage);
-      
-      // Use our custom ML model for prediction
-      const mlResult = await predictCropDisease(base64Image, 'general');
-      
-      // Format the response for UI
-      const formattedResult = {
-        disease: mlResult.disease,
-        confidence: `${Math.round(mlResult.confidence * 100)}%`,
-        description: mlResult.description,
-        treatment: mlResult.treatment,
-        prevention: mlResult.prevention,
-        severity: mlResult.severity,
-        analysisDetails: mlResult.analysisDetails
-      };
-      
-      setResult(formattedResult);
-    } catch (error) {
-      console.error('Error analyzing image:', error);
-      setError(error.message || 'Failed to analyze the image. Please ensure the image is clear and try again.');
-      setResult(null);
-    } finally {
-      setIsAnalyzing(false);
-    }
-  };
 
   // Start camera
   const startCamera = async () => {
@@ -161,6 +129,8 @@ export default function CropDiseaseClient() {
   const handleSendMessage = async () => {
     if (!inputMessage.trim()) return;
     
+    console.log('Sending message:', inputMessage);
+    
     const userMessage = {
       id: Date.now(),
       role: 'user',
@@ -170,16 +140,21 @@ export default function CropDiseaseClient() {
     };
     
     setMessages(prev => [...prev, userMessage]);
+    const currentMessage = inputMessage;
     setInputMessage('');
     setIsTyping(true);
     
     try {
-      const aiResponse = await getAIResponse(inputMessage);
+      console.log('Calling Gemini AI...');
+      
+      // Call Gemini AI for response
+      const aiResponse = await getAIResponse(currentMessage);
+      console.log('Gemini AI Response received:', aiResponse);
       
       const assistantMessage = {
         id: Date.now() + 1,
         role: 'assistant',
-        content: aiResponse.message,
+        content: aiResponse.message || 'I received your message but had trouble generating a response.',
         timestamp: new Date().toISOString(),
         type: 'text'
       };
@@ -190,7 +165,7 @@ export default function CropDiseaseClient() {
       const errorMessage = {
         id: Date.now() + 1,
         role: 'assistant',
-        content: 'Sorry, I encountered an error. Please try again.',
+        content: `Sorry, I encountered an error: ${error.message}. Please try again.`,
         timestamp: new Date().toISOString(),
         type: 'text'
       };
@@ -257,6 +232,13 @@ ${mlResult.prevention.map((p, i) => `${i + 1}. ${p}`).join('\n')}
         severity: mlResult.severity
       });
       
+      // Clear the image after analysis
+      setSelectedImage(null);
+      setImagePreview(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+      
     } catch (error) {
       console.error('Error analyzing image:', error);
       const errorMessage = {
@@ -274,17 +256,17 @@ ${mlResult.prevention.map((p, i) => `${i + 1}. ${p}`).join('\n')}
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="min-h-screen flex flex-col">
       
       {/* Tab Navigation */}
-      <div className="flex justify-center mb-6">
-        <div className="bg-gray-100 p-1 rounded-lg">
+      <div className="flex justify-center p-4">
+        <div className="bg-white/80 backdrop-blur-sm p-1 rounded-2xl shadow-lg border border-gray-200/50">
           <button
             onClick={() => setActiveTab('chat')}
-            className={`px-6 py-2 rounded-md font-medium transition-colors ${
+            className={`px-6 py-3 rounded-xl font-medium transition-all duration-200 ${
               activeTab === 'chat'
-                ? 'bg-white text-green-600 shadow-sm'
-                : 'text-gray-600 hover:text-gray-900'
+                ? 'bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-lg'
+                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
             }`}
           >
             <MessageCircle className="w-4 h-4 inline mr-2" />
@@ -292,10 +274,10 @@ ${mlResult.prevention.map((p, i) => `${i + 1}. ${p}`).join('\n')}
           </button>
           <button
             onClick={() => setActiveTab('scanner')}
-            className={`px-6 py-2 rounded-md font-medium transition-colors ${
+            className={`px-6 py-3 rounded-xl font-medium transition-all duration-200 ${
               activeTab === 'scanner'
-                ? 'bg-white text-green-600 shadow-sm'
-                : 'text-gray-600 hover:text-gray-900'
+                ? 'bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-lg'
+                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
             }`}
           >
             <Camera className="w-4 h-4 inline mr-2" />
@@ -306,9 +288,9 @@ ${mlResult.prevention.map((p, i) => `${i + 1}. ${p}`).join('\n')}
       
       {activeTab === 'chat' ? (
         /* AI Chat Interface */
-        <div className="max-w-4xl mx-auto">
-          <Card className="h-[600px] flex flex-col">
-            <CardHeader className="border-b">
+        <div className="max-w-6xl mx-auto px-4">
+          <Card className="h-[600px] flex flex-col shadow-xl border-0 bg-white/90 backdrop-blur-sm">
+            <CardHeader className="border-b border-gray-200/50 bg-white/50">
               <CardTitle className="flex items-center">
                 <Bot className="w-5 h-5 mr-2 text-green-600" />
                 AI Farming Assistant
@@ -318,30 +300,30 @@ ${mlResult.prevention.map((p, i) => `${i + 1}. ${p}`).join('\n')}
             
             <CardContent className="flex-1 flex flex-col p-0">
               {/* Messages Area */}
-              <div className="flex-1 overflow-y-auto p-4 space-y-4">
+              <div className="flex-1 overflow-y-auto p-6 space-y-6">
                 {messages.map((message) => (
                   <div
                     key={message.id}
                     className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
                   >
-                    <div className={`max-w-[80%] rounded-lg p-3 ${
+                    <div className={`max-w-[75%] rounded-2xl px-4 py-3 ${
                       message.role === 'user'
-                        ? 'bg-green-600 text-white'
-                        : 'bg-gray-100 text-gray-900'
+                        ? 'bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-tr-lg'
+                        : 'bg-white/90 backdrop-blur-sm border border-gray-200/50 text-gray-900 rounded-tl-lg shadow-lg'
                     }`}>
                       {message.type === 'image' && message.imageUrl && (
-                        <div className="mb-2">
+                        <div className="mb-3">
                           <img
                             src={message.imageUrl}
                             alt="Uploaded crop"
-                            className="w-full h-32 object-cover rounded"
+                            className="w-full h-32 object-cover rounded-lg"
                           />
                         </div>
                       )}
-                      <div className="whitespace-pre-wrap text-sm">
+                      <div className="text-sm leading-relaxed break-words overflow-wrap-anywhere">
                         {message.content}
                       </div>
-                      <div className={`text-xs mt-1 opacity-70`}>
+                      <div className={`text-xs mt-2 opacity-70`}>
                         {new Date(message.timestamp).toLocaleTimeString()}
                       </div>
                     </div>
@@ -350,9 +332,9 @@ ${mlResult.prevention.map((p, i) => `${i + 1}. ${p}`).join('\n')}
                 
                 {isTyping && (
                   <div className="flex justify-start">
-                    <div className="bg-gray-100 rounded-lg p-3">
-                      <div className="flex items-center space-x-1">
-                        <span className="text-gray-600 text-sm mr-2">AI is typing</span>
+                    <div className="bg-white/90 backdrop-blur-sm border border-gray-200/50 rounded-2xl rounded-tl-lg px-4 py-3 shadow-lg">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-gray-600 text-sm">AI is typing</span>
                         <div className="w-2 h-2 bg-green-500 rounded-full animate-bounce"></div>
                         <div className="w-2 h-2 bg-green-500 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
                         <div className="w-2 h-2 bg-green-500 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
@@ -364,8 +346,8 @@ ${mlResult.prevention.map((p, i) => `${i + 1}. ${p}`).join('\n')}
               </div>
               
               {/* Input Area */}
-              <div className="border-t p-4">
-                <div className="flex space-x-2">
+              <div className="border-t border-gray-200/50 p-6 bg-white/50">
+                <div className="flex items-center space-x-3 bg-white/90 backdrop-blur-sm rounded-2xl p-3 shadow-lg border border-gray-200/50">
                   <input
                     type="file"
                     accept="image/*"
@@ -376,8 +358,11 @@ ${mlResult.prevention.map((p, i) => `${i + 1}. ${p}`).join('\n')}
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => fileInputRef.current?.click()}
-                    className="flex-shrink-0"
+                    onClick={() => {
+                      setActiveTab('scanner');
+                    }}
+                    className="flex-shrink-0 rounded-xl border-gray-300 hover:bg-gray-50"
+                    title="Switch to Disease Scanner"
                   >
                     <Upload className="w-4 h-4" />
                   </Button>
@@ -387,13 +372,13 @@ ${mlResult.prevention.map((p, i) => `${i + 1}. ${p}`).join('\n')}
                     onChange={(e) => setInputMessage(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
                     placeholder="Ask about farming, crops, diseases, or upload an image..."
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-900 placeholder-gray-500 bg-white"
+                    className="flex-1 px-4 py-3 border-0 rounded-xl focus:outline-none focus:ring-0 text-gray-900 placeholder-gray-500 bg-transparent"
                     disabled={isTyping}
                   />
                   <Button
                     onClick={handleSendMessage}
                     disabled={!inputMessage.trim() || isTyping}
-                    className="flex-shrink-0"
+                    className="flex-shrink-0 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 rounded-xl px-4 py-3"
                   >
                     <Send className="w-4 h-4" />
                   </Button>
@@ -497,7 +482,7 @@ ${mlResult.prevention.map((p, i) => `${i + 1}. ${p}`).join('\n')}
               </div>
             )}
             
-            <div className="mt-6 space-y-3">
+            <div className="mt-6">
               <Button 
                 className="w-full" 
                 onClick={analyzeImageWithChat}
@@ -508,15 +493,7 @@ ${mlResult.prevention.map((p, i) => `${i + 1}. ${p}`).join('\n')}
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     Analyzing...
                   </>
-                ) : 'Analyze with AI Chat'}
-              </Button>
-              <Button 
-                variant="outline"
-                className="w-full" 
-                onClick={analyzeDisease}
-                disabled={!selectedImage || isAnalyzing}
-              >
-                Quick Analysis Only
+                ) : 'Analyze Disease'}
               </Button>
             </div>
           </CardContent>
